@@ -1,0 +1,23 @@
+{
+  "name": "chengzhu",
+  "version": "0.1.0",
+  "description": "成竹 Foresketch — 投研信息整理与仿真推演多 Agent 系统",
+  "scripts": {
+    "setup": "pnpm install && cd frontend && pnpm install",
+    "setup:backend": "cd backend && python3 -m venv .venv && .venv/bin/pip install -U pip && .venv/bin/pip install -r requirements.txt",
+    "setup:all": "pnpm run setup && pnpm run setup:backend",
+    "dev": "pnpm exec concurrently --kill-others -n \"backend,frontend\" -c \"green,cyan\" \"pnpm run backend\" \"pnpm run frontend\"",
+    "backend": "cd backend && .venv/bin/python run.py",
+    "frontend": "cd frontend && pnpm run dev",
+    "build": "cd frontend && pnpm run build",
+    "test:backend": "cd backend && .venv/bin/pytest tests -q"
+  },
+  "packageManager": "pnpm@11.5.0",
+  "devDependencies": {
+    "concurrently": "^9.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "AGPL-3.0"
+}
