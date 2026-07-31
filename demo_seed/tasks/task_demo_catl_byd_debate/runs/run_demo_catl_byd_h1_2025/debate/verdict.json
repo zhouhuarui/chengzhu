@@ -1,0 +1,124 @@
+{
+  "status": "complete",
+  "generated_by": "judge",
+  "degradation_reason": null,
+  "accepted_claim_ids": [
+    "claim_same_period_h1"
+  ],
+  "consensus_facts": [
+    "300750在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的营业总收入为1788.86亿元；002594在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的营业总收入为3712.81亿元。"
+  ],
+  "supported_interpretations": [],
+  "unresolved_disputes": [
+    "H1 与 Q1 报告期不同，不能进入同一横向比较或图表。",
+    "单个半年度累计现金流事实不能证明后续现金创造能力保持不变。",
+    "产能推进仍受项目节奏与需求兑现影响",
+    "300750在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的营业总收入为1788.86亿元；002594在2025-03-31（Q1，CNY/亿元，cumulative，consolidated）的营业总收入为1703.60亿元。",
+    "300750在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的经营活动现金流净额为586.87亿元。"
+  ],
+  "withdrawn_claims": [
+    "300750在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的经营活动现金流净额为586.87亿元。"
+  ],
+  "evidence_gaps": [
+    "增长驱动：未决反证需要后续公开证据",
+    "现金流与偿债：未决反证需要后续公开证据",
+    "经营变化：未决反证需要后续公开证据",
+    "增长驱动：缺少同期间、同单位、同币种与同口径数据",
+    "现金流与偿债：缺少可核对的原文引用",
+    "H1 与 Q1 不具备同期间可比性；错误混比不得进入结论或图表。",
+    "经营事项缺少后续兑现证据。",
+    "后续公开事项：后续定期报告与经营事项进展公告。"
+  ],
+  "evidence_requests": [
+    {
+      "dimension": "增长驱动",
+      "description": "增长驱动：未决反证需要后续公开证据",
+      "reason": "unresolved_challenge:challenge_period_mismatch",
+      "requested_fields": [
+        "public_disclosure",
+        "supporting_quote"
+      ]
+    },
+    {
+      "dimension": "现金流与偿债",
+      "description": "现金流与偿债：未决反证需要后续公开证据",
+      "reason": "unresolved_challenge:challenge_cash_extrapolation",
+      "requested_fields": [
+        "public_disclosure",
+        "supporting_quote"
+      ]
+    },
+    {
+      "dimension": "经营变化",
+      "description": "经营变化：未决反证需要后续公开证据",
+      "reason": "unresolved_challenge:challenge_operating_tempo",
+      "requested_fields": [
+        "public_disclosure",
+        "supporting_quote"
+      ]
+    },
+    {
+      "dimension": "增长驱动",
+      "description": "增长驱动：缺少同期间、同单位、同币种与同口径数据",
+      "reason": "comparability:mismatch:营业总收入:fact_33dff862023b4fd8574797a4:fact_57b16bdd39bdbdcf572efbd2",
+      "requested_fields": [
+        "period",
+        "period_type",
+        "unit",
+        "currency",
+        "accumulation_basis",
+        "consolidation_scope"
+      ]
+    },
+    {
+      "dimension": "现金流与偿债",
+      "description": "现金流与偿债：缺少可核对的原文引用",
+      "reason": "citation:unsupported_assumption_fact:1",
+      "requested_fields": [
+        "evidence_uid",
+        "supporting_quote",
+        "source"
+      ]
+    },
+    {
+      "dimension": "全局",
+      "description": "H1 与 Q1 不具备同期间可比性；错误混比不得进入结论或图表。",
+      "reason": "judge_identified_gap",
+      "requested_fields": [
+        "public_disclosure"
+      ]
+    },
+    {
+      "dimension": "全局",
+      "description": "经营事项缺少后续兑现证据。",
+      "reason": "judge_identified_gap",
+      "requested_fields": [
+        "public_disclosure"
+      ]
+    },
+    {
+      "dimension": "全局",
+      "description": "后续公开事项：后续定期报告与经营事项进展公告。",
+      "reason": "judge_follow_up_public_item",
+      "requested_fields": [
+        "follow_up_public_item"
+      ]
+    }
+  ],
+  "assumptions": [],
+  "follow_up_public_items": [
+    "后续公开披露待补充：增长驱动：未决反证需要后续公开证据",
+    "后续公开披露待补充：现金流与偿债：未决反证需要后续公开证据",
+    "后续公开披露待补充：经营变化：未决反证需要后续公开证据",
+    "后续公开披露待补充：增长驱动：缺少同期间、同单位、同币种与同口径数据",
+    "后续公开披露待补充：现金流与偿债：缺少可核对的原文引用",
+    "后续公开披露待补充：H1 与 Q1 不具备同期间可比性；错误混比不得进入结论或图表。",
+    "后续公开披露待补充：经营事项缺少后续兑现证据。",
+    "后续公开披露待补充：后续公开事项：后续定期报告与经营事项进展公告。"
+  ],
+  "major_challenges": [
+    "H1 与 Q1 报告期不一致，混比 Claim 已被 EvidenceAuditor 拒绝。",
+    "单期现金流不可直接外推，相关 Claim 已撤回。"
+  ],
+  "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。"
+}

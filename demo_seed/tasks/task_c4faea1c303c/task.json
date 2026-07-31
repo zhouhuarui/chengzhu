@@ -1,0 +1,14 @@
+{
+  "task_id": "task_c4faea1c303c",
+  "user_id": "default",
+  "requirement": "整理贵州茅台公告",
+  "status": "parsing",
+  "task_card": null,
+  "progress": 2,
+  "message": "解析需求中",
+  "error": null,
+  "collect_failures": [],
+  "created_at": "2026-07-25T13:59:36",
+  "updated_at": "2026-07-25T13:59:36",
+  "progress_detail": {}
+}

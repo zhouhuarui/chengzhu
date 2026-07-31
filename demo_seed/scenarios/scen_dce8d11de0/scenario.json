@@ -1,0 +1,41 @@
+{
+  "scenario_id": "scen_dce8d11de0",
+  "task_id": "task_afbc9f5a2fcc",
+  "status": "completed",
+  "config": {
+    "scenario_title": "业绩/事件情景推演",
+    "hypothesis": "假设公司发布业绩预告低于市场预期",
+    "baseline_facts": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5"
+    ],
+    "injected_events": [
+      {
+        "round": 1,
+        "type": "official_disclosure",
+        "content": "【假设】假设公司发布业绩预告低于市场预期",
+        "poster_role": "company_ir"
+      },
+      {
+        "round": 3,
+        "type": "media_report",
+        "content": "【假设】财经媒体解读上述情景：假设公司发布业绩预告低于市场预期",
+        "poster_role": "financial_media"
+      }
+    ],
+    "agent_scale": 30,
+    "max_rounds": 10,
+    "counter_scenario": {
+      "enabled": true,
+      "hypothesis": "上述事件未发生或影响符合市场一致预期"
+    },
+    "task_id": "task_afbc9f5a2fcc"
+  },
+  "progress": 100,
+  "created_at": "2026-07-25T14:53:10",
+  "message": "推演完成",
+  "report_title": "情景推演观察报告 · 业绩/事件情景推演"
+}

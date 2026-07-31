@@ -1,0 +1,3 @@
+{"audit_type": "challenge", "challenge_id": "challenge_period_mismatch", "target_claim_id": "claim_mixed_h1_q1", "hard_pass": true, "issues": [], "resolution_warnings": []}
+{"audit_type": "challenge", "challenge_id": "challenge_cash_extrapolation", "target_claim_id": "claim_cash_persistence", "hard_pass": true, "issues": [], "resolution_warnings": []}
+{"audit_type": "challenge", "challenge_id": "challenge_operating_tempo", "target_claim_id": "claim_operating_tempo", "hard_pass": true, "issues": [], "resolution_warnings": []}

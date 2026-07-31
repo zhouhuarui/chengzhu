@@ -1,0 +1,80 @@
+{
+  "task_id": "task_afbc9f5a2fcc",
+  "title": "贵州茅台信息整理摘要",
+  "summary": "基于 67 条公开证据卡的信息整理（非投资建议）。",
+  "sections": [
+    {
+      "title": "信息要点",
+      "goal": "梳理近期公开信息中的关键事实与变化",
+      "content": "本章围绕「梳理近期公开信息中的关键事实与变化」整理公开信息。\n（风格偏好：「券商观点汇总」章节用 Markdown 表格呈现，不写长段落。）\n- 贵州茅台重大事项公告[E1]\n- 贵州茅台2025年年度权益分派实施公告[E2]\n- 贵州茅台关于职工董事选举结果的公告[E3]\n- 贵州茅台2025年度股东会决议公告[E4]\n- 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书[E5]\n- 贵州茅台第五届董事会2026年度第一次会议决议公告[E6]",
+      "verdict": "pass",
+      "issues": []
+    },
+    {
+      "title": "财务表现",
+      "goal": "汇总可得财务与经营指标，注明报告期，必要时输出 chart 数据块",
+      "content": "本章围绕「汇总可得财务与经营指标，注明报告期，必要时输出 chart 数据块」整理公开信息。\n（风格偏好：「券商观点汇总」章节用 Markdown 表格呈现，不写长段落。）\n\n| 主体 | 指标摘录 | 来源 |\n| --- | --- | --- |\n| 600519 | 营收 547.03 亿 / 归母净利 272.43 亿（2026-03-31 00:00:00） | [E21] |\n| 600519 | 营收 1720.54 亿 / 归母净利 823.2 亿（2025-12-31 00:00:00） | [E22] |\n| 600519 | 营收 1309.04 亿 / 归母净利 646.27 亿（2025-09-30 00:00:00） | [E23] |\n| 600519 | 营收 910.94 亿 / 归母净利 454.03 亿（2025-06-30 00:00:00） | [E24] |\n| 600519 | 营收 514.43 亿 / 归母净利 268.47 亿（2025-03-31 00:00:00） | [E25] |\n| 600519 | 营收 1741.44 亿 / 归母净利 862.28 亿（2024-12-31 00:00:00） | [E26] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（1998-12-31T00:00:00+08:00） | [E27] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（1999-12-31T00:00:00+08:00） | [E28] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（2000-12-31T00:00:00+08:00） | [E29] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（2001-06-30T00:00:00+08:00） | [E30] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（2001-12-31T00:00:00+08:00） | [E31] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（2002-03-31T00:00:00+08:00） | [E32] |\n\n上表数据口径以各证据卡字段为准，报告期可能不完全一致，使用时请核对。\n\n```chart\n{\"type\": \"line\", \"title\": \"归母净利润走势（亿元）\", \"x\": [\"2024-12-31\", \"2025-03-31\", \"2025-06-30\", \"2025-09-30\", \"2025-12-31\", \"2026-03-31\"], \"series\": [{\"name\": \"归母净利润\", \"data\": [862.28, 268.47, 454.03, 646.27, 823.2, 272.43]}], \"source_refs\": [\"E26\", \"E25\", \"E24\", \"E23\", \"E22\", \"E21\"]}\n```\n\n- 贵州茅台重大事项公告[E1]\n- 贵州茅台2025年年度权益分派实施公告[E2]\n- 贵州茅台关于职工董事选举结果的公告[E3]\n- 贵州茅台2025年度股东会决议公告[E4]\n- 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书[E5]\n- 贵州茅台第五届董事会2026年度第一次会议决议公告[E6]",
+      "verdict": "pass",
+      "issues": []
+    },
+    {
+      "title": "市场与行业背景",
+      "goal": "归纳相关新闻与行业动态（不作投资建议）",
+      "content": "本章围绕「归纳相关新闻与行业动态（不作投资建议）」整理公开信息。\n（风格偏好：「券商观点汇总」章节用 Markdown 表格呈现，不写长段落。）\n- 贵州茅台重大事项公告[E1]\n- 贵州茅台2025年年度权益分派实施公告[E2]\n- 贵州茅台关于职工董事选举结果的公告[E3]\n- 贵州茅台2025年度股东会决议公告[E4]\n- 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书[E5]\n- 贵州茅台第五届董事会2026年度第一次会议决议公告[E6]",
+      "verdict": "pass",
+      "issues": []
+    },
+    {
+      "title": "信息来源清单",
+      "goal": "系统自动生成",
+      "content": "以下列出报告正文引用的公开信息来源（非穷尽全部采集结果）：\n\n- [E1] announcement | 巨潮资讯网 | 2026-07-18T00:00:00+08:00 | 贵州茅台重大事项公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225431263&orgId=gssh0600519&announcementTime=2026-07-18\n- [E2] announcement | 巨潮资讯网 | 2026-06-22T00:00:00+08:00 | 贵州茅台2025年年度权益分派实施公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225379934&orgId=gssh0600519&announcementTime=2026-06-22\n- [E3] announcement | 巨潮资讯网 | 2026-06-12T00:00:00+08:00 | 贵州茅台关于职工董事选举结果的公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225366265&orgId=gssh0600519&announcementTime=2026-06-12\n- [E4] announcement | 巨潮资讯网 | 2026-06-12T00:00:00+08:00 | 贵州茅台2025年度股东会决议公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225366264&orgId=gssh0600519&announcementTime=2026-06-12\n- [E5] announcement | 巨潮资讯网 | 2026-06-12T00:00:00+08:00 | 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225366263&orgId=gssh0600519&announcementTime=2026-06-12\n- [E6] announcement | 巨潮资讯网 | 2026-06-12T00:00:00+08:00 | 贵州茅台第五届董事会2026年度第一次会议决议公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225366262&orgId=gssh0600519&announcementTime=2026-06-12\n- [E21] financial_report | 东方财富 | 2026-03-31T00:00:00+08:00 | 600519 利润表 2026-03-31 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E22] financial_report | 东方财富 | 2025-12-31T00:00:00+08:00 | 600519 利润表 2025-12-31 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E23] financial_report | 东方财富 | 2025-09-30T00:00:00+08:00 | 600519 利润表 2025-09-30 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E24] financial_report | 东方财富 | 2025-06-30T00:00:00+08:00 | 600519 利润表 2025-06-30 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E25] financial_report | 东方财富 | 2025-03-31T00:00:00+08:00 | 600519 利润表 2025-03-31 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E26] financial_report | 东方财富 | 2024-12-31T00:00:00+08:00 | 600519 利润表 2024-12-31 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E27] financial_report | 新浪财经 | 1998-12-31T00:00:00+08:00 | 600519.SH 财务指标 1998-12-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E28] financial_report | 新浪财经 | 1999-12-31T00:00:00+08:00 | 600519.SH 财务指标 1999-12-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E29] financial_report | 新浪财经 | 2000-12-31T00:00:00+08:00 | 600519.SH 财务指标 2000-12-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E30] financial_report | 新浪财经 | 2001-06-30T00:00:00+08:00 | 600519.SH 财务指标 2001-06-30 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E31] financial_report | 新浪财经 | 2001-12-31T00:00:00+08:00 | 600519.SH 财务指标 2001-12-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E32] financial_report | 新浪财经 | 2002-03-31T00:00:00+08:00 | 600519.SH 财务指标 2002-03-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml",
+      "verdict": "pass",
+      "system": true
+    },
+    {
+      "title": "风险与关注点",
+      "goal": "系统自动生成",
+      "content": "- 本报告仅整理公开信息，不构成任何投资建议或收益承诺。\n- 不同来源报告期、会计口径可能不一致；对比时请核对字段与期间。\n- 新闻与研报观点不等于事实；文中已尽量标注机构归属，但仍可能存在转述偏差。\n- 采集工具依赖第三方公开接口，可能存在延迟、缺失或临时不可用。",
+      "verdict": "pass",
+      "system": true
+    }
+  ],
+  "markdown": "# 贵州茅台信息整理摘要\n\n> 基于 67 条公开证据卡的信息整理（非投资建议）。\n\n*生成时间：2026-07-25 14:53:09 · 产品：成竹 Foresketch*\n\n> 本报告由 AI 系统基于公开信息自动整理生成，仅供信息参考与研究学习，不构成任何投资建议、证券推荐或收益承诺。文中涉及的券商评级、盈利预测均为相应机构观点。信息可能存在遗漏、延迟或错误，请以官方披露为准。投资有风险，决策需谨慎。\n\n## 信息要点\n\n本章围绕「梳理近期公开信息中的关键事实与变化」整理公开信息。\n（风格偏好：「券商观点汇总」章节用 Markdown 表格呈现，不写长段落。）\n- 贵州茅台重大事项公告[E1]\n- 贵州茅台2025年年度权益分派实施公告[E2]\n- 贵州茅台关于职工董事选举结果的公告[E3]\n- 贵州茅台2025年度股东会决议公告[E4]\n- 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书[E5]\n- 贵州茅台第五届董事会2026年度第一次会议决议公告[E6]\n\n## 财务表现\n\n本章围绕「汇总可得财务与经营指标，注明报告期，必要时输出 chart 数据块」整理公开信息。\n（风格偏好：「券商观点汇总」章节用 Markdown 表格呈现，不写长段落。）\n\n| 主体 | 指标摘录 | 来源 |\n| --- | --- | --- |\n| 600519 | 营收 547.03 亿 / 归母净利 272.43 亿（2026-03-31 00:00:00） | [E21] |\n| 600519 | 营收 1720.54 亿 / 归母净利 823.2 亿（2025-12-31 00:00:00） | [E22] |\n| 600519 | 营收 1309.04 亿 / 归母净利 646.27 亿（2025-09-30 00:00:00） | [E23] |\n| 600519 | 营收 910.94 亿 / 归母净利 454.03 亿（2025-06-30 00:00:00） | [E24] |\n| 600519 | 营收 514.43 亿 / 归母净利 268.47 亿（2025-03-31 00:00:00） | [E25] |\n| 600519 | 营收 1741.44 亿 / 归母净利 862.28 亿（2024-12-31 00:00:00） | [E26] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（1998-12-31T00:00:00+08:00） | [E27] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（1999-12-31T00:00:00+08:00） | [E28] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（2000-12-31T00:00:00+08:00） | [E29] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（2001-06-30T00:00:00+08:00） | [E30] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（2001-12-31T00:00:00+08:00） | [E31] |\n| 600519.SH | 营收 None 亿 / 归母净利 None 亿（2002-03-31T00:00:00+08:00） | [E32] |\n\n上表数据口径以各证据卡字段为准，报告期可能不完全一致，使用时请核对。\n\n```chart\n{\"type\": \"line\", \"title\": \"归母净利润走势（亿元）\", \"x\": [\"2024-12-31\", \"2025-03-31\", \"2025-06-30\", \"2025-09-30\", \"2025-12-31\", \"2026-03-31\"], \"series\": [{\"name\": \"归母净利润\", \"data\": [862.28, 268.47, 454.03, 646.27, 823.2, 272.43]}], \"source_refs\": [\"E26\", \"E25\", \"E24\", \"E23\", \"E22\", \"E21\"]}\n```\n\n- 贵州茅台重大事项公告[E1]\n- 贵州茅台2025年年度权益分派实施公告[E2]\n- 贵州茅台关于职工董事选举结果的公告[E3]\n- 贵州茅台2025年度股东会决议公告[E4]\n- 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书[E5]\n- 贵州茅台第五届董事会2026年度第一次会议决议公告[E6]\n\n## 市场与行业背景\n\n本章围绕「归纳相关新闻与行业动态（不作投资建议）」整理公开信息。\n（风格偏好：「券商观点汇总」章节用 Markdown 表格呈现，不写长段落。）\n- 贵州茅台重大事项公告[E1]\n- 贵州茅台2025年年度权益分派实施公告[E2]\n- 贵州茅台关于职工董事选举结果的公告[E3]\n- 贵州茅台2025年度股东会决议公告[E4]\n- 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书[E5]\n- 贵州茅台第五届董事会2026年度第一次会议决议公告[E6]\n\n## 信息来源清单\n\n以下列出报告正文引用的公开信息来源（非穷尽全部采集结果）：\n\n- [E1] announcement | 巨潮资讯网 | 2026-07-18T00:00:00+08:00 | 贵州茅台重大事项公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225431263&orgId=gssh0600519&announcementTime=2026-07-18\n- [E2] announcement | 巨潮资讯网 | 2026-06-22T00:00:00+08:00 | 贵州茅台2025年年度权益分派实施公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225379934&orgId=gssh0600519&announcementTime=2026-06-22\n- [E3] announcement | 巨潮资讯网 | 2026-06-12T00:00:00+08:00 | 贵州茅台关于职工董事选举结果的公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225366265&orgId=gssh0600519&announcementTime=2026-06-12\n- [E4] announcement | 巨潮资讯网 | 2026-06-12T00:00:00+08:00 | 贵州茅台2025年度股东会决议公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225366264&orgId=gssh0600519&announcementTime=2026-06-12\n- [E5] announcement | 巨潮资讯网 | 2026-06-12T00:00:00+08:00 | 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225366263&orgId=gssh0600519&announcementTime=2026-06-12\n- [E6] announcement | 巨潮资讯网 | 2026-06-12T00:00:00+08:00 | 贵州茅台第五届董事会2026年度第一次会议决议公告 | http://www.cninfo.com.cn/new/disclosure/detail?stockCode=600519&announcementId=1225366262&orgId=gssh0600519&announcementTime=2026-06-12\n- [E21] financial_report | 东方财富 | 2026-03-31T00:00:00+08:00 | 600519 利润表 2026-03-31 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E22] financial_report | 东方财富 | 2025-12-31T00:00:00+08:00 | 600519 利润表 2025-12-31 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E23] financial_report | 东方财富 | 2025-09-30T00:00:00+08:00 | 600519 利润表 2025-09-30 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E24] financial_report | 东方财富 | 2025-06-30T00:00:00+08:00 | 600519 利润表 2025-06-30 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E25] financial_report | 东方财富 | 2025-03-31T00:00:00+08:00 | 600519 利润表 2025-03-31 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E26] financial_report | 东方财富 | 2024-12-31T00:00:00+08:00 | 600519 利润表 2024-12-31 | https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code=SH600519&color=b#/cwfx\n- [E27] financial_report | 新浪财经 | 1998-12-31T00:00:00+08:00 | 600519.SH 财务指标 1998-12-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E28] financial_report | 新浪财经 | 1999-12-31T00:00:00+08:00 | 600519.SH 财务指标 1999-12-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E29] financial_report | 新浪财经 | 2000-12-31T00:00:00+08:00 | 600519.SH 财务指标 2000-12-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E30] financial_report | 新浪财经 | 2001-06-30T00:00:00+08:00 | 600519.SH 财务指标 2001-06-30 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E31] financial_report | 新浪财经 | 2001-12-31T00:00:00+08:00 | 600519.SH 财务指标 2001-12-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n- [E32] financial_report | 新浪财经 | 2002-03-31T00:00:00+08:00 | 600519.SH 财务指标 2002-03-31 | https://finance.sina.com.cn/realstock/company/sh600519/nc.shtml\n\n## 风险与关注点\n\n- 本报告仅整理公开信息，不构成任何投资建议或收益承诺。\n- 不同来源报告期、会计口径可能不一致；对比时请核对字段与期间。\n- 新闻与研报观点不等于事实；文中已尽量标注机构归属，但仍可能存在转述偏差。\n- 采集工具依赖第三方公开接口，可能存在延迟、缺失或临时不可用。\n",
+  "cited_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32
+  ],
+  "statistics": {
+    "total_cards": 67,
+    "by_type": {
+      "announcement": 20,
+      "financial_report": 26,
+      "industry_data": 3,
+      "news": 8,
+      "research_report": 10
+    },
+    "symbols": [
+      "600519",
+      "600519.SH"
+    ]
+  },
+  "disclaimer": "本报告由 AI 系统基于公开信息自动整理生成，仅供信息参考与研究学习，不构成任何投资建议、证券推荐或收益承诺。文中涉及的券商评级、盈利预测均为相应机构观点。信息可能存在遗漏、延迟或错误，请以官方披露为准。投资有风险，决策需谨慎。",
+  "created_at": "2026-07-25T14:53:09.027897",
+  "mode": "heuristic"
+}

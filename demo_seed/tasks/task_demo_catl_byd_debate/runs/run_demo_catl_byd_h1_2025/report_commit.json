@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "task_id": "task_demo_catl_byd_debate",
+  "run_id": "run_demo_catl_byd_h1_2025",
+  "transaction_id": "demo_report_run_demo_catl_byd_h1_2025",
+  "files": {
+    "report.json": {
+      "sha256": "5d50fce29053ab615443d708e1007038e5b4751898800a99f850f46652fbc06a",
+      "bytes": 13784
+    },
+    "report.md": {
+      "sha256": "1fea3d1f0b41a642b0ef27280a6422559b589ac83db14b8537f95d91969516c3",
+      "bytes": 3136
+    },
+    "full_report.md": {
+      "sha256": "1fea3d1f0b41a642b0ef27280a6422559b589ac83db14b8537f95d91969516c3",
+      "bytes": 3136
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # 06 · 后端 API 与数据模型规范
 
-> 接口形态刻意保持与 MiroFish 一致（task_id 轮询、agent-log 增量拉取 from_line 协议），使前端骨架可以最小改动复用。
+> 接口形态保持 MiroFish 的 task_id 轮询与 agent-log 增量协议，同时以不可变 `run_id` 标识每次执行。省略 run_id 时读 latest；显式 run 必须属于当前 task。
 > 统一响应包裹：`{"success": true, "data": {...}}` / `{"success": false, "error": "..."}`；所有接口 `/api` 前缀；Demo 阶段单用户，`user_id` 固定为 `"default"`（接口层已带出参数，便于后续多用户）。
 
 ---
@@ -12,31 +12,33 @@
 | 方法 | 路径 | 说明 |
 |------|------|------|
 | POST | `/create` | multipart：`requirement`(str, 必填)、`files[]`(可选 pdf/md/txt)。同步执行 Planner，返回 `{task_id, task_card, clarifications}`，状态 `awaiting_confirm` |
-| POST | `/{task_id}/confirm` | body=修改后的 task_card（可原样回传）。校验后启动后台管线，返回 `{task_id, status: "collecting"}` |
-| GET | `/{task_id}/status` | **前端 2s 轮询主接口**。返回 `{status, progress: 0-100, progress_detail: {stage, message, collectors: {announcement: {state, cards}, ...}, sections: [{title, state}]}, error}` |
+| POST | `/{task_id}/confirm` | body=修改后的 task_card（含 `analysis_mode`）。校验后创建不可变 run 并启动管线，返回 `{task_id, run_id, status: "collecting"}` |
+| GET | `/{task_id}/status` | **前端 2s 轮询主接口**。返回 status/progress/run_id；辩论时 `progress_detail.debate` 含回合、角色及 Claim/Challenge/撤回/硬失败计数 |
 | GET | `/{task_id}/agent-log?from_line=N` | 增量拉取 agent_log.jsonl（协议与 MiroFish `/api/report/{id}/agent-log` 相同：返回 `{lines: [...], next_line: M, finished: bool}`） |
-| GET | `/{task_id}/evidence?source_type=&page=` | 证据卡列表（分页 50），前端证据计数器与角标悬浮用 |
+| GET | `/{task_id}/evidence?run_id=&source_type=` | 指定 run 的证据卡与 E 显示映射，前端证据计数器与角标悬浮用 |
+| GET | `/{task_id}/runs` | 历史运行列表，含 TaskCard、analysis_mode、状态、成本/时长及 is_current |
+| GET | `/{task_id}/debate?run_id=` | Claim、Challenge、Audit、Verdict 与安全进度元数据；不返回 chain-of-thought |
 | GET | `/{task_id}` | 任务全量元数据（task.json 内容） |
 | GET | `/list?limit=20` | 历史任务列表（对应 MiroFish `/api/simulation/history`） |
 | DELETE | `/{task_id}` | 删除任务目录与图谱 group（调 graphiti 删 group_id） |
-| GET | `/{task_id}/graph` | 图谱可视化数据 `{nodes: [{id, name, type, summary}], edges: [{source, target, name, fact, valid, created_at}]}`（GraphPanel 直接消费，格式对齐 MiroFish `/api/graph/data`） |
+| GET | `/{task_id}/graph?run_id=` | 指定 run 的图谱可视化数据；省略 run_id 读 latest |
 
 ### 1.2 报告蓝图 `/api/report`（api/report.py）
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | `/{task_id}` | `{title, outline, sections: [{index, title, content_md, review: {verdict, issues_count}}], sources: [EvidenceCard...], integrity_notes, disclaimer}` |
-| GET | `/{task_id}/markdown` | 纯 markdown 全文（导出用） |
-| POST | `/chat` | `{task_id, message, chat_history: [{role, content}]}` → `{response, tool_calls: [{name, params}], correction_detected: bool}`（同步，超时 120s） |
-| GET | `/{task_id}/review-log` | 审校记录（演示"合规拦截"特写用） |
+| GET | `/{task_id}?run_id=` | 指定 run 的报告、sources、analysis_mode 与 debate_status；省略时 latest |
+| GET | `/{task_id}/markdown?run_id=` | 指定 run 的纯 Markdown（chart 自动降级表格） |
+| POST | `/chat` | `{task_id, run_id?, message, chat_history}` → 安全回复；只读取该 run 的报告与证据 |
+| GET | `/{task_id}/review-log?run_id=` | 指定 run 的审校记录 |
 
 ### 1.3 反馈蓝图 `/api/feedback`（api/feedback.py）
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| POST | `/section` | `{task_id, section_index, vote: "up"|"down", comment?: str}` → 写 feedback 表 → 异步触发 Reflection |
-| POST | `/report` | `{task_id, stars: 1-5, comment?: str}` |
-| GET | `/{task_id}` | 该任务已有反馈（前端回显） |
+| POST | `/section` | `{task_id, run_id?, section_index, vote, comment?}` → 反馈绑定解析后的 run 并触发 Reflection |
+| POST | `/report` | `{task_id, run_id?, stars: 1-5, comment?}` |
+| GET | `/{task_id}?run_id=` | 指定 run 的反馈（前端回显） |
 
 ### 1.4 记忆蓝图 `/api/memory`（api/memory.py）
 
@@ -72,7 +74,7 @@
 ```sql
 -- 任务运行记录（历史学习 L3 的原始数据）
 CREATE TABLE task_run (
-  run_id TEXT PRIMARY KEY,          -- = task_id，追踪重跑时为 {task_id}_r{n}
+  run_id TEXT PRIMARY KEY,          -- 每次 confirm/rerun 生成，不复用 task_id
   task_id TEXT NOT NULL,
   user_id TEXT NOT NULL DEFAULT 'default',
   task_card_json TEXT NOT NULL,
@@ -83,6 +85,24 @@ CREATE TABLE task_run (
   stage_timings_json TEXT,          -- {"collecting": 95.2, "analyzing": 210.4, ...}
   collect_failures_json TEXT,       -- [{"agent": "news", "error": "..."}]
   reflected INTEGER DEFAULT 0       -- 反思 Agent 是否已处理
+);
+
+CREATE TABLE debate_run (
+  run_id TEXT PRIMARY KEY, task_id TEXT NOT NULL, status TEXT NOT NULL,
+  current_round INTEGER DEFAULT 0, current_role TEXT,
+  claim_count INTEGER DEFAULT 0, challenge_count INTEGER DEFAULT 0,
+  withdrawn_count INTEGER DEFAULT 0, audit_failure_count INTEGER DEFAULT 0,
+  verdict_json TEXT, error TEXT, started_at TEXT, finished_at TEXT
+);
+
+CREATE TABLE llm_call_log (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, run_id TEXT,
+  provider TEXT NOT NULL, model TEXT NOT NULL, agent TEXT, finish_reason TEXT,
+  prompt_tokens INTEGER DEFAULT 0, completion_tokens INTEGER DEFAULT 0,
+  total_tokens INTEGER DEFAULT 0, cost_cny REAL DEFAULT 0,
+  request_id TEXT, latency_ms INTEGER, retry_count INTEGER DEFAULT 0,
+  ok INTEGER DEFAULT 1, error TEXT,
+  created_at TEXT DEFAULT (datetime('now','localtime'))
 );
 
 CREATE TABLE tool_call_log (
@@ -151,14 +171,21 @@ backend/uploads/
   tasks/{task_id}/
     task.json                 # ResearchTask 状态机主档（仿 project.json）
     files/                    # 用户上传原始文件
-    extracted_text.txt
-    evidence/{agent}.jsonl    # 各采集 Agent 的 EvidenceCard
-    agent_log.jsonl           # 全 Agent 过程日志（前端增量拉取）
-    outline.json
-    sections/section_{XX}.md
-    review_log.jsonl
-    full_report.md
-    progress.json             # TaskManager 快照（进程重启后前端可读到最后进度）
+    runs/{run_id}/
+      run.json                # 冻结 TaskCard 与创建时间
+      evidence/{agent}.jsonl
+      evidence_index.json     # evidence_uid ↔ E1…En
+      normalized_facts.jsonl
+      debate/claims.jsonl
+      debate/challenges.jsonl
+      debate/audit.jsonl
+      debate/verdict.json
+      sections/
+      review_log.jsonl
+      report.json
+      report.md
+    report.json               # latest 兼容副本；旧任务仍从根目录读取
+    report.md
   subscriptions/{sub_id}/briefs/{date}.md
   cache/announcements/{md5}.txt
   chengzhu.db
@@ -166,8 +193,8 @@ backend/uploads/
 
 ## 4. 关键协议细节（联调必读）
 
-1. **状态轮询节奏**：前端 status 2s、agent-log 2s、graph 15s（任务运行页）；completed/failed 后停止全部轮询。
-2. **agent_log 行格式**（沿用 MiroFish 字段 + 扩展 agent 字段）：`{"timestamp", "elapsed_seconds", "task_id", "agent": "collector_news", "action": "tool_call", "stage": "collecting", "section_title": null, "details": {...}}`。前端按 agent 字段分泳道渲染。
-3. **角标映射**：EvidenceCard 全局自增 id（任务内），报告 md 中 `[E23]` 由前端正则替换为悬浮组件，数据取自 `/evidence` 接口的 id 索引；`/{task_id}` 报告接口的 sources 数组即按 id 排序的全量卡片。
+1. **状态轮询节奏**：前端 status/agent-log/debate 2s、graph 15s；completed/completed_partial/failed 后停止。所有业务读取保留当前 run_id。
+2. **agent_log 行格式**：沿用 MiroFish 字段并扩展 agent/run_id；details 只含工具摘要或最终业务产物，不含 Prompt、图片 Base64 或模型原始思维链。
+3. **角标映射**：Claim 永久引用 evidence_uid；报告中的 `[E23]` 由本 run 的 evidence_index 映射，跨 run 不保证 E 编号相同。
 4. **进程重启恢复**：GET status 时 TaskManager 无此 task → 读 task.json + progress.json 返回最后已知状态；处于中间态（collecting/analyzing 等）的任务标记为 failed（Demo 不做断点续跑，08 文档已列入迭代项）。
-5. **超时约定**：Planner 60s、单采集 Agent 180s、单章节生成 300s、审校 120s、chat 120s；全任务硬上限 20 分钟（超时置 failed，写明超时阶段）。
+5. **超时约定**：LLM connect/read 为 10/180s、传输最多重试一次；摘要/对比全任务硬上限 8 分钟。辩论失败时同快照降级 direct 并披露；没有报告则 failed，不能 completed_partial。

@@ -17,6 +17,18 @@ def is_gpt5_family(model: Optional[str]) -> bool:
     return model.strip().lower().startswith("gpt-5")
 
 
+def is_deepseek_provider(
+    model: Optional[str],
+    provider: Optional[str] = None,
+) -> bool:
+    """Identify DeepSeek without coupling callers to one endpoint spelling."""
+
+    return (
+        (provider or "").strip().lower() == "deepseek"
+        or (model or "").strip().lower().startswith("deepseek-")
+    )
+
+
 def create_chat_completion(
     client: Any,
     *,
@@ -25,6 +37,9 @@ def create_chat_completion(
     temperature: Optional[float] = None,
     max_tokens: Optional[int] = None,
     response_format: Optional[Dict[str, Any]] = None,
+    provider: Optional[str] = None,
+    thinking: Optional[bool] = None,
+    reasoning_effort: Optional[str] = None,
 ) -> Any:
     """
     Create a chat completion with model-specific request parameters.
@@ -32,7 +47,9 @@ def create_chat_completion(
     Compatibility strategy:
     - For GPT-5 family, avoid sending temperature by default.
     - For token limit, use `max_completion_tokens` on GPT-5, `max_tokens` otherwise.
-    - Preserve the legacy request shape for every non-GPT-5 model/provider.
+    - DeepSeek V4 receives an explicit thinking toggle. Thinking requests do
+      not send temperature because the provider ignores sampling parameters.
+    - Preserve the legacy request shape for every other model/provider.
     - Propagate provider errors unchanged instead of guessing from message text.
     """
     kwargs: Dict[str, Any] = {
@@ -44,8 +61,10 @@ def create_chat_completion(
         kwargs["response_format"] = response_format
 
     gpt5_family = is_gpt5_family(model)
+    deepseek = is_deepseek_provider(model, provider)
+    thinking_enabled = bool(thinking) if thinking is not None else False
 
-    if temperature is not None and not gpt5_family:
+    if temperature is not None and not gpt5_family and not (deepseek and thinking_enabled):
         kwargs["temperature"] = temperature
 
     if max_tokens is not None:
@@ -53,6 +72,13 @@ def create_chat_completion(
             kwargs["max_completion_tokens"] = max_tokens
         else:
             kwargs["max_tokens"] = max_tokens
+
+    if deepseek:
+        kwargs["extra_body"] = {
+            "thinking": {"type": "enabled" if thinking_enabled else "disabled"}
+        }
+        if thinking_enabled:
+            kwargs["reasoning_effort"] = reasoning_effort or "high"
 
     return client.chat.completions.create(**kwargs)
 

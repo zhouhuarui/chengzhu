@@ -1,0 +1,32 @@
+{
+  "title": "贵州茅台信息整理摘要",
+  "summary": "基于 67 条公开证据卡的信息整理（非投资建议）。",
+  "sections": [
+    {
+      "title": "信息要点",
+      "goal": "梳理近期公开信息中的关键事实与变化"
+    },
+    {
+      "title": "财务表现",
+      "goal": "汇总可得财务与经营指标，注明报告期，必要时输出 chart 数据块"
+    },
+    {
+      "title": "市场与行业背景",
+      "goal": "归纳相关新闻与行业动态（不作投资建议）"
+    }
+  ],
+  "statistics": {
+    "total_cards": 67,
+    "by_type": {
+      "announcement": 20,
+      "financial_report": 26,
+      "industry_data": 3,
+      "news": 8,
+      "research_report": 10
+    },
+    "symbols": [
+      "600519",
+      "600519.SH"
+    ]
+  }
+}

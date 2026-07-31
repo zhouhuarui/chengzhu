@@ -8,7 +8,7 @@
 
 ## 一句话定位
 
-成竹 是一个面向 A 股投研场景的多 Agent 信息整理系统：用户用自然语言提出投研需求（如"帮我整理宁德时代最近一个季度的公告、财报变化和市场研报观点，并持续追踪"），系统自动编排多个专家 Agent 并行采集公告、财报、新闻、研报、行业数据，注入时序知识图谱，生成**可溯源**的摘要 / 对比 / 追踪报告，并通过**历史学习机制**（成功/失败/用户评价记录 → 经验规则库）让系统越用越懂用户。
+成竹 是一个面向 A 股投研场景的多 Agent 信息整理系统：用户用自然语言提出需求，系统并行采集公告、财报、新闻、研报和行业数据，生成**可溯源**的摘要 / 对比 / 追踪报告。摘要与对比任务还可选择“证据化基本面辩论”，由两个中性研究视角交叉质询、确定性程序做证据与财务口径硬审计，再由 Judge 综合共识与分歧；每次执行以不可变 `run_id` 隔离，支持 direct/debate A/B。
 
 **本系统只做信息整理与呈现，不输出任何确定性投资建议。**（详见 09 合规文档）
 
@@ -49,15 +49,18 @@ MiroFish 的管线是：**种子材料 → Zep 图谱构建 → 生成仿真环�
 | 经验规则 Playbook | 从历史任务成败与用户反馈中归纳出的规则条目，注入 Agent Prompt |
 | 交付物 Deliverable | 摘要报告 / 对比报告 / 追踪简报 三种之一 |
 | 追踪订阅 TrackingSub | 用户对某任务卡开启的定时重跑订阅（如每日盯盘简报） |
+| 运行 Run | 一次确认后的不可变执行单元；拥有独立 TaskCard、证据、标准化事实、辩论记录和报告 |
+| ClaimCard | 辩论中的版本化论断，永久引用 evidence_uid/fact_uid，可被挑战、修订、撤回或裁决 |
+| EvidenceAuditor | 不使用 LLM 的硬审计器，检查引用、数字、期间、口径、时点和合规；Judge 无权覆盖失败 |
 
 ## 技术栈（决策已定，执行 Agent 不得更换）
 
 | 层 | 选型 | 理由 |
 |----|------|------|
-| LLM | 阿里百炼 `qwen-plus`（编排/采集/仿真角色）+ `qwen-max`（分析/审校），OpenAI 兼容接口 | 大陆直连、MiroFish 官方推荐、成本可控 |
-| 多模态 | 阿里百炼 `qwen-vl-plus`（公告扫描件/图表页视觉理解） | 输入侧多模态能力（04§3.11） |
+| 文本 LLM | DeepSeek `deepseek-v4-flash`（普通文本）+ `deepseek-v4-pro`（Reviewer/辩论/Judge），OpenAI 兼容接口 | 文本角色统一；辩论/Judge 显式开启 thinking，其余显式关闭 |
+| 多模态 | 阿里百炼 `qwen3-vl-plus`（公告扫描件/图表候选页） | 与文本 Key 隔离；失败保留本地解析，不接管文本 |
 | 仿真引擎 | OASIS（camel-ai，pip 本地运行） | 继承 MiroFish 推演能力，LLM 走百炼，大陆无障碍 |
-| Embedding | 阿里百炼 `text-embedding-v4` | 与 LLM 同平台 |
+| Embedding | 阿里百炼 `text-embedding-v4` | 图谱向量化独立能力，与 DeepSeek 文本凭证隔离 |
 | 图谱记忆 | 自托管 Graphiti（graphiti-core）+ Neo4j 5.26+（**本地开发用 Homebrew 原生安装，不依赖 Docker**） | 替代境外 Zep Cloud，数据不出境 |
 | 联网搜索 | 博查 Bocha Web Search API | 大陆合规的谷歌/Bing 替代，¥0.036/次 |
 | 金融数据 | akshare（东方财富/巨潮/新浪等公开数据封装） | 免费、无 Key、大陆直连 |
@@ -69,12 +72,23 @@ MiroFish 的管线是：**种子材料 → Zep 图谱构建 → 生成仿真环�
 ## 环境变量总表（.env）
 
 ```env
-# LLM（阿里百炼，OpenAI 兼容模式）
-LLM_API_KEY=sk-xxx
-LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-LLM_MODEL_NAME=qwen-plus
-LLM_MODEL_NAME_ANALYSIS=qwen-max
-LLM_VL_MODEL_NAME=qwen-vl-plus
+# 文本 LLM（DeepSeek，OpenAI 兼容模式）
+TEXT_LLM_PROVIDER=deepseek
+TEXT_LLM_API_KEY=
+TEXT_LLM_BASE_URL=https://api.deepseek.com
+TEXT_LLM_FAST_MODEL=deepseek-v4-flash
+TEXT_LLM_REASONING_MODEL=deepseek-v4-pro
+
+# 视觉 LLM（阿里百炼，独立凭证）
+VISION_LLM_PROVIDER=dashscope
+VISION_LLM_API_KEY=
+VISION_LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+VISION_LLM_MODEL=qwen3-vl-plus
+
+LLM_CONNECT_TIMEOUT_SECONDS=10
+LLM_READ_TIMEOUT_SECONDS=180
+LLM_MAX_RETRIES=1
+VISION_MAX_PAGES=8
 EMBEDDING_MODEL_NAME=text-embedding-v4
 
 # 图谱（自托管 Graphiti + Neo4j）
@@ -83,7 +97,7 @@ NEO4J_USER=neo4j
 NEO4J_PASSWORD=chengzhu2026
 
 # 联网搜索（博查）
-BOCHA_API_KEY=sk-xxx
+BOCHA_API_KEY=
 
 # 可选：Tushare（如需更稳的财务数据，免费注册 token）
 TUSHARE_TOKEN=
@@ -101,7 +115,7 @@ SCENARIO_AGENT_SCALE=30         # 每情景仿真角色数
 SCENARIO_MAX_ROUNDS=10          # 每情景推演轮数
 ```
 
-> **API Key 准备时机**：文档与骨架开发阶段（08 文档 Phase 0）不需要任何 Key；博查 Key 在 Phase 1（数据工具）需要，百炼 Key 在 Phase 2（图谱）起需要。`.env.example` 先占位即可。
+> **API Key 与无 Key 演示**：`TEXT_LLM_API_KEY`、`VISION_LLM_API_KEY` 和 `BOCHA_API_KEY` 都可留空，使用 `scripts/load_demo.py --force` 回放 `demo_seed` 已包含的产物。实时文本生成需要 DeepSeek Key；扫描件/图表候选页增强需要独立百炼 Key。旧 `LLM_*` 名称仅作为兼容回退。
 
 ## 快速导航：如果你是执行开发的 Agent
 

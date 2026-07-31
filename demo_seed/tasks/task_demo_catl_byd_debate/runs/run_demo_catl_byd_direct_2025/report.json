@@ -1,0 +1,80 @@
+{
+  "task_id": "task_demo_catl_byd_debate",
+  "run_id": "run_demo_catl_byd_direct_2025",
+  "title": "宁德时代 vs 比亚迪：直接基本面整理（合成演示）",
+  "summary": "Keyless A/B 演示：直接分析与辩论分析使用同一冻结证据快照。",
+  "sections": [
+    {
+      "title": "方法与演示声明",
+      "goal": "说明演示数据边界",
+      "content": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。\n\n本 run 使用直接分析，与证据辩论 run 复用完全相同的冻结证据和 FinancialFact。",
+      "verdict": "pass",
+      "system": true
+    },
+    {
+      "title": "同口径财务事实",
+      "goal": "直接呈现确定性标准化结果",
+      "content": "- 300750在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的营业总收入为1788.86亿元；002594在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的营业总收入为3712.81亿元。[E1][E2]",
+      "verdict": "pass",
+      "deterministic_financial": true
+    },
+    {
+      "title": "口径限制",
+      "goal": "阻断错期比较",
+      "content": "- H1 与 Q1 不属于同一报告期，本 run 不生成对比或图表。[E1][E3]",
+      "verdict": "pass",
+      "deterministic_financial": true
+    },
+    {
+      "title": "信息来源清单",
+      "goal": "列出本演示冻结证据",
+      "content": "以下均为模拟公开披露结构的合成夹具：\n\n- [E1] financial_report | 比赛演示：公开披露结构合成夹具 | 2025-08-30T09:00:00+08:00 | 【合成夹具】宁德时代 2025 年半年度财务摘要 | 合成记录：demo:ev_demo_catl_h1_2025\n- [E2] financial_report | 比赛演示：公开披露结构合成夹具 | 2025-08-30T09:05:00+08:00 | 【合成夹具】比亚迪 2025 年半年度财务摘要 | 合成记录：demo:ev_demo_byd_h1_2025\n- [E3] financial_report | 比赛演示：公开披露结构合成夹具 | 2025-04-30T09:00:00+08:00 | 【合成夹具】比亚迪 2025 年第一季度财务摘要 | 合成记录：demo:ev_demo_byd_q1_2025\n- [E4] announcement | 比赛演示：公开披露结构合成夹具 | 2025-07-15T10:00:00+08:00 | 【合成夹具】宁德时代经营事项演示摘要 | 合成记录：demo:ev_demo_catl_operations\n- [E5] announcement | 比赛演示：公开披露结构合成夹具 | 2025-07-16T10:00:00+08:00 | 【合成夹具】比亚迪经营事项演示摘要 | 合成记录：demo:ev_demo_byd_operations",
+      "verdict": "pass",
+      "system": true
+    },
+    {
+      "title": "数据完整性说明",
+      "goal": "声明数据来源边界",
+      "content": "- 本演示只包含合成夹具，不包含采购、授权或真实公司披露数据。",
+      "verdict": "pass",
+      "system": true
+    },
+    {
+      "title": "风险与关注点",
+      "goal": "系统提示",
+      "content": "- 本报告仅用于产品功能演示，不构成任何投资建议或收益承诺。\n- 所有公司名称与证券代码仅用于界面辨识，合成数值不可用于现实判断。\n- 只有期间、累计口径、币种、单位与合并范围一致的数据才可比较。",
+      "verdict": "pass",
+      "system": true
+    }
+  ],
+  "markdown": "# 宁德时代 vs 比亚迪：直接基本面整理（合成演示）\n\n> Keyless A/B 演示：直接分析与辩论分析使用同一冻结证据快照。\n\n*生成时间：2026-07-31 09:59:48 · 产品：成竹 Foresketch · 模式：离线回放*\n\n> 本报告使用合成夹具，仅供产品功能演示，不构成任何投资建议、证券推荐或收益承诺。\n\n## 方法与演示声明\n\n比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。\n\n本 run 使用直接分析，与证据辩论 run 复用完全相同的冻结证据和 FinancialFact。\n\n## 同口径财务事实\n\n- 300750在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的营业总收入为1788.86亿元；002594在2025-06-30（H1，CNY/亿元，cumulative，consolidated）的营业总收入为3712.81亿元。[E1][E2]\n\n## 口径限制\n\n- H1 与 Q1 不属于同一报告期，本 run 不生成对比或图表。[E1][E3]\n\n## 信息来源清单\n\n以下均为模拟公开披露结构的合成夹具：\n\n- [E1] financial_report | 比赛演示：公开披露结构合成夹具 | 2025-08-30T09:00:00+08:00 | 【合成夹具】宁德时代 2025 年半年度财务摘要 | 合成记录：demo:ev_demo_catl_h1_2025\n- [E2] financial_report | 比赛演示：公开披露结构合成夹具 | 2025-08-30T09:05:00+08:00 | 【合成夹具】比亚迪 2025 年半年度财务摘要 | 合成记录：demo:ev_demo_byd_h1_2025\n- [E3] financial_report | 比赛演示：公开披露结构合成夹具 | 2025-04-30T09:00:00+08:00 | 【合成夹具】比亚迪 2025 年第一季度财务摘要 | 合成记录：demo:ev_demo_byd_q1_2025\n- [E4] announcement | 比赛演示：公开披露结构合成夹具 | 2025-07-15T10:00:00+08:00 | 【合成夹具】宁德时代经营事项演示摘要 | 合成记录：demo:ev_demo_catl_operations\n- [E5] announcement | 比赛演示：公开披露结构合成夹具 | 2025-07-16T10:00:00+08:00 | 【合成夹具】比亚迪经营事项演示摘要 | 合成记录：demo:ev_demo_byd_operations\n\n## 数据完整性说明\n\n- 本演示只包含合成夹具，不包含采购、授权或真实公司披露数据。\n\n## 风险与关注点\n\n- 本报告仅用于产品功能演示，不构成任何投资建议或收益承诺。\n- 所有公司名称与证券代码仅用于界面辨识，合成数值不可用于现实判断。\n- 只有期间、累计口径、币种、单位与合并范围一致的数据才可比较。\n",
+  "cited_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "statistics": {
+    "total_cards": 5,
+    "by_type": {
+      "financial_report": 3,
+      "announcement": 2
+    },
+    "symbols": [
+      "002594",
+      "300750"
+    ],
+    "run_id": "run_demo_catl_byd_h1_2025"
+  },
+  "disclaimer": "本报告使用合成夹具，仅供产品功能演示，不构成任何投资建议、证券推荐或收益承诺。",
+  "created_at": "2026-07-31T09:59:48+08:00",
+  "mode": "demo_replay_direct",
+  "analysis_mode": "direct",
+  "debate_status": null,
+  "integrity_notes": [
+    "本演示只使用明确标注的合成夹具。"
+  ],
+  "demo_fixture": true,
+  "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。"
+}

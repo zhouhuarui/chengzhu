@@ -1,0 +1,22 @@
+{
+  "nodes": [
+    {
+      "id": "company_300750",
+      "type": "Company",
+      "label": "宁德时代（演示）"
+    },
+    {
+      "id": "company_002594",
+      "type": "Company",
+      "label": "比亚迪（演示）"
+    }
+  ],
+  "edges": [],
+  "statistics": {
+    "nodes": 2,
+    "edges": 0,
+    "episodes": 5,
+    "backend": "demo_fixture"
+  },
+  "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。"
+}

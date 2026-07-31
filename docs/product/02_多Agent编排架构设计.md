@@ -27,17 +27,21 @@ MiroFish 后端是 `Flask API + 内存 TaskManager + 后台线程/子进程 + �
 ```mermaid
 flowchart TB
   subgraph UI[前端 Vue3]
-    U1[任务创建页] --> U2[任务运行页<br/>Agent动作流水] --> U3[报告页<br/>反馈+对话] --> U4[追踪中心/我的偏好]
+    U1[任务创建页] --> U2[任务运行页<br/>Agent流水/辩论面板] --> U3[报告页<br/>run选择+反馈+对话] --> U4[追踪中心/我的偏好]
   end
 
   subgraph ORCH[编排层 Orchestrator（Flask + 后台线程 + TaskManager）]
     P[① Planner Agent<br/>需求→任务卡] --> C0[② 采集编排器<br/>ThreadPool 并行派发]
     C0 --> CA[公告Agent] & CB[财报Agent] & CC[新闻Agent] & CD[研报Agent] & CE[行业Agent]
     CA & CB & CC & CD & CE --> G[③ 图谱摄入服务<br/>EvidenceCard→episode]
-    G --> AN[④ 分析Agent<br/>摘要/对比/追踪 三选一<br/>规划大纲+章节ReAct]
-    AN --> RV[⑤ 审校Agent<br/>引用核对+合规拦截]
-    RV --> AS[⑥ 报告装配<br/>ReportManager]
-    AS --> CH[⑦ 对话Agent]
+    G --> FS[④ 冻结证据快照<br/>evidence_uid + E映射]
+    FS --> FN[⑤ FinancialFact标准化<br/>期间/口径/币种/范围]
+    FN --> AN[⑥ Analyst<br/>direct或裁决后表达]
+    FN --> QA[稳健与质量Agent] & GA[成长与变化Agent]
+    QA & GA --> AU[EvidenceAuditor<br/>确定性硬检查] --> JD[Judge<br/>仅综合审计通过Claim] --> AN
+    AN --> RV[⑦ Reviewer<br/>引用核对+合规拦截]
+    RV --> AS[⑧ 报告装配<br/>ReportManager]
+    AS --> CH[⑨ 对话Agent]
   end
 
   subgraph MEM[记忆与学习层]
@@ -52,10 +56,17 @@ flowchart TB
     D1[巨潮公告] & D2[东财财报/研报/新闻] & D3[财联社快讯] & D4[akshare行业宏观] & D5[博查搜索]
   end
 
+  subgraph MODEL[模型服务白名单]
+    DS[DeepSeek V4<br/>全部文本角色]
+    QV[百炼 qwen3-vl-plus<br/>候选图片页]
+  end
+
   CA & CB & CC & CD & CE --> EXT
   G --> L1
   AN & CH --> L1
   P & AN -.读偏好/规则.-> L2 & L3
+  P & QA & GA & JD & AN & RV & CH --> DS
+  CB -.扫描件/图表候选页.-> QV
   U3 -.章节反馈.-> RF --> L3
   RF -.语义偏好.-> L2
   TS --> C0
@@ -66,29 +77,34 @@ flowchart TB
 | # | 阶段 | 执行体 | 同步/异步 | 输入 | 输出 | MiroFish 对应物 |
 |---|------|--------|----------|------|------|----------------|
 | 0 | 需求解析 | Planner Agent（单轮 chat_json + 记忆注入） | 同步（<10s） | 自然语言需求、可选上传文件、用户记忆 | TaskCard（草案） | OntologyGenerator 的同步生成模式 |
-| 0b | 任务卡确认 | 用户 | 人机交互 | TaskCard 草案 | TaskCard（确认版） | **新增**（MiroFish 无确认环节） |
-| 1 | 并行采集 | 采集编排器 + 5 类采集 Agent | 异步线程，Task 轮询 | TaskCard | EvidenceCard 集合（落盘 JSONL） | 替换 OASIS Prepare+仿真 |
-| 2 | 图谱摄入 | GraphIngest 服务（非 LLM Agent） | 异步（与采集流水线化：每个 Agent 完成即入图） | EvidenceCards | ResearchGraph 增量 | GraphBuilderService（Zep Batch → Graphiti episodes） |
-| 3 | 分析生成 | 分析 Agent（摘要/对比/追踪，按 TaskCard.deliverable 选一） | 异步线程，章节级进度 | ResearchGraph + EvidenceCards + 大纲 | 章节 Markdown（带引用角标） | ReportAgent 规划+ReAct 骨架 |
-| 4 | 审校 | Reviewer Agent | 异步（分析每完成一章即审一章，流水线） | 章节草稿 + 证据卡索引 | 审定章节 + 审校记录 | **新增** |
-| 5 | 装配交付 | ReportAssembler | 异步收尾 | 审定章节 | full_report.md + 引用清单 + 免责声明 | ReportManager.assemble_full_report |
-| 6 | 对话追问 | Chat Agent（简化 ReAct，最多 2 轮工具） | 同步请求-响应 | 用户消息 + 历史 | 回复 + 工具调用记录 | ReportAgent.chat |
-| 7 | 反馈学习 | Reflection Agent | 事件触发 + 每日定时 | feedback + task_run + agent_log | Playbook 候选规则 + L2 偏好 | **新增** |
-| 8 | 追踪重跑 | TrackingScheduler | 定时（APScheduler cron） | TrackingSub + 水位线 | 增量简报（走 1→5 缩减管线） | **新增** |
-| 9 | 情景推演（可选支线） | ScenarioAgent + OASIS 仿真 + 推演报告 Agent | 异步（15-25 分钟重操作，独立轮询） | 研究图谱 + 用户假设 | 情景观察报告 + 可采访的模拟世界 | OASIS 全链路**移植重定向**（详见 10 文档） |
+| 0b | 任务卡确认 | 用户 | 人机交互 | TaskCard 草案 + `analysis_mode` | 冻结 TaskCard + 新 `run_id` | **新增**（MiroFish 无确认环节） |
+| 1 | 并行采集 | 采集编排器 + 5 类采集 Agent | 异步线程，Task 轮询 | 本次 run 的 TaskCard | EvidenceCard 集合 | 替换 OASIS Prepare+仿真 |
+| 2 | 图谱摄入与冻结 | GraphIngest + EvidenceStore（非 LLM） | 异步/原子发布 | 本次 EvidenceCards | ResearchGraph + 不可变证据索引 | GraphBuilderService + **新增快照** |
+| 3 | 财务标准化 | FinancialNormalizer（非 LLM） | 确定性同步 | 财务证据 | `FinancialFact` JSONL + 不可比原因 | **新增** |
+| 4a | 直接分析 | Analyst | 异步线程 | 冻结证据 + 标准化事实 | direct 章节草稿 | ReportAgent 规划+ReAct 骨架 |
+| 4b | 两轮证据辩论 | 两名 Debate Agent | 固定四次批量 LLM 调用 | 最多四维度 + 冻结证据 | ClaimCard + Challenge | **新增**；summary/compare 可选 |
+| 5 | 硬审计与裁决 | EvidenceAuditor + Judge | 确定性检查后一次综合 | Claim/Challenge/FinancialFact | `DebateVerdict` | **新增** |
+| 6 | 报告表达与审校 | Analyst + Reviewer | 异步 | direct 草稿或 Verdict | 审定章节 + 审校记录 | ReportAgent + **新增 Reviewer** |
+| 7 | 装配交付 | ReportAssembler | 异步收尾 | 审定章节 | report.json/Markdown + 引用/免责声明 | ReportManager.assemble_full_report |
+| 8 | 对话/反馈/追踪 | Chat、Reflection、TrackingScheduler | 请求/事件/定时 | 指定 `run_id` 的报告与证据 | 回复、规则、增量简报 | 继承并扩展 |
+| 9 | 情景推演（可选支线） | ScenarioAgent + OASIS 仿真 + 推演报告 Agent | 异步（15-25 分钟，独立轮询） | 研究图谱 + 用户假设 | 情景观察报告 + 可采访模拟世界 | OASIS 全链路移植（10 文档） |
 
 ### 3.1 任务状态机（ResearchTask，持久化 JSON，模式沿用 MiroFish Project/Task 双层）
 
 ```
 created → parsing → awaiting_confirm → collecting → ingesting
-        → analyzing → reviewing → assembling → completed
+        → normalizing
+        ├─ direct ─────────────────────→ analyzing
+        └─ evidence_debate → debating → adjudicating → analyzing
+        → reviewing → assembling → completed
 任意阶段 → failed（含 error 信息）
-collecting 允许部分失败 → 后续正常走完 → completed_partial（报告披露缺失项）
+已成功生成可读报告但部分能力降级 → completed_partial（报告披露缺失项）
 ```
 
-- **持久层**：`uploads/tasks/{task_id}/task.json`（对应 MiroFish `project.json`），进程重启可恢复终态；
+- **持久层**：任务主档为 `uploads/tasks/{task_id}/task.json`；每次执行写 `runs/{run_id}/`，确认后的 TaskCard、证据与报告不可被后续 run 覆盖；
 - **进度层**：进程内 `TaskManager` 单例（直接复用 MiroFish `app/models/task.py`：pending/processing/completed/failed + progress 0-100 + progress_detail），前端 2s 轮询；
-- **进度权重分配**：parsing 0-5%，collecting 5-45%（5 个 Agent 各占 8%，完成即累加），ingesting 45-60%，analyzing 60-88%（按章节均分），reviewing 88-96%，assembling 96-100%。
+- **辩论进度**：`progress_detail.debate` 只包含回合、角色和 Claim/Challenge/撤回/硬失败计数，不包含 chain-of-thought；
+- **终态约束**：没有 `report.json` 时不得标记 `completed_partial`；DeepSeek 辩论失败时，必须用同一冻结快照降级 direct 并在报告披露“辩论未完成”。
 
 ### 3.2 并行采集编排（替换 OASIS 的核心设计）
 
@@ -108,7 +124,15 @@ collecting 允许部分失败 → 后续正常走完 → completed_partial（报
 - 章节完成 → 立即送 Reviewer（独立线程队列），Reviewer 通过则落盘 `section_XX.md`，不通过则带批注退回分析 Agent 重写（最多 REVIEWER_MAX_ROUNDS=2 轮，仍不过则采纳 Reviewer 的改写稿并在审校记录中标注）；
 - 全章节审定后装配：目录 + 正文 + 「信息来源清单」（全部 EvidenceCard 按角标编号列出）+ 「数据完整性说明」（collect_failures）+ 免责声明。
 
-### 3.4 追踪订阅管线（闭环 B）
+### 3.4 两轮证据辩论与硬审计
+
+1. 稳健与质量 Agent 提出现金流、盈利质量、资产负债和经营稳健性 Claim；成长与变化 Agent 提出增长驱动、业务变化和可持续性 Claim，并挑战前者。
+2. 稳健与质量 Agent 回应、修订或撤回；成长与变化 Agent 最终回应。四次调用均批量处理最多四个研究维度，格式/硬校验全局最多两次纠错调用。
+3. `EvidenceAuditor` 是确定性代码：验证 evidence/fact UID、数字、单位、币种、期间、累计/单季、合并范围、披露时点和合规词。任一硬失败的 Claim 不得进入 accepted。
+4. Judge 只综合审计通过内容为 `DebateVerdict`，固定输出共识事实、证据支持的解释、未决分歧、撤回观点、证据缺口、假设与后续公开事项；不得覆盖 Auditor。
+5. 辩论期间不调用采集工具或联网搜索。缺口输出 `EvidenceRequest`，由用户或后续任务补齐；历史 Verdict 仅是待复核线索，不能升级为事实证据。
+
+### 3.5 追踪订阅管线（闭环 B）
 
 - APScheduler（BackgroundScheduler，随 Flask 启动）按订阅 cron 触发；
 - 重跑时 TaskCard 不变，采集时间窗 = [上次水位线, now]；GraphIngest 增量写入（05 文档 §2.3）；
@@ -119,13 +143,45 @@ collecting 允许部分失败 → 后续正常走完 → completed_partial（报
 
 | 决策 | 选择 | 理由（含放弃项） |
 |------|------|-----------------|
-| 工具调用协议 | 沿用 MiroFish 文本协议（XML tool_call） | 已验证可用、不依赖 qwen function calling 的稳定性、日志可读；放弃 OpenAI tools 原生协议 |
+| 工具调用协议 | 沿用 MiroFish 文本协议（XML tool_call） | 模型无关、日志可读；比赛版不引入原生 Function Calling 或 Streaming |
 | 采集 Agent 结构 | 计划→执行→质检 三步，非 ReAct | 采集步骤可预先确定，ReAct 在此只增加成本与不确定性 |
 | 并行机制 | 主管线用 ThreadPoolExecutor 线程池；推演支线保留 MiroFish 子进程+文件 IPC | 采集是 IO 密集用线程即可；OASIS 仿真是长驻环境，沿用其成熟的子进程+IPC 模式 |
 | 图谱引擎 | 自托管 Graphiti+Neo4j | Zep Cloud 境外+闭源计费；Graphiti 是其开源内核，API 语义对齐，迁移成本最低（05 文档有对照表） |
 | 前后端通信 | 保持轮询（2s Task / 增量 agent-log） | 复用 MiroFish 全部前端骨架；放弃 WebSocket（改造成本高，Demo 无必要） |
 | 业务数据 | SQLite | 反馈/规则/健康度需要 SQL 聚合查询，MiroFish 纯 JSON 文件不够用；任务主档仍用 JSON 文件保持与 MiroFish 骨架一致 |
-| 分析模型分级 | 采集/规划用 qwen-plus，章节生成与审校用 qwen-max | 质量敏感环节升配，成本敏感环节降配 |
+| 模型能力分级 | DeepSeek V4 文本 + 百炼 Qwen-VL 视觉 | flash 负责普通文本，pro 非思考负责 Reviewer、pro 思考负责 Debate/Judge；Qwen-VL 仅接收候选图片页，绝不静默接管文本 |
+| run 隔离 | 每次确认生成不可变 `run_id` | 支持 direct/debate A/B，对历史证据、反馈与报告做精确归属；根目录只保留 latest 兼容副本 |
+| 财务可比性 | Decimal 标准化 + 硬校验 | 期间、累计口径、币种、单位或合并范围不一致时返回“暂无同口径数据”，禁止进入比较和图表 |
+
+### 4.1 模型接入契约
+
+| 能力 | Provider / 模型 | 调用约束 |
+|------|-----------------|----------|
+| 普通文本 | DeepSeek `deepseek-v4-flash` | Planner、普通 Analyst、报告表达、Chat、Reflection、Scenario；JSON/控制流显式 `thinking=disabled` |
+| 高质量审校 | DeepSeek `deepseek-v4-pro` | Reviewer 使用非思考模式 |
+| 辩论与裁决 | DeepSeek `deepseek-v4-pro` | `thinking=enabled`、`reasoning_effort=high`；不发送 temperature，不记录 `reasoning_content` |
+| PDF 视觉 | 百炼 `qwen3-vl-plus` | 本地文本/表格优先；只对低文本密度或图片/图表候选页发送 OpenAI content array + 内存 Base64 |
+
+- 文本和视觉分别使用 `TEXT_LLM_*`、`VISION_LLM_*`；旧 `LLM_*` 仅作为迁移回退。connect/read timeout 默认 10/180 秒，429、500、503、超时或资源不足最多一次传输重试。
+- JSON Prompt 必须包含 JSON 示例；空内容、坏 JSON 或截断仅允许一次等 token 上限再生成。Qwen-VL 失败保留本地解析并标记不完整，禁止静默切换成百炼文本模型。
+- 内部 `LLMResult` 只保留 provider、model、finish reason、usage、request ID、延迟和重试数；数据库 `llm_call_log` 不保存 Prompt、Key、图片 Base64 或原始思维链。
+
+### 4.2 run 产物与公共读取接口
+
+```text
+uploads/tasks/{task_id}/runs/{run_id}/
+  run.json
+  evidence/
+  evidence_index.json
+  normalized_facts.jsonl
+  debate/{claims.jsonl,challenges.jsonl,audit.jsonl,verdict.json}
+  report.json
+  report.md
+```
+
+- `POST /api/task/{id}/confirm` 返回 `run_id`；`GET /api/task/{id}/runs` 列出历史运行；`GET /api/task/{id}/debate?run_id=...` 读取结构化辩论记录。
+- 报告、证据、图谱和反馈接口接受可选 `run_id`，省略时解析 latest；显式 run 必须属于当前 task，路径片段须通过白名单校验。
+- Claim 永久引用稳定 `evidence_uid`/`fact_uid`，`E1…En` 只是在单个 run 内的显示映射。新 run 不得读取旧 run 残留证据。
 
 ## 5. 后端目录结构（执行 Agent 按此建目录）
 
@@ -174,7 +230,7 @@ backend/
 
 | MiroFish 文件 | 处置 | 成竹 去向与改动 |
 |---------------|------|----------------------|
-| `utils/llm_client.py` `openai_chat_compat.py` `retry.py` `logger.py` `file_parser.py` | **原样拷贝** | utils/ 同名；llm_client 增加按用途选模型（plus/max） |
+| `utils/llm_client.py` `openai_chat_compat.py` `retry.py` `logger.py` `file_parser.py` | 改造兼容 | utils/ 同名；LLMClient 增加 DeepSeek thinking、元数据和文本/视觉隔离，保留旧 chat/chat_json 返回类型 |
 | `models/task.py`（TaskManager） | **原样拷贝** | models/task.py |
 | `models/project.py` | 改写 | models/research_task.py：状态机换为 §3.1，保留 JSON 落盘/恢复模式 |
 | `services/report_agent.py` | **重点移植** | analyst.py：保留 ReportLogger→agent_logger.py、大纲规划、ReAct 循环、工具解析器、装配器；替换全部 Prompt（03 文档）与工具集；`interview_agents` 删除，新增 `read_announcement`/数据工具 |
@@ -193,16 +249,20 @@ backend/
 
 ```
 用户提交需求 → POST /api/task/create
-  Planner(qwen-plus, 1次调用, 注入L2偏好+L3规则) → task.json[awaiting_confirm] → 返回TaskCard
-用户确认 → POST /api/task/{id}/confirm → 状态collecting，启动后台线程
+  Planner(deepseek-v4-flash, 非思考JSON, 注入L2偏好+L3规则)
+  → task.json[awaiting_confirm] → 返回含 analysis_mode 的 TaskCard
+用户确认 → POST /api/task/{id}/confirm → 创建 run_id → 状态collecting，启动后台线程
   采集编排器：查健康度 → 并行派发5个采集Agent
-    每个Agent: 计划(1次LLM) → 执行工具2-6次 → 质检(1次LLM) → evidence落盘 → 入图 → 进度+8%
-  全部就绪 → analyzing
-  分析Agent: plan_outline(1次) → 每章节ReAct(2-6次工具+2-8次LLM) → 章节完成即送审
-  Reviewer: 每章1-2次LLM(引用核对+合规) → 通过/退回
-  装配 → completed → task.json 终态落盘, task_run 写库
-前端全程: GET /api/task/{id}/status (2s) + GET /api/task/{id}/agent-log?from_line=N (2s)
-用户反馈 → POST /api/feedback → 触发 Reflection(1次LLM) → playbook候选规则 + L2偏好episode
+    每个Agent: 计划 → 执行工具2-6次 → 质检 → 本run evidence落盘 → 入图
+  全部就绪 → 原子冻结 evidence_index → normalizing
+  direct: Analyst 生成草稿
+  evidence_debate:
+    稳健/质量首轮 → 成长/变化首轮+挑战 → 稳健/质量回应 → 成长/变化终答
+    → EvidenceAuditor硬检查 → Judge裁决 → Analyst表达
+  Reviewer(deepseek-v4-pro, 非思考) → 报告装配 → completed
+  → report写run目录并原子更新latest兼容副本 → task_run/debate_run/llm_call_log写库
+前端全程: status + agent-log + debate（2s轮询，均携带run_id）
+用户反馈 → POST /api/feedback（绑定run_id）→ Reflection → playbook候选规则 + L2偏好episode
 ```
 
-预算核对（01 文档非功能需求）：单摘要任务 LLM 调用约 5(采集计划+质检×5... 实际 10) + 1(规划) + 24(4章×6) + 8(审校) + 1(反思) ≈ 45 次，qwen-plus/max 混合下约 ¥1-1.5，达标。
+验收预算：摘要/对比任务端到端不超过 8 分钟；单 run 文本与视觉 LLM 合计不超过 ¥2。辩论只做四次批量角色调用 + 一次 Judge，格式/硬校验全局最多两次纠错；超时或无有效 Verdict 时同快照降级 direct 并披露。

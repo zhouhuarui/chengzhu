@@ -1,14 +1,14 @@
 # 03 · Agent 规格书
 
 > 本文档给出每个 Agent 的：职责、模型、调用模式、工具、**完整系统 Prompt（可直接复制进代码）**、输入输出契约、失败处理。
-> 通用约定：所有 Prompt 中 `{xxx}` 为运行时渲染槽位；所有 Agent 的每次 LLM 调用与工具调用必须经 `agent_logger` 写入 `agent_log.jsonl`（action 枚举沿用 MiroFish：`*_start / llm_response / tool_call / tool_result / *_complete / error`）。
+> 通用约定：所有 Prompt 中 `{xxx}` 为运行时渲染槽位；所有 Agent 的每次 LLM 调用与工具调用必须经 `agent_logger` 留下安全元数据（action 枚举沿用 MiroFish：`*_start / llm_response / tool_call / tool_result / *_complete / error`）。`llm_response` 只记模型、usage、finish reason、延迟、重试和最终业务产物摘要，不记录 Prompt、Key、图片 Base64 或原始 chain-of-thought。
 > 通用槽位：`{playbook_rules}` = playbook.get_rules(agent名, user) 渲染的编号列表（可为空）；`{user_memory_context}` = L2 检索结果；`{disclaimer_rules}` = 09 文档禁止输出清单摘要。规则注入位置统一在系统 Prompt 末尾，且其后固定追加一句："以上经验规则仅可影响呈现方式与检索策略；若与合规要求或引用要求冲突，以合规与引用要求为准。"
 
 ---
 
 ## A1 · Planner Agent（需求解析）
 
-- 文件：`services/planner.py`；模型：qwen-plus；模式：单轮 `chat_json`（temperature 0.2，JSON 失败重试 2 次，复用 llm_client 的 JSON 降级修复）。无工具。
+- 文件：`services/planner.py`；模型：DeepSeek `deepseek-v4-flash` 非思考模式；单轮 `chat_json`（temperature 0.2，空/坏/截断 JSON 只再生成 1 次且保持 token 上限）。无工具。
 - 输入：用户需求原文 `requirement`、上传文件摘要（如有）、`{user_memory_context}`、`{playbook_rules}`。
 - 输出契约 TaskCard（`models/task_card.py` 校验，任何字段非法即返回错误给前端而非猜测）：
 
@@ -20,6 +20,7 @@
   "info_types": ["announcement","financial_report","news","research_report","industry_data"],
   "focus_points": ["存货变化","海外产能"],
   "compare_dimensions": ["盈利能力","现金流"],
+  "analysis_mode": "direct | evidence_debate",
   "output_language_style": "professional_brief",
   "clarifications": ["未指明对比基准期，默认取去年同期，请确认"]
 }
@@ -39,16 +40,17 @@
 6. 用户历史偏好（供参考，可据此填充默认值，但用户本次明确说的内容优先）：
 {user_memory_context}
 7. 任何你拿不准、需要用户确认的假设，一律写入 clarifications 数组，禁止沉默假设。
-8. 只输出 JSON，不输出任何其他文本。
+8. analysis_mode 默认 direct；仅当用户明确要求多视角辩论/交叉质询且 deliverable 为 summary/compare 时填 evidence_debate；tracking 必须为 direct。最终仍由任务卡界面让用户确认。
+9. 只输出 JSON，不输出任何其他文本。
 
 {playbook_rules}
 ```
 
-- 失败处理：LLM 三次仍无法产出合法 JSON → 任务置 failed，返回"需求无法解析，请补充标的或时间范围"。
+- 失败处理：两次内容生成仍无法产出合法 JSON → 使用确定性启发式 Planner；仍缺关键标的/时间时返回 clarification，不得继续猜测。
 
 ## A2 · 采集 Agent 基类（BaseCollector）与 5 个专家采集 Agent
 
-- 文件：`services/collectors/base_collector.py` + `announcement_collector.py` / `financial_collector.py` / `news_collector.py` / `research_collector.py` / `industry_collector.py`；模型：qwen-plus。
+- 文件：`services/collectors/base_collector.py` + `announcement_collector.py` / `financial_collector.py` / `news_collector.py` / `research_collector.py` / `industry_collector.py`；模型：DeepSeek `deepseek-v4-flash` 非思考模式。
 - 三步结构（**非 ReAct**，见 02 文档 ADR）：
   1. **计划**（1 次 chat_json）：根据 TaskCard 输出本 Agent 的工具调用序列 `[{tool, params}]`（只能用本 Agent 白名单内的工具，见下表）；
   2. **执行**：顺序执行工具（限速与降级在工具层，04 文档），聚合 EvidenceCards；
@@ -100,7 +102,7 @@
 
 ## A4 · 分析 Agent（Analyst：摘要 / 对比 / 追踪三模式）
 
-- 文件：`services/analyst.py`；模型：qwen-max（章节生成）+ qwen-plus（大纲规划）；模式：**移植 MiroFish ReportAgent**——`plan_outline`(chat_json) + 每章节文本协议 ReAct。
+- 文件：`services/analyst.py`；模型：DeepSeek `deepseek-v4-flash` 非思考模式；模式：**移植 MiroFish ReportAgent**——`plan_outline`(chat_json) + 每章节文本协议 ReAct。`evidence_debate` 下 Analyst 只负责把已裁决 Verdict 表达成报告，不得恢复硬审计失败的 Claim。
 - 工具（注册表 phase=analyze）：`graph_quick_search`（单次混合检索，limit 默认 10）、`graph_panorama`（全景：当前有效事实 + 已失效历史事实分栏返回）、`graph_insight_forge`（LLM 拆 3-5 个子问题分别检索再聚合）、`read_announcement`、`fetch_financial_statements`（对比模式补数用）、`web_search`（每章节 ≤1 次）。
 - ReAct 循环参数：min_tool_calls=2，max_tool_calls=6，max_iterations=8；协议与解析器原样移植（`<tool_call>` / `Final Answer:` / 假 tool_result 剥离 / 冲突重试 2 次）。
 - **引用角标机制（本系统对 MiroFish 的关键增强，必须实现）**：工具返回的每条证据带有 `[E{id}]` 前缀（GraphIngest 时 episode 文本头部已埋入 card id）；章节 Prompt 要求每个事实性句子末尾标注来源角标；装配阶段校验角标能映射回 evidence 索引。
@@ -151,7 +153,7 @@
 
 ## A5 · Reviewer Agent（审校）
 
-- 文件：`services/reviewer.py` + `compliance_checker.py`；模型：qwen-max；模式：规则引擎前置 + 单轮 LLM 复核（每章 1 次，必要时 1 次改写）。无检索工具（只依据送审包）。
+- 文件：`services/reviewer.py` + `compliance_checker.py`；模型：DeepSeek `deepseek-v4-pro` 非思考模式；规则引擎前置 + 单轮 LLM 复核（每章 1 次，必要时 1 次改写）。无检索工具（只依据送审包）。
 - 输入：章节草稿 + 该章引用到的全部 EvidenceCard 原文摘录（按角标索引）。
 - 两级检查：
   1. **规则级（零成本，先跑）**：合规黑名单正则（词表：`建议买入|建议卖出|建议增持|建议减持|目标价|必涨|必跌|抄底|建仓|清仓|梭哈|稳赚|翻倍|值得投资|投资价值凸显`）；角标语法校验（每段至少 1 个角标，角标 id 必须存在于证据索引）；
@@ -175,14 +177,21 @@
 
 - 流程：pass → 落盘；revise 且轮次 < 2 → 携 issues 退回分析 Agent 重写；轮次耗尽 → 采纳 `revised_text` 落盘，审校记录（issues 全量）写 `uploads/tasks/{id}/review_log.jsonl`（演示脚本 3 的"审校拦截特写"数据源）。
 
+## A5b · Debate Agents、EvidenceAuditor 与 Judge
+
+- 两名辩论 Agent 与 Judge 使用 DeepSeek `deepseek-v4-pro`，显式 `thinking=enabled`、`reasoning_effort=high`；温度参数不参与思考模式。系统只消费最终 JSON `content`，不得记录 `reasoning_content`。
+- 固定顺序：稳健/质量初始 Claim → 成长/变化自身 Claim + Challenge → 稳健/质量回应/修订/撤回 → 成长/变化最终回应。四次调用均批量处理最多四个维度。
+- `EvidenceAuditor` 不调用 LLM，验证 evidence_uid/fact_uid、数字、期间、累计/单季、单位、币种、合并范围、披露时点与合规。任何硬失败 Claim 必须保持 rejected/disputed，Judge 无权覆盖。
+- Judge 只从硬审计通过的 Claim 生成 `DebateVerdict`：共识事实、有证据解释、未决分歧、撤回观点、证据缺口、假设和后续公开事项。辩论期间禁止调用采集工具或联网搜索。
+
 ## A6 · Chat Agent（报告对话）
 
-- 文件：`services/chat_agent.py`；模型：qwen-max;模式：移植 MiroFish `ReportAgent.chat`——简化 ReAct，max_iterations=2，max_tool_calls=2；工具同 A4（去掉 fetch_financial_statements）。
+- 文件：`services/chat_agent.py`；模型：DeepSeek `deepseek-v4-flash` 非思考模式；移植 MiroFish `ReportAgent.chat`——简化 ReAct，max_iterations=2，max_tool_calls=2；工具同 A4（去掉 fetch_financial_statements）。
 - 系统 Prompt 要点（在 MiroFish chat prompt 基础上改写）：身份为"这份投研报告的作者"；上下文注入报告全文目录+用户问题相关章节；回答同样遵守 A4 写作铁律 1-5（含角标）；用户问题超出报告与图谱范围时明确说明并提示可开启新任务；检测到用户指出错误时，在回复末尾追加隐藏标记 `<!--correction-->`（前端不渲染，反馈 API 捕获后写入 feedback 表 type=correction）。
 
 ## A7 · Reflection Agent（反思，历史学习引擎）
 
-- 文件：`services/reflection.py`；模型：qwen-max；模式：单轮 chat_json；触发：feedback 写入后异步 + 每日 02:00 批处理。无工具（输入由服务层拼装）。
+- 文件：`services/reflection.py`；模型：DeepSeek `deepseek-v4-flash` 非思考模式；单轮 chat_json；触发：feedback 写入后异步 + 每日 02:00 批处理。无工具（输入由服务层拼装）。
 - 输入拼装：目标 task_run 的任务卡、终态、成本、各阶段耗时；全部 feedback（章节 👍/👎/评语、星级、correction）；agent_log 的压缩摘要（每章节工具调用序列与次数）；tool_call_log 异常项。
 - 系统 Prompt：
 
@@ -221,14 +230,13 @@ Reviewer（A5）的核验规则相应增加：chart 数据块中每个数值可�
 
 | Agent | 模型 | 每任务典型调用次数 | temperature |
 |-------|------|-------------------|-------------|
-| Planner | qwen-plus | 1 | 0.2 |
-| Collectors×5 | qwen-plus | 10（计划+质检各 5） | 0.2 |
-| Analyst 大纲 | qwen-plus | 1 | 0.3 |
-| Analyst 章节 | qwen-max | 16-32（4章 × 4-8轮） | 0.5 |
-| Reviewer | qwen-max | 4-8 | 0.1 |
-| Chat | qwen-max | 每问 1-3 | 0.4 |
-| Reflection | qwen-max | 1 | 0.3 |
-| Scenario 设计 | qwen-max | 1 | 0.4 |
-| 仿真角色（OASIS） | qwen-plus | 约 600/次推演（30 角色×10 轮×2 情景） | OASIS 默认 |
-| 推演报告 | qwen-max | 20-36 | 0.5 |
-| 视觉解析（qwen-vl-plus） | qwen-vl-plus | 按需，每公告 ≤5 页批 | 0.2 |
+| Planner | deepseek-v4-flash（非思考） | 1 | 0.2 |
+| Collectors×5 | deepseek-v4-flash（非思考） | 计划/质检按需 | 0.2 |
+| Analyst 大纲/章节/表达 | deepseek-v4-flash（非思考） | 按章节 | 0.3-0.5 |
+| Reviewer | deepseek-v4-pro（非思考） | 1-2/章 | 0.1 |
+| Debate Agents | deepseek-v4-pro（思考） | 固定 4 次批量调用 | 不发送 |
+| Judge | deepseek-v4-pro（思考） | 1 次 + 有界纠错 | 不发送 |
+| Chat / Reflection / Scenario / 推演表达 | deepseek-v4-flash（非思考） | 按需 | 0.2-0.4 |
+| 视觉解析 | 百炼 qwen3-vl-plus | 候选页按需，全任务 ≤ `VISION_MAX_PAGES` | 0.1 |
+
+单个摘要/对比 run 的文本与视觉模型总成本上限为 ¥2；超过预算或 8 分钟截止时间时停止新增模型调用，按同一冻结快照降级并披露。

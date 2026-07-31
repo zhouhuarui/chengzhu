@@ -1,0 +1,14 @@
+{
+  "task_id": "task_7faf04025de4",
+  "user_id": "default",
+  "requirement": "对比宁德时代和比亚迪最近的财务与公告",
+  "status": "parsing",
+  "task_card": null,
+  "progress": 2,
+  "message": "解析需求中",
+  "error": null,
+  "collect_failures": [],
+  "created_at": "2026-07-25T13:59:00",
+  "updated_at": "2026-07-25T13:59:00",
+  "progress_detail": {}
+}

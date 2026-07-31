@@ -1,0 +1,79 @@
+{
+  "episodes": [
+    {
+      "id": "ep_b8fca93cce",
+      "body": "任务需求：对比宁德时代和比亚迪最近的财务与公告\n任务卡：{\"deliverable\": \"compare\", \"symbols\": [{\"code\": \"300750\", \"name\": \"宁德时代\"}, {\"code\": \"002594\", \"name\": \"比亚迪\"}], \"time_window\": {\"end\": \"2026-07-25\", \"start\": \"2025-06-20\"}, \"info_types\": [\"announcement\", \"financial_report\", \"news\", \"research_report\", \"industry_data\"], \"focus_points\": [], \"compare_dimensions\": [\"盈利能力\", \"现金流\"], \"output_language_style\": \"professional_brief\", \"clarifications\": []}\n反馈：[]",
+      "reference_time": "2026-07-25T14:27:43",
+      "meta": {
+        "task_id": "task_20a4d40a0a99"
+      },
+      "created_at": "2026-07-25T14:27:43"
+    },
+    {
+      "id": "ep_7a93cbcb5c",
+      "body": "任务需求：对比宁德时代和比亚迪最近的财务与公告\n任务卡：{\"deliverable\": \"compare\", \"symbols\": [{\"code\": \"300750\", \"name\": \"宁德时代\"}, {\"code\": \"002594\", \"name\": \"比亚迪\"}], \"time_window\": {\"end\": \"2026-07-25\", \"start\": \"2025-06-20\"}, \"info_types\": [\"announcement\", \"financial_report\", \"news\", \"research_report\", \"industry_data\"], \"focus_points\": [], \"compare_dimensions\": [\"盈利能力\", \"现金流\"], \"output_language_style\": \"professional_brief\", \"clarifications\": []}\n反馈：[{\"id\": 1, \"run_id\": \"task_20a4d40a0a99\", \"user_id\": \"default\", \"kind\": \"section_vote\", \"section_index\": 0, \"vote\": \"down\", \"stars\": null, \"comment\": \"只要表格\", \"created_at\": \"2026-07-25 14:27:59\"}]",
+      "reference_time": "2026-07-25T14:27:59",
+      "meta": {
+        "task_id": "task_20a4d40a0a99"
+      },
+      "created_at": "2026-07-25T14:27:59"
+    },
+    {
+      "id": "ep_5538451dae",
+      "body": "任务需求：整理贵州茅台近期公告摘要\n任务卡：{\"deliverable\": \"summary\", \"symbols\": [{\"code\": \"600519\", \"name\": \"贵州茅台\"}], \"time_window\": {\"end\": \"2026-07-25\", \"start\": \"2026-04-26\"}, \"info_types\": [\"announcement\", \"financial_report\", \"news\", \"research_report\", \"industry_data\"], \"focus_points\": [], \"compare_dimensions\": [], \"output_language_style\": \"professional_brief\", \"clarifications\": []}\n反馈：[]",
+      "reference_time": "2026-07-25T14:53:09",
+      "meta": {
+        "task_id": "task_afbc9f5a2fcc"
+      },
+      "created_at": "2026-07-25T14:53:09"
+    },
+    {
+      "id": "ep_9584acd037",
+      "body": "任务需求：整理贵州茅台近期公告摘要\n任务卡：{\"deliverable\": \"summary\", \"symbols\": [{\"code\": \"600519\", \"name\": \"贵州茅台\"}], \"time_window\": {\"end\": \"2026-07-25\", \"start\": \"2026-04-26\"}, \"info_types\": [\"announcement\", \"financial_report\", \"news\", \"research_report\", \"industry_data\"], \"focus_points\": [], \"compare_dimensions\": [], \"output_language_style\": \"professional_brief\", \"clarifications\": []}\n反馈：[{\"id\": 3, \"run_id\": \"task_afbc9f5a2fcc\", \"user_id\": \"default\", \"kind\": \"section_vote\", \"section_index\": 0, \"vote\": \"down\", \"stars\": null, \"comment\": \"只要表格\", \"created_at\": \"2026-07-25 14:53:09\"}]",
+      "reference_time": "2026-07-25T14:53:09",
+      "meta": {
+        "task_id": "task_afbc9f5a2fcc"
+      },
+      "created_at": "2026-07-25T14:53:09"
+    }
+  ],
+  "nodes": {
+    "n_52b4d231": {
+      "id": "n_52b4d231",
+      "name": "任务需求：对比宁德时代和比亚迪最近的财务与公告",
+      "type": "Disclosure",
+      "summary": "任务需求：对比宁德时代和比亚迪最近的财务与公告\n任务卡：{\"deliverable\": \"compare\", \"symbols\": [{\"code\": \"300750\", \"name\": \"宁德时代\"}, {\"code\": \"002594\", \"name\": \"比亚迪\"}], \"time_window\": {\"end\": \"2026-07-25\", \"start\": \"2025-06-20\"}, ",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:27:43"
+    },
+    "n_a547ab43": {
+      "id": "n_a547ab43",
+      "name": "任务需求：对比宁德时代和比亚迪最近的财务与公告",
+      "type": "Disclosure",
+      "summary": "任务需求：对比宁德时代和比亚迪最近的财务与公告\n任务卡：{\"deliverable\": \"compare\", \"symbols\": [{\"code\": \"300750\", \"name\": \"宁德时代\"}, {\"code\": \"002594\", \"name\": \"比亚迪\"}], \"time_window\": {\"end\": \"2026-07-25\", \"start\": \"2025-06-20\"}, ",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:27:59"
+    },
+    "n_1e1a25c2": {
+      "id": "n_1e1a25c2",
+      "name": "任务需求：整理贵州茅台近期公告摘要",
+      "type": "Disclosure",
+      "summary": "任务需求：整理贵州茅台近期公告摘要\n任务卡：{\"deliverable\": \"summary\", \"symbols\": [{\"code\": \"600519\", \"name\": \"贵州茅台\"}], \"time_window\": {\"end\": \"2026-07-25\", \"start\": \"2026-04-26\"}, \"info_types\": [\"announcement\", \"financial",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:09"
+    },
+    "n_27342b90": {
+      "id": "n_27342b90",
+      "name": "任务需求：整理贵州茅台近期公告摘要",
+      "type": "Disclosure",
+      "summary": "任务需求：整理贵州茅台近期公告摘要\n任务卡：{\"deliverable\": \"summary\", \"symbols\": [{\"code\": \"600519\", \"name\": \"贵州茅台\"}], \"time_window\": {\"end\": \"2026-07-25\", \"start\": \"2026-04-26\"}, \"info_types\": [\"announcement\", \"financial",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:09"
+    }
+  },
+  "edges": []
+}

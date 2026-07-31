@@ -1,0 +1,292 @@
+{
+  "version": 2,
+  "reviewed_at": "2026-07-27",
+  "source_contract": "Datayes/docs/chengzhu_api_manifest.json (schema_version 1)",
+  "license_scope": "private_derived_only",
+  "default_mutually_exclusive": [],
+  "default_output_unit": null,
+  "unit_policy": "All selected output fields mirror central unit and unit_status metadata",
+  "type_aliases": {
+    "String": "string",
+    "Text": "string",
+    "Int": "integer",
+    "int32": "integer",
+    "Int16": "integer",
+    "Int32": "integer",
+    "Int64": "integer",
+    "Double": "number",
+    "Date": "date",
+    "DateTime": "datetime"
+  },
+  "endpoints": {
+    "getSecID": {
+      "path": "/api/master/getSecID",
+      "title": "证券编码及基本上市信息",
+      "capability": "security_master",
+      "table": "sec_master",
+      "input_types": {"partyID":"Int64","ticker":"String","cnSpell":"String","assetClass":"String","exchangeCD":"String","listStatusCD":"String","secShortName":"String"},
+      "input_flags": {"partyID":"S","ticker":"S","cnSpell":"S","assetClass":"S","exchangeCD":"N","listStatusCD":"N","secShortName":"S"},
+      "required_any": [["partyID","ticker","cnSpell","secShortName"]],
+      "output_types": {"secID":"String","ticker":"Text","secShortName":"Text","exchangeCD":"String","assetClass":"String","listStatusCD":"String","listDate":"Date","partyID":"Int64","delistDate":"Date"},
+      "output_units": {"secID":null,"ticker":null,"secShortName":null,"exchangeCD":null,"assetClass":null,"listStatusCD":null,"listDate":null,"partyID":null,"delistDate":null},
+      "output_unit_status": {"secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","exchangeCD":"not_applicable","assetClass":"not_applicable","listStatusCD":"not_applicable","listDate":"not_applicable","partyID":"not_applicable","delistDate":"not_applicable"},
+      "business_key_fields": ["sec_id"], "record_key_fields": ["sec_id","list_status_cd","list_date","delist_date"],
+      "watermark_field": null, "freshness_hours": 24
+    },
+    "getTradeCal": {
+      "path": "/api/master/getTradeCal", "title": "交易所交易日历", "capability": "trade_calendar", "table": "trade_cal",
+      "input_types": {"exchangeCD":"String","beginDate":"Date","endDate":"Date","isOpen":"Int16"},
+      "input_flags": {"exchangeCD":"Y","beginDate":"N","endDate":"N","isOpen":"N"}, "required_all": ["exchangeCD"],
+      "output_types": {"exchangeCD":"String","calendarDate":"Date","isOpen":"Int16","prevTradeDate":"Date","isWeekEnd":"Int16","isMonthEnd":"Int16","isQuarterEnd":"Int16","isYearEnd":"Int16"},
+      "output_units": {"exchangeCD":null,"calendarDate":null,"isOpen":null,"prevTradeDate":null,"isWeekEnd":null,"isMonthEnd":null,"isQuarterEnd":null,"isYearEnd":null},
+      "output_unit_status": {"exchangeCD":"not_applicable","calendarDate":"not_applicable","isOpen":"not_applicable","prevTradeDate":"not_applicable","isWeekEnd":"not_applicable","isMonthEnd":"not_applicable","isQuarterEnd":"not_applicable","isYearEnd":"not_applicable"},
+      "business_key_fields": ["exchange_cd","calendar_date"], "record_key_fields": ["exchange_cd","calendar_date","is_open"],
+      "watermark_field": "calendar_date", "warehouse_watermark_field": "calendar_date", "freshness_hours": 8760
+    },
+    "getMktEqud": {
+      "path": "/api/market/getMktEqud", "title": "沪深股票日行情", "capability": "stock_quote", "table": "mkt_equd",
+      "input_types": {"beginDate":"Date","endDate":"Date","secID":"String","ticker":"String","tradeDate":"Date","isOpen":"Int32"},
+      "input_flags": {"beginDate":"N","endDate":"N","secID":"M","ticker":"M","tradeDate":"M","isOpen":"N"},
+      "required_any": [["secID","ticker","tradeDate"]],
+      "output_types": {"secID":"String","ticker":"String","secShortName":"String","exchangeCD":"String","tradeDate":"Date","actPreClosePrice":"Double","openPrice":"Double","highestPrice":"Double","lowestPrice":"Double","closePrice":"Double","turnoverVol":"Double","turnoverValue":"Double","turnoverRate":"Double","marketValue":"Double","chgPct":"Double","isOpen":"Int32"},
+      "output_units": {"secID":null,"ticker":null,"secShortName":null,"exchangeCD":null,"tradeDate":null,"actPreClosePrice":"CNY/share","openPrice":"CNY/share","highestPrice":"CNY/share","lowestPrice":"CNY/share","closePrice":"CNY/share","turnoverVol":"share","turnoverValue":"CNY","turnoverRate":"ratio","marketValue":"CNY","chgPct":"ratio","isOpen":null},
+      "output_unit_status": {"secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","exchangeCD":"not_applicable","tradeDate":"not_applicable","actPreClosePrice":"reviewed","openPrice":"reviewed","highestPrice":"reviewed","lowestPrice":"reviewed","closePrice":"reviewed","turnoverVol":"reviewed","turnoverValue":"reviewed","turnoverRate":"reviewed","marketValue":"reviewed","chgPct":"reviewed","isOpen":"not_applicable"},
+      "business_key_fields": ["sec_id","trade_date"], "record_key_fields": ["sec_id","trade_date"],
+      "watermark_field": "trade_date", "warehouse_watermark_field": "trade_date", "incremental_param": "beginDate", "freshness_hours": 24
+    },
+    "getMktEqudEvalNew": {
+      "path": "/api/market/getMktEqudEvalNew", "title": "股票估值指标(新)", "capability": "stock_valuation", "table": null,
+      "input_types": {"secID":"String","ticker":"String","tradeDate":"Date","beginDate":"Date","endDate":"Date"},
+      "input_flags": {"secID":"M","ticker":"M","tradeDate":"M","beginDate":"N","endDate":"N"}, "required_any": [["secID","ticker","tradeDate"]],
+      "output_types": {"secID":"String","secShortName":"String","exchangeCD":"String","ticker":"String","tradeDate":"Date","marketValue":"Double","negMarketValue":"Double","freeMarketValue":"Double","PECTTM":"Double","PBLYR":"Double","PBDGW":"Double","PSLYR":"Double","PCFOLYR":"Double","updateTime":"DateTime"},
+      "output_units": {"secID":null,"secShortName":null,"exchangeCD":null,"ticker":null,"tradeDate":null,"marketValue":"CNY","negMarketValue":"CNY","freeMarketValue":"CNY","PECTTM":"times","PBLYR":"times","PBDGW":"times","PSLYR":"times","PCFOLYR":"times","updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","secShortName":"not_applicable","exchangeCD":"not_applicable","ticker":"not_applicable","tradeDate":"not_applicable","marketValue":"reviewed","negMarketValue":"reviewed","freeMarketValue":"reviewed","PECTTM":"reviewed","PBLYR":"reviewed","PBDGW":"reviewed","PSLYR":"reviewed","PCFOLYR":"reviewed","updateTime":"not_applicable"},
+      "business_key_fields": ["sec_id","trade_date"], "record_key_fields": ["sec_id","trade_date","update_time"], "watermark_field": "update_time", "freshness_hours": 24
+    },
+    "getMktAdjfAf": {
+      "path": "/api/market/getMktAdjfAf", "title": "沪深股票后复权因子", "capability": "stock_adjustment", "table": "mkt_adjf_af",
+      "input_types": {"secID":"String","ticker":"String","exchangeCD":"String","exDivDate":"Date","beginDate":"Date","endDate":"Date"},
+      "input_flags": {"secID":"S","ticker":"S","exchangeCD":"S","exDivDate":"S","beginDate":"N","endDate":"N"}, "required_any": [["secID","ticker"]],
+      "output_types": {"secID":"String","ticker":"String","exchangeCD":"String","secShortName":"String","exDivDate":"Date","adjFactor":"Double","accumAdjFactor":"Double","endDate":"Date"},
+      "output_units": {"secID":null,"ticker":null,"exchangeCD":null,"secShortName":null,"exDivDate":null,"adjFactor":"factor","accumAdjFactor":"factor","endDate":null},
+      "output_unit_status": {"secID":"not_applicable","ticker":"not_applicable","exchangeCD":"not_applicable","secShortName":"not_applicable","exDivDate":"not_applicable","adjFactor":"reviewed","accumAdjFactor":"reviewed","endDate":"not_applicable"},
+      "business_key_fields": ["sec_id","ex_div_date"], "record_key_fields": ["sec_id","ex_div_date","accum_adj_factor"], "watermark_field": "ex_div_date", "warehouse_watermark_field": "ex_div_date", "incremental_param": "beginDate", "freshness_hours": 24
+    },
+    "getFdmtIS": {
+      "path": "/api/fundamental/getFdmtIS", "title": "合并利润表 (Point in time)", "capability": "financial_statement", "table": "fdmt_is",
+      "input_types": {"ticker":"String","secID":"String","publishDateEnd":"Date","publishDateBegin":"Date","endDateRep":"Date","beginDateRep":"Date","endDate":"Date","beginDate":"Date","reportType":"String","beginYear":"String","endYear":"String","fiscalPeriod":"String","updateTimeEnd":"DateTime","updateTimeBegin":"DateTime"},
+      "input_flags": {"ticker":"S","secID":"S","publishDateEnd":"N","publishDateBegin":"N","endDateRep":"N","beginDateRep":"N","endDate":"N","beginDate":"N","reportType":"S","beginYear":"N","endYear":"N","fiscalPeriod":"N","updateTimeEnd":"N","updateTimeBegin":"N"}, "required_any": [["ticker","secID"]],
+      "output_types": {"secID":"String","publishDate":"Date","endDate":"Date","ticker":"String","secShortName":"String","exchangeCD":"String","actPubtime":"DateTime","mergedFlag":"String","reportType":"String","currencyCD":"String","tRevenue":"Double","revenue":"Double","operateProfit":"Double","TProfit":"Double","NIncome":"Double","NIncomeAttrP":"Double","basicEPS":"Double","updateTime":"DateTime"},
+      "output_units": {"secID":null,"publishDate":null,"endDate":null,"ticker":null,"secShortName":null,"exchangeCD":null,"actPubtime":null,"mergedFlag":null,"reportType":null,"currencyCD":null,"tRevenue":"CNY","revenue":"CNY","operateProfit":"CNY","TProfit":"CNY","NIncome":"CNY","NIncomeAttrP":"CNY","basicEPS":"CNY/share","updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","publishDate":"not_applicable","endDate":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","exchangeCD":"not_applicable","actPubtime":"not_applicable","mergedFlag":"not_applicable","reportType":"not_applicable","currencyCD":"not_applicable","tRevenue":"reviewed","revenue":"reviewed","operateProfit":"reviewed","TProfit":"reviewed","NIncome":"reviewed","NIncomeAttrP":"reviewed","basicEPS":"reviewed","updateTime":"not_applicable"},
+      "business_key_fields": ["api","sec_id","end_date","report_type","merged_flag"], "record_key_fields": ["business_key","publish_date","update_time"], "watermark_field": "update_time", "warehouse_watermark_field": "update_time", "incremental_param": "updateTimeBegin", "version_order_fields": ["update_time","act_pubtime","publish_date"], "freshness_hours": 24
+    },
+    "getFdmtBS": {
+      "path": "/api/fundamental/getFdmtBS", "title": "合并资产负债表 (Point in time)", "capability": "financial_statement", "table": "fdmt_bs",
+      "input_types": {"ticker":"String","secID":"String","beginYear":"String","endYear":"String","publishDateEnd":"Date","publishDateBegin":"Date","endDateRep":"Date","beginDateRep":"Date","endDate":"Date","beginDate":"Date","fiscalPeriod":"String","reportType":"String","updateTimeEnd":"DateTime","updateTimeBegin":"DateTime"},
+      "input_flags": {"ticker":"S","secID":"S","beginYear":"N","endYear":"N","publishDateEnd":"N","publishDateBegin":"N","endDateRep":"N","beginDateRep":"N","endDate":"N","beginDate":"N","fiscalPeriod":"N","reportType":"S","updateTimeEnd":"N","updateTimeBegin":"N"}, "required_any": [["ticker","secID"]],
+      "output_types": {"secID":"String","publishDate":"Date","endDate":"Date","ticker":"String","secShortName":"String","exchangeCD":"String","actPubtime":"DateTime","mergedFlag":"String","reportType":"String","currencyCD":"String","cashCEquiv":"Double","AR":"Double","inventories":"Double","TCA":"Double","TNCA":"Double","TAssets":"Double","TCL":"Double","TNCL":"Double","TLiab":"Double","TEquityAttrP":"Double","TShEquity":"Double","updateTime":"DateTime"},
+      "output_units": {"secID":null,"publishDate":null,"endDate":null,"ticker":null,"secShortName":null,"exchangeCD":null,"actPubtime":null,"mergedFlag":null,"reportType":null,"currencyCD":null,"cashCEquiv":"CNY","AR":"CNY","inventories":"CNY","TCA":"CNY","TNCA":"CNY","TAssets":"CNY","TCL":"CNY","TNCL":"CNY","TLiab":"CNY","TEquityAttrP":"CNY","TShEquity":"CNY","updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","publishDate":"not_applicable","endDate":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","exchangeCD":"not_applicable","actPubtime":"not_applicable","mergedFlag":"not_applicable","reportType":"not_applicable","currencyCD":"not_applicable","cashCEquiv":"reviewed","AR":"reviewed","inventories":"reviewed","TCA":"reviewed","TNCA":"reviewed","TAssets":"reviewed","TCL":"reviewed","TNCL":"reviewed","TLiab":"reviewed","TEquityAttrP":"reviewed","TShEquity":"reviewed","updateTime":"not_applicable"},
+      "business_key_fields": ["api","sec_id","end_date","report_type","merged_flag"], "record_key_fields": ["business_key","publish_date","update_time"], "watermark_field": "update_time", "warehouse_watermark_field": "update_time", "incremental_param": "updateTimeBegin", "version_order_fields": ["update_time","act_pubtime","publish_date"], "freshness_hours": 24
+    },
+    "getFdmtCF": {
+      "path": "/api/fundamental/getFdmtCF", "title": "合并现金流量表 (Point in time)", "capability": "financial_statement", "table": "fdmt_cf",
+      "input_types": {"secID":"String","ticker":"String","beginDate":"Date","endDate":"Date","publishDateBegin":"Date","publishDateEnd":"Date","beginDateRep":"Date","endDateRep":"Date","beginYear":"String","endYear":"String","reportType":"String","fiscalPeriod":"String","updateTimeBegin":"DateTime","updateTimeEnd":"DateTime"},
+      "input_flags": {"secID":"S","ticker":"S","beginDate":"N","endDate":"N","publishDateBegin":"N","publishDateEnd":"N","beginDateRep":"N","endDateRep":"N","beginYear":"N","endYear":"N","reportType":"S","fiscalPeriod":"N","updateTimeBegin":"N","updateTimeEnd":"N"}, "required_any": [["ticker","secID"]],
+      "output_types": {"secID":"String","publishDate":"Date","endDate":"Date","ticker":"String","secShortName":"String","exchangeCD":"String","actPubtime":"DateTime","mergedFlag":"String","reportType":"String","currencyCD":"String","CInfFrOperateA":"Double","COutfOperateA":"Double","NCFOperateA":"Double","NCFFrInvestA":"Double","NCFFrFinanA":"Double","NChangeInCash":"Double","NCEEndBal":"Double","updateTime":"DateTime"},
+      "output_units": {"secID":null,"publishDate":null,"endDate":null,"ticker":null,"secShortName":null,"exchangeCD":null,"actPubtime":null,"mergedFlag":null,"reportType":null,"currencyCD":null,"CInfFrOperateA":"CNY","COutfOperateA":"CNY","NCFOperateA":"CNY","NCFFrInvestA":"CNY","NCFFrFinanA":"CNY","NChangeInCash":"CNY","NCEEndBal":"CNY","updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","publishDate":"not_applicable","endDate":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","exchangeCD":"not_applicable","actPubtime":"not_applicable","mergedFlag":"not_applicable","reportType":"not_applicable","currencyCD":"not_applicable","CInfFrOperateA":"reviewed","COutfOperateA":"reviewed","NCFOperateA":"reviewed","NCFFrInvestA":"reviewed","NCFFrFinanA":"reviewed","NChangeInCash":"reviewed","NCEEndBal":"reviewed","updateTime":"not_applicable"},
+      "business_key_fields": ["api","sec_id","end_date","report_type","merged_flag"], "record_key_fields": ["business_key","publish_date","update_time"], "watermark_field": "update_time", "warehouse_watermark_field": "update_time", "incremental_param": "updateTimeBegin", "version_order_fields": ["update_time","act_pubtime","publish_date"], "freshness_hours": 24
+    },
+    "getFdmtMainDataPIT": {
+      "path": "/api/fundamental/getFdmtMainDataPIT", "title": "(新准则)财务指标(Point in time)", "capability": "financial_indicator", "table": null,
+      "input_types": {"ticker":"String","secID":"String","fiscalPeriod":"String","endDateRep":"Date","beginDateRep":"Date","endDate":"Date","beginDate":"Date","endYear":"String","beginYear":"String","publishDateEnd":"Date","publishDateBegin":"Date","reportType":"String"},
+      "input_flags": {"ticker":"M","secID":"M","fiscalPeriod":"N","endDateRep":"N","beginDateRep":"N","endDate":"M","beginDate":"M","endYear":"N","beginYear":"N","publishDateEnd":"N","publishDateBegin":"N","reportType":"N"}, "required_any": [["ticker","secID"]],
+      "output_types": {"secID":"String","secShortName":"String","exchangeCD":"String","ticker":"String","actPubtime":"DateTime","publishDate":"Date","endDate":"Date","reportType":"String","mergedFlag":"String","fiscalPeriod":"Int16","basicEps":"Double","grossMargin":"Double","npMargin":"Double","roeW":"Double","roa":"Double","invenTurnover":"Double","arTurnover":"Double","assetLiabRatio":"Double","currentRatio":"Double","quickRatio":"Double","tRevenueYoy":"Double","niAttrPYoy":"Double","nCFOpaYoy":"Double"},
+      "output_units": {"secID":null,"secShortName":null,"exchangeCD":null,"ticker":null,"actPubtime":null,"publishDate":null,"endDate":null,"reportType":null,"mergedFlag":null,"fiscalPeriod":null,"basicEps":"CNY/share","grossMargin":"percent","npMargin":"percent","roeW":"percent","roa":"percent","invenTurnover":"times","arTurnover":"times","assetLiabRatio":"percent","currentRatio":"times","quickRatio":"times","tRevenueYoy":"percent","niAttrPYoy":"percent","nCFOpaYoy":"percent"},
+      "output_unit_status": {"secID":"not_applicable","secShortName":"not_applicable","exchangeCD":"not_applicable","ticker":"not_applicable","actPubtime":"not_applicable","publishDate":"not_applicable","endDate":"not_applicable","reportType":"not_applicable","mergedFlag":"not_applicable","fiscalPeriod":"unverified","basicEps":"reviewed","grossMargin":"reviewed","npMargin":"reviewed","roeW":"reviewed","roa":"reviewed","invenTurnover":"reviewed","arTurnover":"reviewed","assetLiabRatio":"reviewed","currentRatio":"reviewed","quickRatio":"reviewed","tRevenueYoy":"reviewed","niAttrPYoy":"reviewed","nCFOpaYoy":"reviewed"},
+      "business_key_fields": ["api","sec_id","end_date","report_type","merged_flag"], "record_key_fields": ["business_key","publish_date","act_pubtime"], "watermark_field": "act_pubtime", "version_order_fields": ["act_pubtime","publish_date"], "freshness_hours": 24
+    },
+    "getFdmtMainDataQPIT": {
+      "path": "/api/fundamental/getFdmtMainDataQPIT", "title": "(新准则)单季度财务指标(Point in time)", "capability": "financial_indicator_quarter", "table": null,
+      "input_types": {"ticker":"String","secID":"String","fiscalPeriod":"String","endDateRep":"Date","beginDateRep":"Date","endDate":"Date","beginDate":"Date","endYear":"String","beginYear":"String","publishDateEnd":"Date","publishDateBegin":"Date","reportType":"String"},
+      "input_flags": {"ticker":"M","secID":"M","fiscalPeriod":"N","endDateRep":"N","beginDateRep":"N","endDate":"M","beginDate":"M","endYear":"N","beginYear":"N","publishDateEnd":"N","publishDateBegin":"N","reportType":"N"}, "required_any": [["ticker","secID"]],
+      "output_types": {"secID":"String","secShortName":"String","exchangeCD":"String","ticker":"String","publishDate":"Date","endDate":"Date","reportType":"String","mergedFlag":"String","fiscalPeriod":"Int16","eps":"Double","grossMargin":"Double","npMargin":"Double","roe":"Double","roa":"Double","tRevenueYoy":"Double","niAttrPYoy":"Double","tRevenueQoq":"Double","niAttrPQoq":"Double","nCFOpaQoq":"Double"},
+      "output_units": {"secID":null,"secShortName":null,"exchangeCD":null,"ticker":null,"publishDate":null,"endDate":null,"reportType":null,"mergedFlag":null,"fiscalPeriod":null,"eps":"CNY/share","grossMargin":"percent","npMargin":"percent","roe":"percent","roa":"percent","tRevenueYoy":"percent","niAttrPYoy":"percent","tRevenueQoq":"percent","niAttrPQoq":"percent","nCFOpaQoq":"percent"},
+      "output_unit_status": {"secID":"not_applicable","secShortName":"not_applicable","exchangeCD":"not_applicable","ticker":"not_applicable","publishDate":"not_applicable","endDate":"not_applicable","reportType":"not_applicable","mergedFlag":"not_applicable","fiscalPeriod":"unverified","eps":"reviewed","grossMargin":"reviewed","npMargin":"reviewed","roe":"reviewed","roa":"reviewed","tRevenueYoy":"reviewed","niAttrPYoy":"reviewed","tRevenueQoq":"reviewed","niAttrPQoq":"reviewed","nCFOpaQoq":"reviewed"},
+      "business_key_fields": ["api","sec_id","end_date","report_type","merged_flag"], "record_key_fields": ["business_key","publish_date"], "watermark_field": "publish_date", "version_order_fields": ["publish_date"], "freshness_hours": 24
+    },
+    "getEquIndustry": {
+      "path": "/api/equity/getEquIndustry", "title": "股票行业分类", "capability": "industry_membership", "table": null,
+      "input_types": {"secID":"String","ticker":"String","industryVersionCD":"String","industry":"String","industryID1":"String","industryID2":"String","industryID3":"String","intoDate":"Date","equTypeID":"String","industryID":"String"},
+      "input_flags": {"secID":"S","ticker":"S","industryVersionCD":"S","industry":"S","industryID1":"N","industryID2":"N","industryID3":"N","intoDate":"N","equTypeID":"N","industryID":"S"}, "required_any": [["secID","ticker","industry","industryID"]],
+      "output_types": {"secID":"String","ticker":"String","exchangeCD":"String","secShortName":"String","industryVersionCD":"String","industry":"String","industryID":"String","industrySymbol":"String","intoDate":"Date","outDate":"Date","isNew":"Int16","industryID1":"String","industryName1":"String","industryID2":"String","industryName2":"String","industryID3":"String","industryName3":"String"},
+      "output_units": {"secID":null,"ticker":null,"exchangeCD":null,"secShortName":null,"industryVersionCD":null,"industry":null,"industryID":null,"industrySymbol":null,"intoDate":null,"outDate":null,"isNew":null,"industryID1":null,"industryName1":null,"industryID2":null,"industryName2":null,"industryID3":null,"industryName3":null},
+      "output_unit_status": {"secID":"not_applicable","ticker":"not_applicable","exchangeCD":"not_applicable","secShortName":"not_applicable","industryVersionCD":"not_applicable","industry":"not_applicable","industryID":"not_applicable","industrySymbol":"not_applicable","intoDate":"not_applicable","outDate":"not_applicable","isNew":"not_applicable","industryID1":"not_applicable","industryName1":"not_applicable","industryID2":"not_applicable","industryName2":"not_applicable","industryID3":"not_applicable","industryName3":"not_applicable"},
+      "business_key_fields": ["sec_id","industry_version_cd","industry_id","into_date"], "record_key_fields": ["business_key","out_date"], "watermark_field": "into_date", "freshness_hours": 24
+    },
+    "getIndustry": {
+      "path": "/api/master/getIndustry", "title": "行业分类标准", "capability": "industry_master", "table": null,
+      "input_types": {"industryVersion":"String","industryVersionCD":"String","industryLevel":"Int16","isNew":"Int16","prntIndustryID":"String","industryName":"String","industryID":"String"},
+      "input_flags": {"industryVersion":"S","industryVersionCD":"S","industryLevel":"N","isNew":"N","prntIndustryID":"N","industryName":"N","industryID":"N"}, "required_any": [["industryVersion","industryVersionCD","industryName","industryID"]],
+      "output_types": {"industryVersionCD":"String","industryVersion":"String","industry":"String","industryID":"String","industrySymbol":"String","industryName":"String","industryLevel":"Int16","isNew":"Int16","indexSymbol":"String","prntIndustryID":"String","beginDate":"Date","endDate":"Date","updateTime":"DateTime"},
+      "output_units": {"industryVersionCD":null,"industryVersion":null,"industry":null,"industryID":null,"industrySymbol":null,"industryName":null,"industryLevel":null,"isNew":null,"indexSymbol":null,"prntIndustryID":null,"beginDate":null,"endDate":null,"updateTime":null},
+      "output_unit_status": {"industryVersionCD":"not_applicable","industryVersion":"not_applicable","industry":"not_applicable","industryID":"not_applicable","industrySymbol":"not_applicable","industryName":"not_applicable","industryLevel":"not_applicable","isNew":"not_applicable","indexSymbol":"not_applicable","prntIndustryID":"not_applicable","beginDate":"not_applicable","endDate":"not_applicable","updateTime":"not_applicable"},
+      "business_key_fields": ["industry_version_cd","industry_id","begin_date"], "record_key_fields": ["business_key","end_date","update_time"], "watermark_field": "update_time", "freshness_hours": 24
+    },
+    "getMktInstEqudV1": {
+      "path": "/api/market/getMktInstEqudV1", "title": "行业板块日行情", "capability": "industry_quote", "table": null,
+      "input_types": {"industrySymbol":"String","secID":"String","indexSymbol":"String","beginDate":"Date","endDate":"Date","tradeDate":"Date","industryID":"String"},
+      "input_flags": {"industrySymbol":"M","secID":"M","indexSymbol":"M","beginDate":"N","endDate":"N","tradeDate":"M","industryID":"M"}, "required_any": [["industrySymbol","secID","indexSymbol","industryID"]],
+      "output_types": {"industrySymbol":"String","industryName":"String","secID":"String","indexSymbol":"String","tradeDate":"Date","closePrice":"Double","turnoverValue":"Double","chgPct":"Double","upNum":"Int32","downNum":"Int32","turnoverRate":"Double","netInflow":"Double","netMainInflow":"Double","industryID":"String","updateTime":"DateTime"},
+      "output_units": {"industrySymbol":null,"industryName":null,"secID":null,"indexSymbol":null,"tradeDate":null,"closePrice":"index_point","turnoverValue":"CNY","chgPct":"ratio","upNum":"count","downNum":"count","turnoverRate":"ratio","netInflow":"CNY","netMainInflow":"CNY","industryID":null,"updateTime":null},
+      "output_unit_status": {"industrySymbol":"not_applicable","industryName":"not_applicable","secID":"not_applicable","indexSymbol":"not_applicable","tradeDate":"not_applicable","closePrice":"reviewed","turnoverValue":"reviewed","chgPct":"reviewed","upNum":"reviewed","downNum":"reviewed","turnoverRate":"reviewed","netInflow":"reviewed","netMainInflow":"reviewed","industryID":"not_applicable","updateTime":"not_applicable"},
+      "business_key_fields": ["industry_id","trade_date"], "record_key_fields": ["business_key","update_time"], "watermark_field": "update_time", "freshness_hours": 24
+    },
+    "getMktIndustryEvalV1": {
+      "path": "/api/market/getMktIndustryEvalV1", "title": "行业估值信息(新)", "capability": "industry_valuation", "table": null,
+      "input_types": {"industryID":"String","beginDate":"Date","endDate":"Date","PEType":"Int16"},
+      "input_flags": {"industryID":"N","beginDate":"Y","endDate":"Y","PEType":"N"}, "required_all": ["beginDate","endDate"],
+      "output_types": {"industryID":"String","industryName":"String","tradeDate":"Date","industryMarketValue":"Int64","industryIncome":"Int64","industryAttrP":"Int64","PEValue":"Double","PEType":"Int16","PB":"Double"},
+      "output_units": {"industryID":null,"industryName":null,"tradeDate":null,"industryMarketValue":"CNY","industryIncome":"CNY","industryAttrP":"CNY","PEValue":"times","PEType":null,"PB":"times"},
+      "output_unit_status": {"industryID":"not_applicable","industryName":"not_applicable","tradeDate":"not_applicable","industryMarketValue":"reviewed","industryIncome":"reviewed","industryAttrP":"reviewed","PEValue":"reviewed","PEType":"not_applicable","PB":"reviewed"},
+      "business_key_fields": ["industry_id","trade_date","pe_type"], "record_key_fields": ["business_key"], "watermark_field": "trade_date", "freshness_hours": 24
+    },
+    "getMktIndustryFlowV1": {
+      "path": "/api/market/getMktIndustryFlowV1", "title": "行业资金流向(新)", "capability": "industry_flow", "table": null,
+      "input_types": {"tradeDate":"Date","beginDate":"Date","endDate":"Date","industryID":"String"},
+      "input_flags": {"tradeDate":"M","beginDate":"N","endDate":"N","industryID":"M"}, "required_any": [["tradeDate","industryID"]],
+      "output_types": {"industryID":"String","industryName":"String","tradeDate":"Date","moneyInflow":"Double","moneyOutflow":"Double","netMoneyInflow":"Double","netInflowRate":"Double","netInflowOpen":"Double","netInflowClose":"Double","updateTime":"DateTime"},
+      "output_units": {"industryID":null,"industryName":null,"tradeDate":null,"moneyInflow":"CNY","moneyOutflow":"CNY","netMoneyInflow":"CNY","netInflowRate":"ratio","netInflowOpen":"CNY","netInflowClose":"CNY","updateTime":null},
+      "output_unit_status": {"industryID":"not_applicable","industryName":"not_applicable","tradeDate":"not_applicable","moneyInflow":"reviewed","moneyOutflow":"reviewed","netMoneyInflow":"reviewed","netInflowRate":"reviewed","netInflowOpen":"reviewed","netInflowClose":"reviewed","updateTime":"not_applicable"},
+      "business_key_fields": ["industry_id","trade_date"], "record_key_fields": ["business_key","update_time"], "watermark_field": "update_time", "freshness_hours": 24
+    },
+    "getFdmtMesoIndu": {
+      "path": "/api/fundamental/getFdmtMesoIndu", "title": "中观行业财务数据", "capability": "industry_financial", "table": null,
+      "input_types": {"industry":"String","typeID":"String","itemID":"String","typeName":"String","beginDate":"Date","endDate":"Date"},
+      "input_flags": {"industry":"M","typeID":"M","itemID":"N","typeName":"M","beginDate":"Y","endDate":"N"}, "required_all": ["beginDate"], "required_any": [["industry","typeID","typeName"]],
+      "output_types": {"industry":"String","typeID":"String","typeName":"String","endDate":"Date","itemID":"String","itemName":"String","value":"Double","updateTime":"DateTime"},
+      "output_units": {"industry":null,"typeID":null,"typeName":null,"endDate":null,"itemID":null,"itemName":null,"value":null,"updateTime":null},
+      "output_unit_status": {"industry":"not_applicable","typeID":"not_applicable","typeName":"not_applicable","endDate":"not_applicable","itemID":"not_applicable","itemName":"not_applicable","value":"unverified","updateTime":"not_applicable"},
+      "business_key_fields": ["industry","type_id","item_id","end_date"], "record_key_fields": ["business_key","update_time"], "watermark_field": "update_time", "freshness_hours": 24
+    },
+    "getFdmtEfNew": {
+      "path": "/api/fundamental/getFdmtEfNew", "title": "业绩预告(新)", "capability": "company_event.earnings_forecast", "table": null,
+      "input_types": {"ticker":"String","secID":"String","endDate":"Date","beginDate":"Date","publishDateEnd":"Date","publishDateBegin":"Date","forecastType":"Int32","reportType":"String","actPubtimeBegin":"Date","actPubtimeEnd":"Date","updateTimeBegin":"DateTime","updateTimeEnd":"DateTime"},
+      "input_flags": {"ticker":"M","secID":"M","endDate":"N","beginDate":"N","publishDateEnd":"N","publishDateBegin":"N","forecastType":"N","reportType":"M","actPubtimeBegin":"N","actPubtimeEnd":"N","updateTimeBegin":"N","updateTimeEnd":"N"}, "required_any": [["ticker","secID"]],
+      "output_types": {"secID":"String","publishDate":"Date","endDate":"Date","ticker":"String","secShortName":"String","mergedFlag":"String","reportType":"String","forecastType":"Int32","expRevLL":"Double","expRevUPL":"Double","expnIncAPLL":"Double","expnIncAPUPL":"Double","NIncAPChgrLL":"Double","NIncAPChgrUPL":"Double","forecastCont":"String","updateTime":"DateTime"},
+      "output_units": {"secID":null,"publishDate":null,"endDate":null,"ticker":null,"secShortName":null,"mergedFlag":null,"reportType":null,"forecastType":null,"expRevLL":"CNY","expRevUPL":"CNY","expnIncAPLL":"CNY","expnIncAPUPL":"CNY","NIncAPChgrLL":"percent","NIncAPChgrUPL":"percent","forecastCont":null,"updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","publishDate":"not_applicable","endDate":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","mergedFlag":"not_applicable","reportType":"not_applicable","forecastType":"not_applicable","expRevLL":"reviewed","expRevUPL":"reviewed","expnIncAPLL":"reviewed","expnIncAPUPL":"reviewed","NIncAPChgrLL":"reviewed","NIncAPChgrUPL":"reviewed","forecastCont":"not_applicable","updateTime":"not_applicable"},
+      "business_key_fields": ["api","sec_id","end_date","report_type","merged_flag","forecast_type"], "record_key_fields": ["business_key","publish_date","update_time"], "watermark_field": "update_time", "version_order_fields": ["update_time","publish_date"], "freshness_hours": 24
+    },
+    "getFdmtEe": {
+      "path": "/api/fundamental/getFdmtEe", "title": "业绩快报 (Point in time)", "capability": "company_event.earnings_flash", "table": null,
+      "input_types": {"ticker":"String","secID":"String","publishDateEnd":"Date","publishDateBegin":"Date","endDate":"Date","beginDate":"Date","reportType":"String","updateTimeEnd":"DateTime","updateTimeBegin":"DateTime"},
+      "input_flags": {"ticker":"S","secID":"S","publishDateEnd":"N","publishDateBegin":"N","endDate":"N","beginDate":"N","reportType":"S","updateTimeEnd":"N","updateTimeBegin":"N"}, "required_any": [["ticker","secID"]],
+      "output_types": {"secID":"String","publishDate":"Date","endDate":"Date","ticker":"String","secShortName":"String","mergedFlag":"String","reportType":"String","revenue":"Double","operateProfit":"Double","NIncomeAttrP":"Double","basicEPS":"Double","ROE":"Double","TAssets":"Double","TEquityAttrP":"Double","revenueYOY":"Double","NIncomeAttrPYOY":"Double","updateTime":"DateTime"},
+      "output_units": {"secID":null,"publishDate":null,"endDate":null,"ticker":null,"secShortName":null,"mergedFlag":null,"reportType":null,"revenue":"CNY","operateProfit":"CNY","NIncomeAttrP":"CNY","basicEPS":"CNY/share","ROE":"percent","TAssets":"CNY","TEquityAttrP":"CNY","revenueYOY":"percent","NIncomeAttrPYOY":"percent","updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","publishDate":"not_applicable","endDate":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","mergedFlag":"not_applicable","reportType":"not_applicable","revenue":"reviewed","operateProfit":"reviewed","NIncomeAttrP":"reviewed","basicEPS":"reviewed","ROE":"reviewed","TAssets":"reviewed","TEquityAttrP":"reviewed","revenueYOY":"reviewed","NIncomeAttrPYOY":"reviewed","updateTime":"not_applicable"},
+      "business_key_fields": ["api","sec_id","end_date","report_type","merged_flag"], "record_key_fields": ["business_key","publish_date","update_time"], "watermark_field": "update_time", "version_order_fields": ["update_time","publish_date"], "freshness_hours": 24
+    },
+    "getEquChangePlan": {
+      "path": "/api/equity/getEquChangePlan", "title": "股东增减持计划", "capability": "company_event.shareholder_change", "table": null,
+      "input_types": {"secID":"String","ticker":"String","beginDate":"Date","endDate":"Date","publishDateBegin":"Date","publishDateEnd":"Date"},
+      "input_flags": {"secID":"M","ticker":"M","beginDate":"N","endDate":"N","publishDateBegin":"M","publishDateEnd":"M"}, "required_any": [["secID","ticker"]],
+      "output_types": {"secID":"String","ticker":"String","secShortName":"String","publishDate":"Date","firstPublishDate":"Date","beginDate":"Date","endDate":"Date","shID":"Int16","shName":"String","chgDir":"Int16","shChgUpL":"Double","shChgLL":"Double","ratioUpL":"Double","ratioLL":"Double","chgReason":"String","updateTime":"DateTime"},
+      "output_units": {"secID":null,"ticker":null,"secShortName":null,"publishDate":null,"firstPublishDate":null,"beginDate":null,"endDate":null,"shID":null,"shName":null,"chgDir":null,"shChgUpL":"share","shChgLL":"share","ratioUpL":"ratio","ratioLL":"ratio","chgReason":null,"updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","publishDate":"not_applicable","firstPublishDate":"not_applicable","beginDate":"not_applicable","endDate":"not_applicable","shID":"not_applicable","shName":"not_applicable","chgDir":"not_applicable","shChgUpL":"reviewed","shChgLL":"reviewed","ratioUpL":"reviewed","ratioLL":"reviewed","chgReason":"not_applicable","updateTime":"not_applicable"},
+      "business_key_fields": ["api","sec_id","publish_date","sh_id","chg_dir","begin_date","end_date"], "record_key_fields": ["business_key","update_time"], "watermark_field": "update_time", "version_order_fields": ["update_time","publish_date"], "freshness_hours": 24
+    },
+    "getEquShareBuyback": {
+      "path": "/api/equity/getEquShareBuyback", "title": "股份回购", "capability": "company_event.buyback", "table": null,
+      "input_types": {"secID":"String","ticker":"String","beginDate":"Date","endDate":"Date","buyBackType":"Int32","beginPrePubDate":"Date","endPrePubDate":"Date"},
+      "input_flags": {"secID":"M","ticker":"M","beginDate":"N","endDate":"N","buyBackType":"N","beginPrePubDate":"N","endPrePubDate":"N"}, "required_any": [["secID","ticker"]],
+      "output_types": {"secID":"String","ticker":"String","secShortName":"String","prePubDate":"Date","publishDate":"Date","endDate":"Date","buyBackProcess":"Int32","buyBackType":"Int32","buyBackValue":"Double","buyBackVol":"Double","priceUpl":"Double","priceLl":"Double","chgDetl":"Text","updateTime":"DateTime"},
+      "output_units": {"secID":null,"ticker":null,"secShortName":null,"prePubDate":null,"publishDate":null,"endDate":null,"buyBackProcess":null,"buyBackType":null,"buyBackValue":"CNY","buyBackVol":"share","priceUpl":"CNY/share","priceLl":"CNY/share","chgDetl":null,"updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","prePubDate":"not_applicable","publishDate":"not_applicable","endDate":"not_applicable","buyBackProcess":"not_applicable","buyBackType":"not_applicable","buyBackValue":"reviewed","buyBackVol":"reviewed","priceUpl":"reviewed","priceLl":"reviewed","chgDetl":"not_applicable","updateTime":"not_applicable"},
+      "business_key_fields": ["api","sec_id","pre_pub_date","buy_back_type"], "record_key_fields": ["business_key","publish_date","update_time"], "watermark_field": "update_time", "version_order_fields": ["update_time","publish_date","pre_pub_date"], "freshness_hours": 24
+    },
+    "getEquMjrCntrPIT": {
+      "path": "/api/equity/getEquMjrCntrPIT", "title": "上市公司重大合同-PIT", "capability": "company_event.major_contract", "table": null,
+      "input_types": {"secID":"String","ticker":"String","partyID":"Int64","annoID":"String","beginDate":"Date","endDate":"Date"},
+      "input_flags": {"secID":"M","ticker":"M","partyID":"M","annoID":"N","beginDate":"N","endDate":"N"}, "required_any": [["secID","ticker"]],
+      "output_types": {"secID":"String","ticker":"String","secShortName":"String","publishDate":"Date","progress":"String","projectName":"String","cntrName":"String","cntrTotalUpl":"Double","cntrTotalLol":"Double","currency":"String","annoID":"String","recordID":"String","updateTime":"DateTime"},
+      "output_units": {"secID":null,"ticker":null,"secShortName":null,"publishDate":null,"progress":null,"projectName":null,"cntrName":null,"cntrTotalUpl":"currency_unit","cntrTotalLol":"currency_unit","currency":null,"annoID":null,"recordID":null,"updateTime":null},
+      "output_unit_status": {"secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","publishDate":"not_applicable","progress":"not_applicable","projectName":"not_applicable","cntrName":"not_applicable","cntrTotalUpl":"reviewed","cntrTotalLol":"reviewed","currency":"not_applicable","annoID":"not_applicable","recordID":"not_applicable","updateTime":"not_applicable"},
+      "business_key_fields": ["api","record_id","anno_id"], "record_key_fields": ["business_key","update_time","publish_date"], "watermark_field": "update_time", "version_order_fields": ["update_time","publish_date"], "freshness_hours": 24
+    },
+    "getEquRegulatory": {
+      "path": "/api/equity/getEquRegulatory", "title": "上市公司监管信息", "capability": "company_event.regulatory", "table": null,
+      "input_types": {"ticker":"String","secID":"String","partyShortName":"String","beginDate":"Date","endDate":"Date"},
+      "input_flags": {"ticker":"M","secID":"M","partyShortName":"M","beginDate":"M","endDate":"M"}, "required_any": [["ticker","secID","partyShortName"]], "bounded_ranges": [["beginDate","endDate"]],
+      "output_types": {"ticker":"String","secID":"String","secShortName":"String","regulatoryDate":"Date","regulatoryType":"String","regulatoryReason":"String","regulatoryObject":"String","inquiryResponse":"String","infoSource":"String","eventNum":"String"},
+      "output_units": {"ticker":null,"secID":null,"secShortName":null,"regulatoryDate":null,"regulatoryType":null,"regulatoryReason":null,"regulatoryObject":null,"inquiryResponse":null,"infoSource":null,"eventNum":null},
+      "output_unit_status": {"ticker":"not_applicable","secID":"not_applicable","secShortName":"not_applicable","regulatoryDate":"not_applicable","regulatoryType":"not_applicable","regulatoryReason":"not_applicable","regulatoryObject":"not_applicable","inquiryResponse":"not_applicable","infoSource":"not_applicable","eventNum":"not_applicable"},
+      "business_key_fields": ["api","event_num"], "record_key_fields": ["business_key","regulatory_date"], "watermark_field": "regulatory_date", "version_order_fields": ["regulatory_date"], "freshness_hours": 24
+    },
+    "getEquCompIllegal": {
+      "path": "/api/equity/getEquCompIllegal", "title": "上市公司违规情况", "capability": "company_event.violation", "table": null,
+      "input_types": {"secID":"String","ticker":"String","beginDate":"Date","endDate":"Date"},
+      "input_flags": {"secID":"S","ticker":"S","beginDate":"N","endDate":"N"}, "required_any": [["secID","ticker"]],
+      "output_types": {"secID":"String","ticker":"String","secShortName":"String","publishDate":"Date","lllegalType":"String","lllegalSubject":"Int","adminobject":"String","event":"Text","punishmentType":"String","punishmentMeasure":"Text","punishmentUnit":"String","punishmentAmount":"Double"},
+      "output_units": {"secID":null,"ticker":null,"secShortName":null,"publishDate":null,"lllegalType":null,"lllegalSubject":null,"adminobject":null,"event":null,"punishmentType":null,"punishmentMeasure":null,"punishmentUnit":null,"punishmentAmount":"CNY_10k"},
+      "output_unit_status": {"secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","publishDate":"not_applicable","lllegalType":"not_applicable","lllegalSubject":"unverified","adminobject":"not_applicable","event":"not_applicable","punishmentType":"not_applicable","punishmentMeasure":"not_applicable","punishmentUnit":"not_applicable","punishmentAmount":"reviewed"},
+      "business_key_fields": ["api","sec_id","publish_date","lllegal_type","lllegal_subject"], "record_key_fields": ["business_key"], "watermark_field": "publish_date", "version_order_fields": ["publish_date"], "freshness_hours": 24
+    },
+    "getEquLawSuits": {
+      "path": "/api/equity/getEquLawSuits", "title": "上市公司诉讼仲裁", "capability": "company_event.lawsuit", "table": null,
+      "input_types": {"secID":"String","ticker":"String","beginDate":"Date","endDate":"Date","partyID":"Int64","lawsuitType":"int32"},
+      "input_flags": {"secID":"M","ticker":"M","beginDate":"N","endDate":"N","partyID":"M","lawsuitType":"N"}, "required_any": [["secID","ticker"]],
+      "output_types": {"partyID":"Int64","secID":"String","ticker":"String","secShortName":"String","publishDate":"Date","lawsuitType":"Int32","sueDate":"Date","abstract":"String","caseIntroduction":"Text","eventPrce":"Text","suitAmount":"Double","currencyCode":"String","accuser":"String","accused":"String","updateTime":"DateTime"},
+      "output_units": {"partyID":null,"secID":null,"ticker":null,"secShortName":null,"publishDate":null,"lawsuitType":null,"sueDate":null,"abstract":null,"caseIntroduction":null,"eventPrce":null,"suitAmount":"CNY","currencyCode":null,"accuser":null,"accused":null,"updateTime":null},
+      "output_unit_status": {"partyID":"not_applicable","secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","publishDate":"not_applicable","lawsuitType":"not_applicable","sueDate":"not_applicable","abstract":"not_applicable","caseIntroduction":"not_applicable","eventPrce":"not_applicable","suitAmount":"reviewed","currencyCode":"not_applicable","accuser":"not_applicable","accused":"not_applicable","updateTime":"not_applicable"},
+      "business_key_fields": ["api","sec_id","publish_date","lawsuit_type","sue_date","accuser","accused"], "record_key_fields": ["business_key","update_time"], "watermark_field": "update_time", "version_order_fields": ["update_time","publish_date"], "freshness_hours": 24
+    },
+    "getEquBoardPIT": {
+      "path": "/api/equity/getEquBoardPIT", "title": "董事会公告主表", "capability": "company_event.board_resolution", "table": null,
+      "input_types": {"beginDate":"Date","endDate":"Date","ticker":"String","partyID":"Int16"},
+      "input_flags": {"beginDate":"N","endDate":"N","ticker":"M","partyID":"M"}, "required_any": [["ticker","partyID"]],
+      "output_types": {"ticker":"String","partyShortName":"String","publishDate":"Date","meetingDate":"Date","meetingNum":"String","meetingLocation":"String","meetingMode":"Int16","planDrec":"Int16","actrDrec":"Int16","annoID":"String"},
+      "output_units": {"ticker":null,"partyShortName":null,"publishDate":null,"meetingDate":null,"meetingNum":null,"meetingLocation":null,"meetingMode":null,"planDrec":"person","actrDrec":"person","annoID":null},
+      "output_unit_status": {"ticker":"not_applicable","partyShortName":"not_applicable","publishDate":"not_applicable","meetingDate":"not_applicable","meetingNum":"not_applicable","meetingLocation":"not_applicable","meetingMode":"not_applicable","planDrec":"reviewed","actrDrec":"reviewed","annoID":"not_applicable"},
+      "business_key_fields": ["api","anno_id"], "record_key_fields": ["business_key","publish_date"], "watermark_field": "publish_date", "version_order_fields": ["publish_date"], "freshness_hours": 24
+    },
+    "getEquBoardPubPIT": {
+      "path": "/api/equity/getEquBoardPubPIT", "title": "董事会公告议案明细", "capability": "company_event.board_resolution", "table": null,
+      "input_types": {"beginDate":"Date","endDate":"Date","ticker":"String","partyID":"Int16"},
+      "input_flags": {"beginDate":"N","endDate":"N","ticker":"M","partyID":"M"}, "required_any": [["ticker","partyID"]],
+      "output_types": {"ticker":"String","partyShortName":"String","publishDate":"Date","propType":"String","propName":"String","isPass":"Int16","annoID":"String","recordID":"String"},
+      "output_units": {"ticker":null,"partyShortName":null,"publishDate":null,"propType":null,"propName":null,"isPass":null,"annoID":null,"recordID":null},
+      "output_unit_status": {"ticker":"not_applicable","partyShortName":"not_applicable","publishDate":"not_applicable","propType":"not_applicable","propName":"not_applicable","isPass":"not_applicable","annoID":"not_applicable","recordID":"not_applicable"},
+      "business_key_fields": ["api","anno_id","record_id"], "record_key_fields": ["business_key","publish_date"], "watermark_field": "publish_date", "version_order_fields": ["publish_date"], "freshness_hours": 24
+    },
+    "getEquDivPIT": {
+      "path": "/api/equity/getEquDivPIT", "title": "分红-PIT", "capability": "company_event.dividend", "table": null,
+      "input_types": {"ticker":"String","secID":"String","beginDate":"Date","endDate":"Date","beginPublishDate":"Date","endPublishDate":"Date"},
+      "input_flags": {"ticker":"M","secID":"M","beginDate":"N","endDate":"N","beginPublishDate":"N","endPublishDate":"N"}, "required_any": [["ticker","secID"]],
+      "output_types": {"secID":"String","secShortName":"String","ticker":"String","newPubDate":"Date","endDate":"Date","isDiv":"String","eventNum":"String","publishDate":"Date","eventProcessCD":"Int16","perCashDiv":"Double","perShareDivRatio":"Double","perShareTransRatio":"Double","recordDate":"Date","exDivDate":"Date","payCashDate":"Date","annoID":"String","url":"Text"},
+      "output_units": {"secID":null,"secShortName":null,"ticker":null,"newPubDate":null,"endDate":null,"isDiv":null,"eventNum":null,"publishDate":null,"eventProcessCD":null,"perCashDiv":"CNY/share","perShareDivRatio":"ratio","perShareTransRatio":"ratio","recordDate":null,"exDivDate":null,"payCashDate":null,"annoID":null,"url":null},
+      "output_unit_status": {"secID":"not_applicable","secShortName":"not_applicable","ticker":"not_applicable","newPubDate":"not_applicable","endDate":"not_applicable","isDiv":"not_applicable","eventNum":"not_applicable","publishDate":"not_applicable","eventProcessCD":"not_applicable","perCashDiv":"reviewed","perShareDivRatio":"reviewed","perShareTransRatio":"reviewed","recordDate":"not_applicable","exDivDate":"not_applicable","payCashDate":"not_applicable","annoID":"not_applicable","url":"not_applicable"},
+      "business_key_fields": ["api","anno_id","event_num"], "record_key_fields": ["business_key","new_pub_date","event_process_cd"], "watermark_field": "new_pub_date", "version_order_fields": ["new_pub_date","publish_date","event_process_cd"], "freshness_hours": 24
+    },
+    "getEquIsActivity": {
+      "path": "/api/equity/getEquIsActivity", "title": "A股机构调研活动统计", "capability": "investor_research", "table": null,
+      "input_types": {"secID":"String","ticker":"String","publishBeginDate":"Date","publishEndDate":"Date","surveyBeginDate":"Date","surveyEndDate":"Date"},
+      "input_flags": {"secID":"S","ticker":"S","publishBeginDate":"S","publishEndDate":"S","surveyBeginDate":"S","surveyEndDate":"S"}, "required_any": [["secID","ticker"]],
+      "output_types": {"eventID":"String","secID":"String","ticker":"String","secShortName":"String","surveyDate":"Date","publishDate":"Date","partyNum":"Int64","updateTime":"DateTime"},
+      "output_units": {"eventID":null,"secID":null,"ticker":null,"secShortName":null,"surveyDate":null,"publishDate":null,"partyNum":"organization","updateTime":null},
+      "output_unit_status": {"eventID":"not_applicable","secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","surveyDate":"not_applicable","publishDate":"not_applicable","partyNum":"reviewed","updateTime":"not_applicable"},
+      "business_key_fields": ["event_id"], "record_key_fields": ["event_id","update_time"], "watermark_field": "update_time", "version_order_fields": ["update_time","publish_date"], "freshness_hours": 24
+    },
+    "getEquIsParticipantQa": {
+      "path": "/api/equity/getEquIsParticipantQa", "title": "A股机构调研活动明细", "capability": "investor_research_detail", "table": null,
+      "input_types": {"secID":"String","ticker":"String","eventID":"String"},
+      "input_flags": {"secID":"S","ticker":"S","eventID":"S"}, "required_any": [["eventID","secID","ticker"]],
+      "output_types": {"eventID":"String","secID":"String","ticker":"String","secShortName":"String","partyName":"String","partyType":"String","activityType":"String","participantName":"String","receptionistName":"String","location":"String","centent":"Text"},
+      "output_units": {"eventID":null,"secID":null,"ticker":null,"secShortName":null,"partyName":null,"partyType":null,"activityType":null,"participantName":null,"receptionistName":null,"location":null,"centent":null},
+      "output_unit_status": {"eventID":"not_applicable","secID":"not_applicable","ticker":"not_applicable","secShortName":"not_applicable","partyName":"not_applicable","partyType":"not_applicable","activityType":"not_applicable","participantName":"not_applicable","receptionistName":"not_applicable","location":"not_applicable","centent":"not_applicable"},
+      "business_key_fields": ["event_id","party_name","participant_name"], "record_key_fields": ["business_key","centent"], "watermark_field": null, "freshness_hours": 24
+    }
+  }
+}

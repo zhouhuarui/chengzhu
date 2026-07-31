@@ -1,0 +1,1020 @@
+{
+  "nodes": [
+    {
+      "id": "company_600519.SH",
+      "name": "600519.SH",
+      "type": "Company",
+      "summary": "标的 600519.SH"
+    },
+    {
+      "id": "n_02c227fc",
+      "name": "贵州茅台重大事项公告",
+      "type": "Disclosure",
+      "summary": "[E1][announcement|巨潮资讯网|2026-07-18T00:00:00+08:00] 贵州茅台重大事项公告\n贵州茅台重大事项公告\n结构化字段: {\"category\": \"重大事项\", \"degraded\": false}"
+    },
+    {
+      "id": "n_a16a926e",
+      "name": "贵州茅台2025年年度权益分派实施公告",
+      "type": "Disclosure",
+      "summary": "[E2][announcement|巨潮资讯网|2026-06-22T00:00:00+08:00] 贵州茅台2025年年度权益分派实施公告\n贵州茅台2025年年度权益分派实施公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_b3748451",
+      "name": "贵州茅台关于职工董事选举结果的公告",
+      "type": "Disclosure",
+      "summary": "[E3][announcement|巨潮资讯网|2026-06-12T00:00:00+08:00] 贵州茅台关于职工董事选举结果的公告\n贵州茅台关于职工董事选举结果的公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_7f10d9a3",
+      "name": "贵州茅台2025年度股东会决议公告",
+      "type": "Disclosure",
+      "summary": "[E4][announcement|巨潮资讯网|2026-06-12T00:00:00+08:00] 贵州茅台2025年度股东会决议公告\n贵州茅台2025年度股东会决议公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_941bcda0",
+      "name": "北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书",
+      "type": "Disclosure",
+      "summary": "[E5][announcement|巨潮资讯网|2026-06-12T00:00:00+08:00] 北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书\n北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_c827b086",
+      "name": "贵州茅台第五届董事会2026年度第一次会议决议公告",
+      "type": "Disclosure",
+      "summary": "[E6][announcement|巨潮资讯网|2026-06-12T00:00:00+08:00] 贵州茅台第五届董事会2026年度第一次会议决议公告\n贵州茅台第五届董事会2026年度第一次会议决议公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_6d8b06d9",
+      "name": "贵州茅台董事、高级管理人员考核和薪酬管理办法",
+      "type": "Disclosure",
+      "summary": "[E7][announcement|巨潮资讯网|2026-06-12T00:00:00+08:00] 贵州茅台董事、高级管理人员考核和薪酬管理办法\n贵州茅台董事、高级管理人员考核和薪酬管理办法\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_4662f13d",
+      "name": "贵州茅台关于聘任董事会秘书的公告",
+      "type": "Disclosure",
+      "summary": "[E8][announcement|巨潮资讯网|2026-06-12T00:00:00+08:00] 贵州茅台关于聘任董事会秘书的公告\n贵州茅台关于聘任董事会秘书的公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_5b14832a",
+      "name": "贵州茅台关于调整2025年年度利润分配方案每股分红金额的公告",
+      "type": "Disclosure",
+      "summary": "[E9][announcement|巨潮资讯网|2026-06-03T00:00:00+08:00] 贵州茅台关于调整2025年年度利润分配方案每股分红金额的公告\n贵州茅台关于调整2025年年度利润分配方案每股分红金额的公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_c59d8308",
+      "name": "贵州茅台2025年度股东会会议资料",
+      "type": "Disclosure",
+      "summary": "[E10][announcement|巨潮资讯网|2026-06-03T00:00:00+08:00] 贵州茅台2025年度股东会会议资料\n贵州茅台2025年度股东会会议资料\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_14ed5782",
+      "name": "贵州茅台关于回购股份实施结果暨股份变动的公告",
+      "type": "Disclosure",
+      "summary": "[E11][announcement|巨潮资讯网|2026-05-28T00:00:00+08:00] 贵州茅台关于回购股份实施结果暨股份变动的公告\n贵州茅台关于回购股份实施结果暨股份变动的公告\n结构化字段: {\"category\": \"股权变动\", \"degraded\": false}"
+    },
+    {
+      "id": "n_fe32dcd9",
+      "name": "贵州茅台关于召开2025年度股东会的通知",
+      "type": "Disclosure",
+      "summary": "[E12][announcement|巨潮资讯网|2026-05-22T00:00:00+08:00] 贵州茅台关于召开2025年度股东会的通知\n贵州茅台关于召开2025年度股东会的通知\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_cc9b36bc",
+      "name": "贵州茅台独立董事候选人声明与承诺（王鑫）",
+      "type": "Disclosure",
+      "summary": "[E13][announcement|巨潮资讯网|2026-05-22T00:00:00+08:00] 贵州茅台独立董事候选人声明与承诺（王鑫）\n贵州茅台独立董事候选人声明与承诺（王鑫）\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_22d8a868",
+      "name": "贵州茅台独立董事候选人声明与承诺（郭田勇）",
+      "type": "Disclosure",
+      "summary": "[E14][announcement|巨潮资讯网|2026-05-22T00:00:00+08:00] 贵州茅台独立董事候选人声明与承诺（郭田勇）\n贵州茅台独立董事候选人声明与承诺（郭田勇）\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_f4d20f10",
+      "name": "贵州茅台关于聘任董事会秘书的公告",
+      "type": "Disclosure",
+      "summary": "[E15][announcement|巨潮资讯网|2026-05-22T00:00:00+08:00] 贵州茅台关于聘任董事会秘书的公告\n贵州茅台关于聘任董事会秘书的公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_572f4386",
+      "name": "贵州茅台独立董事候选人声明与承诺（盛雷鸣）",
+      "type": "Disclosure",
+      "summary": "[E16][announcement|巨潮资讯网|2026-05-22T00:00:00+08:00] 贵州茅台独立董事候选人声明与承诺（盛雷鸣）\n贵州茅台独立董事候选人声明与承诺（盛雷鸣）\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_d4b99331",
+      "name": "贵州茅台独立董事提名人声明与承诺",
+      "type": "Disclosure",
+      "summary": "[E17][announcement|巨潮资讯网|2026-05-22T00:00:00+08:00] 贵州茅台独立董事提名人声明与承诺\n贵州茅台独立董事提名人声明与承诺\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_405e189f",
+      "name": "贵州茅台关于与关联方签订《商标许可协议》的公告",
+      "type": "Disclosure",
+      "summary": "[E18][announcement|巨潮资讯网|2026-05-22T00:00:00+08:00] 贵州茅台关于与关联方签订《商标许可协议》的公告\n贵州茅台关于与关联方签订《商标许可协议》的公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_49713c07",
+      "name": "贵州茅台第四届董事会2026年度第八次会议决议公告",
+      "type": "Disclosure",
+      "summary": "[E19][announcement|巨潮资讯网|2026-05-22T00:00:00+08:00] 贵州茅台第四届董事会2026年度第八次会议决议公告\n贵州茅台第四届董事会2026年度第八次会议决议公告\n结构化字段: {\"category\": \"其他\", \"degraded\": false}"
+    },
+    {
+      "id": "n_ee22b631",
+      "name": "贵州茅台关于回购股份实施进展的公告",
+      "type": "Disclosure",
+      "summary": "[E20][announcement|巨潮资讯网|2026-05-08T00:00:00+08:00] 贵州茅台关于回购股份实施进展的公告\n贵州茅台关于回购股份实施进展的公告\n结构化字段: {\"category\": \"股权变动\", \"degraded\": false}"
+    },
+    {
+      "id": "company_600519",
+      "name": "600519",
+      "type": "Company",
+      "summary": "标的 600519"
+    },
+    {
+      "id": "n_a72b3d64",
+      "name": "600519 利润表 2026-03-31",
+      "type": "FinancialMetric",
+      "summary": "[E21][financial_report|东方财富|2026-03-31T00:00:00+08:00] 600519 利润表 2026-03-31\n2026-03-31 利润表：，营业总收入 547.03 亿元，归母净利润 272.43 亿元，基本每股收益 21.76\n结构化字段: {\"REPORT_DATE\": \"2026-03-31 00:00:00\", \"TOTAL_OPERATE_I"
+    },
+    {
+      "id": "n_ff45791b",
+      "name": "600519 利润表 2025-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E22][financial_report|东方财富|2025-12-31T00:00:00+08:00] 600519 利润表 2025-12-31\n2025-12-31 利润表：，营业总收入 1720.54 亿元，归母净利润 823.2 亿元，基本每股收益 65.66\n结构化字段: {\"REPORT_DATE\": \"2025-12-31 00:00:00\", \"TOTAL_OPERATE_I"
+    },
+    {
+      "id": "n_24c0d075",
+      "name": "600519 利润表 2025-09-30",
+      "type": "FinancialMetric",
+      "summary": "[E23][financial_report|东方财富|2025-09-30T00:00:00+08:00] 600519 利润表 2025-09-30\n2025-09-30 利润表：，营业总收入 1309.04 亿元，归母净利润 646.27 亿元，基本每股收益 51.53\n结构化字段: {\"REPORT_DATE\": \"2025-09-30 00:00:00\", \"TOTAL_OPERATE_"
+    },
+    {
+      "id": "n_726b8528",
+      "name": "600519 利润表 2025-06-30",
+      "type": "FinancialMetric",
+      "summary": "[E24][financial_report|东方财富|2025-06-30T00:00:00+08:00] 600519 利润表 2025-06-30\n2025-06-30 利润表：，营业总收入 910.94 亿元，归母净利润 454.03 亿元，基本每股收益 36.18\n结构化字段: {\"REPORT_DATE\": \"2025-06-30 00:00:00\", \"TOTAL_OPERATE_I"
+    },
+    {
+      "id": "n_cce4a251",
+      "name": "600519 利润表 2025-03-31",
+      "type": "FinancialMetric",
+      "summary": "[E25][financial_report|东方财富|2025-03-31T00:00:00+08:00] 600519 利润表 2025-03-31\n2025-03-31 利润表：，营业总收入 514.43 亿元，归母净利润 268.47 亿元，基本每股收益 21.38\n结构化字段: {\"REPORT_DATE\": \"2025-03-31 00:00:00\", \"TOTAL_OPERATE_I"
+    },
+    {
+      "id": "n_9928e52f",
+      "name": "600519 利润表 2024-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E26][financial_report|东方财富|2024-12-31T00:00:00+08:00] 600519 利润表 2024-12-31\n2024-12-31 利润表：，营业总收入 1741.44 亿元，归母净利润 862.28 亿元，基本每股收益 68.64\n结构化字段: {\"REPORT_DATE\": \"2024-12-31 00:00:00\", \"TOTAL_OPERATE_"
+    },
+    {
+      "id": "n_2c3932df",
+      "name": "600519.SH 财务指标 1998-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E27][financial_report|新浪财经|1998-12-31T00:00:00+08:00] 600519.SH 财务指标 1998-12-31\n{'日期': datetime.date(1998, 12, 31), '摊薄每股收益(元)': nan, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': nan, '"
+    },
+    {
+      "id": "n_08737e4e",
+      "name": "600519.SH 财务指标 1999-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E28][financial_report|新浪财经|1999-12-31T00:00:00+08:00] 600519.SH 财务指标 1999-12-31\n{'日期': datetime.date(1999, 12, 31), '摊薄每股收益(元)': 1.1658, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': nan"
+    },
+    {
+      "id": "n_fe0b1215",
+      "name": "600519.SH 财务指标 2000-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E29][financial_report|新浪财经|2000-12-31T00:00:00+08:00] 600519.SH 财务指标 2000-12-31\n{'日期': datetime.date(2000, 12, 31), '摊薄每股收益(元)': 1.36, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 1.36,"
+    },
+    {
+      "id": "n_0e21c5c9",
+      "name": "600519.SH 财务指标 2001-06-30",
+      "type": "FinancialMetric",
+      "summary": "[E30][financial_report|新浪财经|2001-06-30T00:00:00+08:00] 600519.SH 财务指标 2001-06-30\n{'日期': datetime.date(2001, 6, 30), '摊薄每股收益(元)': 1.21, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 1.21, "
+    },
+    {
+      "id": "n_cfc06cbc",
+      "name": "600519.SH 财务指标 2001-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E31][financial_report|新浪财经|2001-12-31T00:00:00+08:00] 600519.SH 财务指标 2001-12-31\n{'日期': datetime.date(2001, 12, 31), '摊薄每股收益(元)': 1.3695, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': nan"
+    },
+    {
+      "id": "n_a0dc6724",
+      "name": "600519.SH 财务指标 2002-03-31",
+      "type": "FinancialMetric",
+      "summary": "[E32][financial_report|新浪财经|2002-03-31T00:00:00+08:00] 600519.SH 财务指标 2002-03-31\n{'日期': datetime.date(2002, 3, 31), '摊薄每股收益(元)': 0.8552, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': nan,"
+    },
+    {
+      "id": "n_4dd85dff",
+      "name": "600519.SH 财务指标 2002-06-30",
+      "type": "FinancialMetric",
+      "summary": "[E33][financial_report|新浪财经|2002-06-30T00:00:00+08:00] 600519.SH 财务指标 2002-06-30\n{'日期': datetime.date(2002, 6, 30), '摊薄每股收益(元)': 0.9854, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': nan,"
+    },
+    {
+      "id": "n_483c0603",
+      "name": "600519.SH 财务指标 2002-09-30",
+      "type": "FinancialMetric",
+      "summary": "[E34][financial_report|新浪财经|2002-09-30T00:00:00+08:00] 600519.SH 财务指标 2002-09-30\n{'日期': datetime.date(2002, 9, 30), '摊薄每股收益(元)': 1.164, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 0.0, "
+    },
+    {
+      "id": "n_c7ca2fdd",
+      "name": "600519.SH 财务指标 2002-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E35][financial_report|新浪财经|2002-12-31T00:00:00+08:00] 600519.SH 财务指标 2002-12-31\n{'日期': datetime.date(2002, 12, 31), '摊薄每股收益(元)': 1.4276, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 1.3"
+    },
+    {
+      "id": "n_13d52ef6",
+      "name": "600519.SH 财务指标 2003-03-31",
+      "type": "FinancialMetric",
+      "summary": "[E36][financial_report|新浪财经|2003-03-31T00:00:00+08:00] 600519.SH 财务指标 2003-03-31\n{'日期': datetime.date(2003, 3, 31), '摊薄每股收益(元)': 0.8186, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 0.0,"
+    },
+    {
+      "id": "n_0180fd22",
+      "name": "600519.SH 财务指标 2003-06-30",
+      "type": "FinancialMetric",
+      "summary": "[E37][financial_report|新浪财经|2003-06-30T00:00:00+08:00] 600519.SH 财务指标 2003-06-30\n{'日期': datetime.date(2003, 6, 30), '摊薄每股收益(元)': 0.9545, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 0.0,"
+    },
+    {
+      "id": "n_e39c69eb",
+      "name": "600519.SH 财务指标 2003-09-30",
+      "type": "FinancialMetric",
+      "summary": "[E38][financial_report|新浪财经|2003-09-30T00:00:00+08:00] 600519.SH 财务指标 2003-09-30\n{'日期': datetime.date(2003, 9, 30), '摊薄每股收益(元)': 1.2225, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 0.0,"
+    },
+    {
+      "id": "n_8a789083",
+      "name": "600519.SH 财务指标 2003-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E39][financial_report|新浪财经|2003-12-31T00:00:00+08:00] 600519.SH 财务指标 2003-12-31\n{'日期': datetime.date(2003, 12, 31), '摊薄每股收益(元)': 2.0124, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 1.9"
+    },
+    {
+      "id": "n_374982c3",
+      "name": "600519.SH 财务指标 2004-03-31",
+      "type": "FinancialMetric",
+      "summary": "[E40][financial_report|新浪财经|2004-03-31T00:00:00+08:00] 600519.SH 财务指标 2004-03-31\n{'日期': datetime.date(2004, 3, 31), '摊薄每股收益(元)': 0.897, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 0.0, "
+    },
+    {
+      "id": "n_60c81689",
+      "name": "600519.SH 财务指标 2004-06-30",
+      "type": "FinancialMetric",
+      "summary": "[E41][financial_report|新浪财经|2004-06-30T00:00:00+08:00] 600519.SH 财务指标 2004-06-30\n{'日期': datetime.date(2004, 6, 30), '摊薄每股收益(元)': 1.2035, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 1.15"
+    },
+    {
+      "id": "n_a0e96ab3",
+      "name": "600519.SH 财务指标 2004-09-30",
+      "type": "FinancialMetric",
+      "summary": "[E42][financial_report|新浪财经|2004-09-30T00:00:00+08:00] 600519.SH 财务指标 2004-09-30\n{'日期': datetime.date(2004, 9, 30), '摊薄每股收益(元)': 1.3683, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 0.0,"
+    },
+    {
+      "id": "n_fb17b81f",
+      "name": "600519.SH 财务指标 2004-12-31",
+      "type": "FinancialMetric",
+      "summary": "[E43][financial_report|新浪财经|2004-12-31T00:00:00+08:00] 600519.SH 财务指标 2004-12-31\n{'日期': datetime.date(2004, 12, 31), '摊薄每股收益(元)': 2.1721, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 2.0"
+    },
+    {
+      "id": "n_d95a8d78",
+      "name": "600519.SH 财务指标 2005-03-31",
+      "type": "FinancialMetric",
+      "summary": "[E44][financial_report|新浪财经|2005-03-31T00:00:00+08:00] 600519.SH 财务指标 2005-03-31\n{'日期': datetime.date(2005, 3, 31), '摊薄每股收益(元)': 0.9763, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 0.0,"
+    },
+    {
+      "id": "n_77deaabf",
+      "name": "600519.SH 财务指标 2005-06-30",
+      "type": "FinancialMetric",
+      "summary": "[E45][financial_report|新浪财经|2005-06-30T00:00:00+08:00] 600519.SH 财务指标 2005-06-30\n{'日期': datetime.date(2005, 6, 30), '摊薄每股收益(元)': 1.2783, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 1.22"
+    },
+    {
+      "id": "n_ed293b78",
+      "name": "600519.SH 财务指标 2005-09-30",
+      "type": "FinancialMetric",
+      "summary": "[E46][financial_report|新浪财经|2005-09-30T00:00:00+08:00] 600519.SH 财务指标 2005-09-30\n{'日期': datetime.date(2005, 9, 30), '摊薄每股收益(元)': 1.5568, '加权每股收益(元)': nan, '每股收益_调整后(元)': nan, '扣除非经常性损益后的每股收益(元)': 0.0,"
+    },
+    {
+      "id": "n_1ec1c85b",
+      "name": "600519.SH 行情快照",
+      "type": "Industry",
+      "summary": "[E47][industry_data|新浪财经|2026-07-25T14:52:55+08:00] 600519.SH 行情快照\n600519.SH 近90日：最新收盘 1297.41，区间涨跌幅 -9.04%；行业 None；总市值 None\n结构化字段: {\"latest_close\": 1297.41, \"range_pct\": -9.04, \"market_cap\": null, \"i"
+    },
+    {
+      "id": "n_46943971",
+      "name": "宏观指标：cpi",
+      "type": "Industry",
+      "summary": "[E48][industry_data|东方财富/国家统计局公开数据|] 宏观指标：cpi\n[{'商品': '中国CPI年率报告', '日期': datetime.date(2025, 7, 9), '今值': 0.1, '预测值': -0.1, '前值': -0.1}, {'商品': '中国CPI年率报告', '日期': datetime.date(2025, 8, 9), '今值': 0.0,"
+    },
+    {
+      "id": "n_6ef2735b",
+      "name": "宏观指标：pmi",
+      "type": "Industry",
+      "summary": "[E49][industry_data|东方财富/国家统计局公开数据|] 宏观指标：pmi\n[{'商品': '中国官方制造业PMI', '日期': datetime.date(2025, 6, 30), '今值': 49.7, '预测值': 49.6, '前值': 49.5}, {'商品': '中国官方制造业PMI', '日期': datetime.date(2025, 7, 31), '今值':"
+    },
+    {
+      "id": "n_7e2d7bd2",
+      "name": "15股今日获机构买入评级",
+      "type": "Event",
+      "summary": "[E50][news|证券时报网|2026-07-23T18:12:00+08:00] 15股今日获机构买入评级\n001339 智微智能 国投证券 买入-A 买入-A 94.85 76.35 002906 华阳集团 国信证券 优于大市 优于大市 34.07 23.77 600795 国电电力 国金证券 买入 未评级 6.02 5.04 600507 方大特钢 东方证券 买入 买入 5.16 4.3"
+    },
+    {
+      "id": "n_28188da7",
+      "name": "贵州茅台退居公募第30大重仓股：白酒迎来底部机会？",
+      "type": "Event",
+      "summary": "[E51][news|财中社|2026-07-23T16:00:00+08:00] 贵州茅台退居公募第30大重仓股：白酒迎来底部机会？\n天相投顾数据显示，截至2026年二季度末，贵州茅台600519已退居公募第30大重仓股。在公募前50大重仓股中，传统行业标的仅有贵州茅台、美的集团、紫金矿业和杰瑞股份。\n结构化字段: {\"degraded\": false}"
+    },
+    {
+      "id": "n_89afea05",
+      "name": "11只个股大宗交易超5000万元",
+      "type": "Event",
+      "summary": "[E52][news|证券时报网|2026-07-21T21:18:00+08:00] 11只个股大宗交易超5000万元\n（数据宝） 7月21日大宗交易成交额居前股票 证券代码 证券简称 涨幅（%） 收盘价（元） 成交量（万股） 成交额（万元） 笔数 成交价（元） 折溢价（%） 603986 兆易创新 10.00 475.53 137.43 57629.36 3 419.34 -11.82 600"
+    },
+    {
+      "id": "n_1a19d42c",
+      "name": "茅台批价回落，贵州茅台年内第二次上调飞天茅台零售价",
+      "type": "Event",
+      "summary": "[E53][news|财中社|2026-07-20T13:28:00+08:00] 茅台批价回落，贵州茅台年内第二次上调飞天茅台零售价\n茅台行情价格波动背后，是贵州茅台（600519）再次上调飞天茅台官方售价。\n结构化字段: {\"degraded\": false}"
+    },
+    {
+      "id": "n_9a8b810e",
+      "name": "茅台调价后今日股价盘中大涨5%，白酒股集体跟涨",
+      "type": "Event",
+      "summary": "[E54][news|第一财经|2026-07-20T11:34:07+08:00] 茅台调价后今日股价盘中大涨5%，白酒股集体跟涨\n飞天茅台年内二次提价落地后，贵州茅台（600519.SH）股价也随之上涨。今日盘中，茅台上涨超过5%，也带动白酒股集体大涨，古井贡酒（000596.SZ）涨停，多股涨幅超过5%。\n结构化字段: {\"degraded\": false}"
+    },
+    {
+      "id": "n_da2abf74",
+      "name": "飞天茅台 官宣涨价！+100元",
+      "type": "Event",
+      "summary": "[E55][news|证券时报|2026-07-17T21:43:00+08:00] 飞天茅台 官宣涨价！+100元\n贵州茅台（600519）7月17日公告，公司自2026年7月18日零时起，将飞天53%vol 500ml贵州茅台酒（2026）i茅台平台零售价由1539元/瓶调整为1639元/瓶、销售合同价由1269元/瓶调整为1369元/瓶。\n结构化字段: {\"degraded\": false}"
+    },
+    {
+      "id": "n_ec5d928e",
+      "name": "刚刚，茅台宣布：明天起涨价！",
+      "type": "Event",
+      "summary": "[E56][news|每日经济新闻|2026-07-17T21:41:57+08:00] 刚刚，茅台宣布：明天起涨价！\n7月17日，贵州茅台600519.SH)公告称，根据《2026年贵州茅台酒市场化运营方案》，按照“随行就市、相对平稳、供需适配、量价平衡”的原则，为有效维护市场秩序，经研究决定，本公司自2026年7月18日零时起，将飞天53%vol 500ml贵州茅台酒（2026）i茅台平台零售"
+    },
+    {
+      "id": "n_56a045db",
+      "name": "贵州茅台：上调飞天茅台i茅台平台零售价及合同价",
+      "type": "Event",
+      "summary": "[E57][news|财联社|2026-07-17T21:27:02+08:00] 贵州茅台：上调飞天茅台i茅台平台零售价及合同价\n贵州茅台600519.SH)公告称，公司自2026年7月18日零时起，将飞天53%vol500ml贵州茅台酒(2026)i茅台平台零售价由1539元/瓶调整为1639元/瓶，销售合同价由1269元/瓶调整为1369元/瓶。此次价格调整将对公司经营业绩产生一定影响。\n结"
+    },
+    {
+      "id": "n_ef9e8a31",
+      "name": "需求根基稳固，市场化定价持续兑现",
+      "type": "Opinion",
+      "summary": "[E58][research_report|东方财富研报中心|2026-07-23T00:00:00+08:00] 需求根基稳固，市场化定价持续兑现\n中邮证券在《需求根基稳固，市场化定价持续兑现》中给出「买入」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"买入\", \"org\": \"中邮证券\", \"degraded\": false}"
+    },
+    {
+      "id": "n_4d8f5a51",
+      "name": "飞天茅台年内二次提价，进一步落实市场化机制",
+      "type": "Opinion",
+      "summary": "[E59][research_report|东方财富研报中心|2026-07-20T00:00:00+08:00] 飞天茅台年内二次提价，进一步落实市场化机制\n群益证券在《飞天茅台年内二次提价，进一步落实市场化机制》中给出「持有」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"持有\", \"org\": \"群益证券\", \"degraded\": false}"
+    },
+    {
+      "id": "n_2951953c",
+      "name": "2025年年报及2026年一季报点评：顺势出清舒缓压力巩固优势稳健前行",
+      "type": "Opinion",
+      "summary": "[E60][research_report|东方财富研报中心|2026-05-25T00:00:00+08:00] 2025年年报及2026年一季报点评：顺势出清舒缓压力巩固优势稳健前行\n诚通证券在《2025年年报及2026年一季报点评：顺势出清舒缓压力巩固优势稳健前行》中给出「买入」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"买入\", \"org\": \"诚通证券\""
+    },
+    {
+      "id": "n_60628191",
+      "name": "公司事件点评报告：i茅台持续发力，改革效果初显",
+      "type": "Opinion",
+      "summary": "[E61][research_report|东方财富研报中心|2026-05-05T00:00:00+08:00] 公司事件点评报告：i茅台持续发力，改革效果初显\n华鑫证券在《公司事件点评报告：i茅台持续发力，改革效果初显》中给出「买入」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"买入\", \"org\": \"华鑫证券\", \"degraded\": false}"
+    },
+    {
+      "id": "n_ad9de3ee",
+      "name": "点评报告：业绩稳健增长，直销收入首次超越代理渠道",
+      "type": "Opinion",
+      "summary": "[E62][research_report|东方财富研报中心|2026-04-29T00:00:00+08:00] 点评报告：业绩稳健增长，直销收入首次超越代理渠道\n万联证券在《点评报告：业绩稳健增长，直销收入首次超越代理渠道》中给出「增持」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"增持\", \"org\": \"万联证券\", \"degraded\": false}"
+    },
+    {
+      "id": "n_2a5aada2",
+      "name": "公司信息更新报告：大单品放量价稳，触底信号明确",
+      "type": "Opinion",
+      "summary": "[E63][research_report|东方财富研报中心|2026-04-28T00:00:00+08:00] 公司信息更新报告：大单品放量价稳，触底信号明确\n开源证券在《公司信息更新报告：大单品放量价稳，触底信号明确》中给出「买入」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"买入\", \"org\": \"开源证券\", \"degraded\": false}"
+    },
+    {
+      "id": "n_a3c10920",
+      "name": "渠道重构落地，改革初现成效",
+      "type": "Opinion",
+      "summary": "[E64][research_report|东方财富研报中心|2026-04-28T00:00:00+08:00] 渠道重构落地，改革初现成效\n山西证券在《渠道重构落地，改革初现成效》中给出「买入」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"买入\", \"org\": \"山西证券\", \"degraded\": false}"
+    },
+    {
+      "id": "n_66ee6dd6",
+      "name": "收入利润双稳增符合预期，i茅台放量显著",
+      "type": "Opinion",
+      "summary": "[E65][research_report|东方财富研报中心|2026-04-28T00:00:00+08:00] 收入利润双稳增符合预期，i茅台放量显著\n中邮证券在《收入利润双稳增符合预期，i茅台放量显著》中给出「买入」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"买入\", \"org\": \"中邮证券\", \"degraded\": false}"
+    },
+    {
+      "id": "n_5c0299a2",
+      "name": "2026年一季报点评：茅台酒稳健，系列酒重拾增长",
+      "type": "Opinion",
+      "summary": "[E66][research_report|东方财富研报中心|2026-04-28T00:00:00+08:00] 2026年一季报点评：茅台酒稳健，系列酒重拾增长\n西南证券在《2026年一季报点评：茅台酒稳健，系列酒重拾增长》中给出「买入」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"买入\", \"org\": \"西南证券\", \"degraded\": false}"
+    },
+    {
+      "id": "n_ae0c6045",
+      "name": "转型初见成效，i茅台收入大幅增长",
+      "type": "Opinion",
+      "summary": "[E67][research_report|东方财富研报中心|2026-04-28T00:00:00+08:00] 转型初见成效，i茅台收入大幅增长\n群益证券在《转型初见成效，i茅台收入大幅增长》中给出「持有」评级（该评级为券商观点，非本系统建议）\n结构化字段: {\"rating\": \"持有\", \"org\": \"群益证券\", \"degraded\": false}"
+    }
+  ],
+  "edges": [
+    {
+      "source": "company_600519.SH",
+      "target": "n_02c227fc",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台重大事项公告",
+      "valid": true,
+      "created_at": "2026-07-18T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_a16a926e",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台2025年年度权益分派实施公告",
+      "valid": true,
+      "created_at": "2026-06-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_b3748451",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台关于职工董事选举结果的公告",
+      "valid": true,
+      "created_at": "2026-06-12T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_7f10d9a3",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台2025年度股东会决议公告",
+      "valid": true,
+      "created_at": "2026-06-12T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_941bcda0",
+      "name": "DISCLOSES",
+      "fact": "北京市金杜律师事务所关于贵州茅台酒股份有限公司2025年度股东会之法律意见书",
+      "valid": true,
+      "created_at": "2026-06-12T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_c827b086",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台第五届董事会2026年度第一次会议决议公告",
+      "valid": true,
+      "created_at": "2026-06-12T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_6d8b06d9",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台董事、高级管理人员考核和薪酬管理办法",
+      "valid": true,
+      "created_at": "2026-06-12T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_4662f13d",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台关于聘任董事会秘书的公告",
+      "valid": true,
+      "created_at": "2026-06-12T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_5b14832a",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台关于调整2025年年度利润分配方案每股分红金额的公告",
+      "valid": true,
+      "created_at": "2026-06-03T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_c59d8308",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台2025年度股东会会议资料",
+      "valid": true,
+      "created_at": "2026-06-03T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_14ed5782",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台关于回购股份实施结果暨股份变动的公告",
+      "valid": true,
+      "created_at": "2026-05-28T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_fe32dcd9",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台关于召开2025年度股东会的通知",
+      "valid": true,
+      "created_at": "2026-05-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_cc9b36bc",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台独立董事候选人声明与承诺（王鑫）",
+      "valid": true,
+      "created_at": "2026-05-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_22d8a868",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台独立董事候选人声明与承诺（郭田勇）",
+      "valid": true,
+      "created_at": "2026-05-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_f4d20f10",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台关于聘任董事会秘书的公告",
+      "valid": true,
+      "created_at": "2026-05-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_572f4386",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台独立董事候选人声明与承诺（盛雷鸣）",
+      "valid": true,
+      "created_at": "2026-05-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_d4b99331",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台独立董事提名人声明与承诺",
+      "valid": true,
+      "created_at": "2026-05-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_405e189f",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台关于与关联方签订《商标许可协议》的公告",
+      "valid": true,
+      "created_at": "2026-05-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_49713c07",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台第四届董事会2026年度第八次会议决议公告",
+      "valid": true,
+      "created_at": "2026-05-22T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_ee22b631",
+      "name": "DISCLOSES",
+      "fact": "贵州茅台关于回购股份实施进展的公告",
+      "valid": true,
+      "created_at": "2026-05-08T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519",
+      "target": "n_a72b3d64",
+      "name": "INVOLVES",
+      "fact": "600519 利润表 2026-03-31",
+      "valid": true,
+      "created_at": "2026-03-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519",
+      "target": "n_ff45791b",
+      "name": "INVOLVES",
+      "fact": "600519 利润表 2025-12-31",
+      "valid": true,
+      "created_at": "2025-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519",
+      "target": "n_24c0d075",
+      "name": "INVOLVES",
+      "fact": "600519 利润表 2025-09-30",
+      "valid": true,
+      "created_at": "2025-09-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519",
+      "target": "n_726b8528",
+      "name": "INVOLVES",
+      "fact": "600519 利润表 2025-06-30",
+      "valid": true,
+      "created_at": "2025-06-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519",
+      "target": "n_cce4a251",
+      "name": "INVOLVES",
+      "fact": "600519 利润表 2025-03-31",
+      "valid": true,
+      "created_at": "2025-03-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519",
+      "target": "n_9928e52f",
+      "name": "INVOLVES",
+      "fact": "600519 利润表 2024-12-31",
+      "valid": true,
+      "created_at": "2024-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_2c3932df",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 1998-12-31",
+      "valid": true,
+      "created_at": "1998-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_08737e4e",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 1999-12-31",
+      "valid": true,
+      "created_at": "1999-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_fe0b1215",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2000-12-31",
+      "valid": true,
+      "created_at": "2000-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_0e21c5c9",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2001-06-30",
+      "valid": true,
+      "created_at": "2001-06-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_cfc06cbc",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2001-12-31",
+      "valid": true,
+      "created_at": "2001-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_a0dc6724",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2002-03-31",
+      "valid": true,
+      "created_at": "2002-03-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_4dd85dff",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2002-06-30",
+      "valid": true,
+      "created_at": "2002-06-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_483c0603",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2002-09-30",
+      "valid": true,
+      "created_at": "2002-09-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_c7ca2fdd",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2002-12-31",
+      "valid": true,
+      "created_at": "2002-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_13d52ef6",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2003-03-31",
+      "valid": true,
+      "created_at": "2003-03-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_0180fd22",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2003-06-30",
+      "valid": true,
+      "created_at": "2003-06-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_e39c69eb",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2003-09-30",
+      "valid": true,
+      "created_at": "2003-09-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_8a789083",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2003-12-31",
+      "valid": true,
+      "created_at": "2003-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_374982c3",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2004-03-31",
+      "valid": true,
+      "created_at": "2004-03-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_60c81689",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2004-06-30",
+      "valid": true,
+      "created_at": "2004-06-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_a0e96ab3",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2004-09-30",
+      "valid": true,
+      "created_at": "2004-09-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_fb17b81f",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2004-12-31",
+      "valid": true,
+      "created_at": "2004-12-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_d95a8d78",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2005-03-31",
+      "valid": true,
+      "created_at": "2005-03-31T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_77deaabf",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2005-06-30",
+      "valid": true,
+      "created_at": "2005-06-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_ed293b78",
+      "name": "INVOLVES",
+      "fact": "600519.SH 财务指标 2005-09-30",
+      "valid": true,
+      "created_at": "2005-09-30T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_1ec1c85b",
+      "name": "INVOLVES",
+      "fact": "600519.SH 行情快照",
+      "valid": true,
+      "created_at": "2026-07-25T14:52:55+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_7e2d7bd2",
+      "name": "INVOLVES",
+      "fact": "15股今日获机构买入评级",
+      "valid": true,
+      "created_at": "2026-07-23T18:12:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_28188da7",
+      "name": "INVOLVES",
+      "fact": "贵州茅台退居公募第30大重仓股：白酒迎来底部机会？",
+      "valid": true,
+      "created_at": "2026-07-23T16:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_89afea05",
+      "name": "INVOLVES",
+      "fact": "11只个股大宗交易超5000万元",
+      "valid": true,
+      "created_at": "2026-07-21T21:18:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_1a19d42c",
+      "name": "INVOLVES",
+      "fact": "茅台批价回落，贵州茅台年内第二次上调飞天茅台零售价",
+      "valid": true,
+      "created_at": "2026-07-20T13:28:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_9a8b810e",
+      "name": "INVOLVES",
+      "fact": "茅台调价后今日股价盘中大涨5%，白酒股集体跟涨",
+      "valid": true,
+      "created_at": "2026-07-20T11:34:07+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_da2abf74",
+      "name": "INVOLVES",
+      "fact": "飞天茅台 官宣涨价！+100元",
+      "valid": true,
+      "created_at": "2026-07-17T21:43:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_ec5d928e",
+      "name": "INVOLVES",
+      "fact": "刚刚，茅台宣布：明天起涨价！",
+      "valid": true,
+      "created_at": "2026-07-17T21:41:57+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_56a045db",
+      "name": "INVOLVES",
+      "fact": "贵州茅台：上调飞天茅台i茅台平台零售价及合同价",
+      "valid": true,
+      "created_at": "2026-07-17T21:27:02+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_ef9e8a31",
+      "name": "INVOLVES",
+      "fact": "需求根基稳固，市场化定价持续兑现",
+      "valid": true,
+      "created_at": "2026-07-23T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_4d8f5a51",
+      "name": "INVOLVES",
+      "fact": "飞天茅台年内二次提价，进一步落实市场化机制",
+      "valid": true,
+      "created_at": "2026-07-20T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_2951953c",
+      "name": "INVOLVES",
+      "fact": "2025年年报及2026年一季报点评：顺势出清舒缓压力巩固优势稳健前行",
+      "valid": true,
+      "created_at": "2026-05-25T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_60628191",
+      "name": "INVOLVES",
+      "fact": "公司事件点评报告：i茅台持续发力，改革效果初显",
+      "valid": true,
+      "created_at": "2026-05-05T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_ad9de3ee",
+      "name": "INVOLVES",
+      "fact": "点评报告：业绩稳健增长，直销收入首次超越代理渠道",
+      "valid": true,
+      "created_at": "2026-04-29T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_2a5aada2",
+      "name": "INVOLVES",
+      "fact": "公司信息更新报告：大单品放量价稳，触底信号明确",
+      "valid": true,
+      "created_at": "2026-04-28T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_a3c10920",
+      "name": "INVOLVES",
+      "fact": "渠道重构落地，改革初现成效",
+      "valid": true,
+      "created_at": "2026-04-28T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_66ee6dd6",
+      "name": "INVOLVES",
+      "fact": "收入利润双稳增符合预期，i茅台放量显著",
+      "valid": true,
+      "created_at": "2026-04-28T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_5c0299a2",
+      "name": "INVOLVES",
+      "fact": "2026年一季报点评：茅台酒稳健，系列酒重拾增长",
+      "valid": true,
+      "created_at": "2026-04-28T00:00:00+08:00",
+      "invalid_at": null
+    },
+    {
+      "source": "company_600519.SH",
+      "target": "n_ae0c6045",
+      "name": "INVOLVES",
+      "fact": "转型初见成效，i茅台收入大幅增长",
+      "valid": true,
+      "created_at": "2026-04-28T00:00:00+08:00",
+      "invalid_at": null
+    }
+  ],
+  "statistics": {
+    "nodes": 69,
+    "edges": 65,
+    "episodes": 67,
+    "by_type": {
+      "Company": 2,
+      "Disclosure": 20,
+      "FinancialMetric": 26,
+      "Industry": 3,
+      "Event": 8,
+      "Opinion": 10
+    },
+    "backend": "neo4j+local",
+    "neo4j_episodes": 67
+  }
+}

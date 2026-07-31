@@ -1,0 +1,106 @@
+{
+  "task_id": "task_20a4d40a0a99",
+  "user_id": "default",
+  "requirement": "对比宁德时代和比亚迪最近的财务与公告",
+  "status": "completed",
+  "task_card": {
+    "deliverable": "compare",
+    "symbols": [
+      {
+        "code": "300750",
+        "name": "宁德时代"
+      },
+      {
+        "code": "002594",
+        "name": "比亚迪"
+      }
+    ],
+    "time_window": {
+      "end": "2026-07-25",
+      "start": "2025-06-20"
+    },
+    "info_types": [
+      "announcement",
+      "financial_report",
+      "news",
+      "research_report",
+      "industry_data"
+    ],
+    "focus_points": [],
+    "compare_dimensions": [
+      "盈利能力",
+      "现金流"
+    ],
+    "output_language_style": "professional_brief",
+    "clarifications": []
+  },
+  "progress": 100,
+  "message": "报告已生成",
+  "error": null,
+  "collect_failures": [
+    {
+      "agent": "financial",
+      "error": "Object of type date is not JSON serializable"
+    },
+    {
+      "agent": "industry",
+      "error": "Object of type date is not JSON serializable"
+    }
+  ],
+  "created_at": "2026-07-25T13:59:49",
+  "updated_at": "2026-07-25T14:52:51",
+  "progress_detail": {
+    "stage": "completed",
+    "collectors": {
+      "announcement": {
+        "state": "done",
+        "cards": 40,
+        "error": null
+      },
+      "financial": {
+        "state": "failed",
+        "cards": 0,
+        "error": "Object of type date is not JSON serializable"
+      },
+      "industry": {
+        "state": "failed",
+        "cards": 0,
+        "error": "Object of type date is not JSON serializable"
+      },
+      "news": {
+        "state": "done",
+        "cards": 19,
+        "error": null
+      },
+      "research": {
+        "state": "done",
+        "cards": 20,
+        "error": null
+      }
+    },
+    "message": "industry 完成",
+    "report_title": "宁德时代、比亚迪对比分析",
+    "sections": 5,
+    "mode": "heuristic",
+    "ingest": {
+      "ingested": 0,
+      "skipped": 93,
+      "stats": {
+        "nodes": 97,
+        "edges": 93,
+        "episodes": 93,
+        "by_type": {
+          "Company": 4,
+          "Disclosure": 40,
+          "FinancialMetric": 12,
+          "Industry": 2,
+          "Event": 19,
+          "Opinion": 20
+        },
+        "backend": "neo4j+local",
+        "neo4j_episodes": 0
+      },
+      "errors": []
+    }
+  }
+}

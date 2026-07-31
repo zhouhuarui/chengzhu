@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "task_id": "task_demo_catl_byd_debate",
+  "run_id": "run_demo_catl_byd_h1_2025",
+  "created_at": "2026-07-31T10:00:00+08:00",
+  "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。",
+  "items": [
+    {
+      "evidence_uid": "ev_demo_catl_h1_2025",
+      "display_id": "E1",
+      "card": {
+        "source_type": "financial_report",
+        "title": "【合成夹具】宁德时代 2025 年半年度财务摘要",
+        "url": null,
+        "publish_time": "2025-08-30T09:00:00+08:00",
+        "source_name": "比赛演示：公开披露结构合成夹具",
+        "symbol": "300750",
+        "excerpt": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。模拟数据：H1 营业总收入 1788.86 亿元、归母净利润 304.85 亿元、经营活动现金流净额 586.87 亿元。",
+        "structured": {
+          "synthetic_fixture": true,
+          "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。",
+          "REPORT_DATE": "2025-06-30",
+          "report_period": "2025-06-30",
+          "report_type": "H1",
+          "statement": "income",
+          "merged_flag": 1,
+          "accumulation_basis": "cumulative",
+          "currency_unit": "CNY",
+          "TOTAL_OPERATE_INCOME_yi": "1788.86",
+          "PARENT_NETPROFIT_yi": "304.85",
+          "NETCASH_OPERATE_yi": "586.87"
+        },
+        "reliability": 3,
+        "fetch_tool": "demo_public_fixture",
+        "card_id": null,
+        "evidence_uid": "ev_demo_catl_h1_2025",
+        "provenance": {
+          "provider": "public_synthetic_fixture",
+          "api": "demo_public_disclosure_shape",
+          "record_key": "demo:ev_demo_catl_h1_2025",
+          "as_of": "2025-08-30",
+          "upstream_source": "比赛演示合成公开披露结构",
+          "license_scope": "public_synthetic_demo"
+        }
+      }
+    },
+    {
+      "evidence_uid": "ev_demo_byd_h1_2025",
+      "display_id": "E2",
+      "card": {
+        "source_type": "financial_report",
+        "title": "【合成夹具】比亚迪 2025 年半年度财务摘要",
+        "url": null,
+        "publish_time": "2025-08-30T09:05:00+08:00",
+        "source_name": "比赛演示：公开披露结构合成夹具",
+        "symbol": "002594",
+        "excerpt": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。模拟数据：H1 营业总收入 3712.81 亿元、归母净利润 155.11 亿元、经营活动现金流净额 318.42 亿元。",
+        "structured": {
+          "synthetic_fixture": true,
+          "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。",
+          "REPORT_DATE": "2025-06-30",
+          "report_period": "2025-06-30",
+          "report_type": "H1",
+          "statement": "income",
+          "merged_flag": 1,
+          "accumulation_basis": "cumulative",
+          "currency_unit": "CNY",
+          "TOTAL_OPERATE_INCOME_yi": "3712.81",
+          "PARENT_NETPROFIT_yi": "155.11",
+          "NETCASH_OPERATE_yi": "318.42"
+        },
+        "reliability": 3,
+        "fetch_tool": "demo_public_fixture",
+        "card_id": null,
+        "evidence_uid": "ev_demo_byd_h1_2025",
+        "provenance": {
+          "provider": "public_synthetic_fixture",
+          "api": "demo_public_disclosure_shape",
+          "record_key": "demo:ev_demo_byd_h1_2025",
+          "as_of": "2025-08-30",
+          "upstream_source": "比赛演示合成公开披露结构",
+          "license_scope": "public_synthetic_demo"
+        }
+      }
+    },
+    {
+      "evidence_uid": "ev_demo_byd_q1_2025",
+      "display_id": "E3",
+      "card": {
+        "source_type": "financial_report",
+        "title": "【合成夹具】比亚迪 2025 年第一季度财务摘要",
+        "url": null,
+        "publish_time": "2025-04-30T09:00:00+08:00",
+        "source_name": "比赛演示：公开披露结构合成夹具",
+        "symbol": "002594",
+        "excerpt": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。模拟数据：Q1 营业总收入 1703.60 亿元、归母净利润 91.55 亿元。",
+        "structured": {
+          "synthetic_fixture": true,
+          "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。",
+          "REPORT_DATE": "2025-03-31",
+          "report_period": "2025-03-31",
+          "report_type": "Q1",
+          "statement": "income",
+          "merged_flag": 1,
+          "accumulation_basis": "cumulative",
+          "currency_unit": "CNY",
+          "TOTAL_OPERATE_INCOME_yi": "1703.60",
+          "PARENT_NETPROFIT_yi": "91.55"
+        },
+        "reliability": 3,
+        "fetch_tool": "demo_public_fixture",
+        "card_id": null,
+        "evidence_uid": "ev_demo_byd_q1_2025",
+        "provenance": {
+          "provider": "public_synthetic_fixture",
+          "api": "demo_public_disclosure_shape",
+          "record_key": "demo:ev_demo_byd_q1_2025",
+          "as_of": "2025-04-30",
+          "upstream_source": "比赛演示合成公开披露结构",
+          "license_scope": "public_synthetic_demo"
+        }
+      }
+    },
+    {
+      "evidence_uid": "ev_demo_catl_operations",
+      "display_id": "E4",
+      "card": {
+        "source_type": "announcement",
+        "title": "【合成夹具】宁德时代经营事项演示摘要",
+        "url": null,
+        "publish_time": "2025-07-15T10:00:00+08:00",
+        "source_name": "比赛演示：公开披露结构合成夹具",
+        "symbol": "300750",
+        "excerpt": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。模拟经营事项描述：产能推进仍受项目节奏与需求兑现影响。",
+        "structured": {
+          "synthetic_fixture": true,
+          "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。",
+          "event_type": "operations_demo"
+        },
+        "reliability": 3,
+        "fetch_tool": "demo_public_fixture",
+        "card_id": null,
+        "evidence_uid": "ev_demo_catl_operations",
+        "provenance": {
+          "provider": "public_synthetic_fixture",
+          "api": "demo_public_disclosure_shape",
+          "record_key": "demo:ev_demo_catl_operations",
+          "as_of": "2025-07-15",
+          "upstream_source": "比赛演示合成公开披露结构",
+          "license_scope": "public_synthetic_demo"
+        }
+      }
+    },
+    {
+      "evidence_uid": "ev_demo_byd_operations",
+      "display_id": "E5",
+      "card": {
+        "source_type": "announcement",
+        "title": "【合成夹具】比亚迪经营事项演示摘要",
+        "url": null,
+        "publish_time": "2025-07-16T10:00:00+08:00",
+        "source_name": "比赛演示：公开披露结构合成夹具",
+        "symbol": "002594",
+        "excerpt": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。模拟经营事项描述：产品与产能推进节奏仍需后续公开事项验证。",
+        "structured": {
+          "synthetic_fixture": true,
+          "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。",
+          "event_type": "operations_demo"
+        },
+        "reliability": 3,
+        "fetch_tool": "demo_public_fixture",
+        "card_id": null,
+        "evidence_uid": "ev_demo_byd_operations",
+        "provenance": {
+          "provider": "public_synthetic_fixture",
+          "api": "demo_public_disclosure_shape",
+          "record_key": "demo:ev_demo_byd_operations",
+          "as_of": "2025-07-16",
+          "upstream_source": "比赛演示合成公开披露结构",
+          "license_scope": "public_synthetic_demo"
+        }
+      }
+    }
+  ]
+}

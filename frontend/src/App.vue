@@ -1,13 +1,43 @@
 <template>
-  <router-view />
+  <AppLayout>
+    <router-view />
+    <footer class="app-footer">
+      <p>{{ disclaimer }}</p>
+    </footer>
+  </AppLayout>
 </template>
 
 <script setup>
-// 使用 Vue Router 来管理页面
+import { ref, onMounted } from 'vue'
+import AppLayout from './components/AppLayout.vue'
+import { metaApi } from './api/index.js'
+
+const DEFAULT_DISCLAIMER =
+  '本系统仅做信息整理与情景观察，不构成投资建议。'
+
+const disclaimer = ref(DEFAULT_DISCLAIMER)
+
+onMounted(async () => {
+  try {
+    const res = await metaApi.disclaimer()
+    if (res?.data?.disclaimer) {
+      disclaimer.value = res.data.disclaimer
+    }
+  } catch {
+    /* use default */
+  }
+})
 </script>
 
 <style>
-/* 全局样式重置 */
+:root {
+  --cz-blue: #1a3a6b;
+  --cz-amber: #b8860b;
+  --cz-bg: #f7f9fc;
+  --cz-muted: #6a7f9c;
+  --cz-border: rgba(26, 58, 107, 0.08);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -15,33 +45,56 @@
 }
 
 #app {
-  font-family: 'JetBrains Mono', 'Space Grotesk', 'Noto Sans SC', monospace;
+  font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--cz-blue);
+  background: var(--cz-bg);
 }
 
-/* 滚动条样式 */
+button {
+  font-family: inherit;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #eef3f8;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #000000;
+  background: #1a3a6b;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #333333;
+  background: #2a5088;
 }
 
-/* 全局按钮样式 */
-button {
-  font-family: inherit;
+.markdown-body {
+  font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+}
+
+.markdown-body table {
+  display: block;
+  overflow-x: auto;
+}
+
+.app-footer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 32px 32px;
+  font-size: 13px;
+  color: var(--cz-muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.app-footer p {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 12px 16px;
+  border: 1px solid var(--cz-border);
 }
 </style>

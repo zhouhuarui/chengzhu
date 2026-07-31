@@ -289,7 +289,7 @@ const entityTypes = computed(() => {
   const colors = ['#FF6B35', '#004E89', '#7B2D8E', '#1A936F', '#C5283D', '#E9724C', '#3498db', '#9b59b6', '#27ae60', '#f39c12']
   
   props.graphData.nodes.forEach(node => {
-    const type = node.labels?.find(l => l !== 'Entity') || 'Entity'
+    const type = node.labels?.find(l => l !== 'Entity') || node.type || 'Entity'
     if (!typeMap[type]) {
       typeMap[type] = { name: type, count: 0, color: colors[Object.keys(typeMap).length % colors.length] }
     }
@@ -344,8 +344,20 @@ const renderGraph = () => {
     
   svg.selectAll('*').remove()
   
-  const nodesData = props.graphData.nodes || []
-  const edgesData = props.graphData.edges || []
+  // The local graph API uses id/type/source/target while Graphiti payloads use
+  // uuid/labels/source_node_uuid/target_node_uuid. Normalize both at the edge.
+  const nodesData = (props.graphData.nodes || []).map((node) => ({
+    ...node,
+    uuid: node.uuid || node.id,
+    labels: node.labels?.length ? node.labels : ['Entity', node.type || 'Entity'],
+    attributes: node.attributes || {},
+  }))
+  const edgesData = (props.graphData.edges || []).map((edge, index) => ({
+    ...edge,
+    uuid: edge.uuid || edge.id || `edge-${index}`,
+    source_node_uuid: edge.source_node_uuid || edge.source,
+    target_node_uuid: edge.target_node_uuid || edge.target,
+  }))
   
   if (nodesData.length === 0) return
 

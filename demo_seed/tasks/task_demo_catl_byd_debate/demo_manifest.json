@@ -1,0 +1,17 @@
+{
+  "task_id": "task_demo_catl_byd_debate",
+  "run_id": "run_demo_catl_byd_h1_2025",
+  "run_ids": {
+    "evidence_debate": "run_demo_catl_byd_h1_2025",
+    "direct": "run_demo_catl_byd_direct_2025"
+  },
+  "keyless": true,
+  "llm_calls": 0,
+  "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。",
+  "golden_assertions": {
+    "accepted_claim_id": "claim_same_period_h1",
+    "mixed_period_rejected_claim_id": "claim_mixed_h1_q1",
+    "withdrawn_claim_id": "claim_cash_persistence",
+    "disputed_claim_id": "claim_operating_tempo"
+  }
+}

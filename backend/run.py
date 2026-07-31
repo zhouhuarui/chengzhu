@@ -26,7 +26,7 @@ def main():
         sys.exit(1)
 
     app = create_app()
-    host = os.environ.get('FLASK_HOST', '0.0.0.0')
+    host = os.environ.get('FLASK_HOST', '127.0.0.1')
     port = int(os.environ.get('FLASK_PORT', 5001))
     debug = Config.DEBUG
     app.run(host=host, port=port, debug=debug, threaded=True)

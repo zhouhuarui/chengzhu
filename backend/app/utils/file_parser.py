@@ -1,6 +1,6 @@
 """
 文件解析工具
-支持PDF、Markdown、TXT文件的文本提取
+支持 PDF、Markdown、TXT 与视觉图片文件；图片文本由独立 Qwen-VL 路径提取
 """
 
 import os
@@ -61,7 +61,11 @@ def _read_text_with_fallback(file_path: str) -> str:
 class FileParser:
     """文件解析器"""
     
-    SUPPORTED_EXTENSIONS = {'.pdf', '.md', '.markdown', '.txt'}
+    SUPPORTED_EXTENSIONS = {
+        '.pdf', '.md', '.markdown', '.txt',
+        '.png', '.jpg', '.jpeg', '.webp',
+    }
+    IMAGE_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.webp'}
     
     @classmethod
     def is_supported(cls, file_path: str) -> bool:
@@ -100,6 +104,12 @@ class FileParser:
         
         if suffix == '.pdf':
             return cls._extract_from_pdf(file_path)
+        elif suffix in cls.IMAGE_EXTENSIONS:
+            # Image bytes are intentionally not OCR'd by a local text helper
+            # or decoded into task artefacts.  The collector routes them to
+            # the dedicated, auditable Qwen-VL path and records degradation
+            # explicitly when its independent key is unavailable.
+            return ''
         elif suffix in {'.md', '.markdown'}:
             return cls._extract_from_md(file_path)
         elif suffix == '.txt':
@@ -200,4 +210,3 @@ def split_text_into_chunks(
         start = end - overlap if end < len(text) else len(text)
     
     return chunks
-

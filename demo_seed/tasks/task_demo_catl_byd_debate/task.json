@@ -1,0 +1,68 @@
+{
+  "task_id": "task_demo_catl_byd_debate",
+  "user_id": "default",
+  "requirement": "比赛演示：使用公开语境下的合成夹具，对比宁德时代与比亚迪并运行证据辩论。",
+  "status": "completed",
+  "task_card": {
+    "deliverable": "compare",
+    "analysis_mode": "evidence_debate",
+    "symbols": [
+      {
+        "code": "300750",
+        "name": "宁德时代"
+      },
+      {
+        "code": "002594",
+        "name": "比亚迪"
+      }
+    ],
+    "time_window": {
+      "start": "2025-01-01",
+      "end": "2025-12-31"
+    },
+    "info_types": [
+      "financial_report",
+      "announcement"
+    ],
+    "focus_points": [
+      "盈利质量",
+      "现金流与偿债",
+      "增长驱动",
+      "经营变化"
+    ],
+    "compare_dimensions": [
+      "营业总收入",
+      "归母净利润",
+      "经营活动现金流净额"
+    ],
+    "output_language_style": "professional_brief",
+    "clarifications": [
+      "本任务为合成夹具回放，不代表真实公司披露。"
+    ]
+  },
+  "progress": 100,
+  "message": "Keyless 证据辩论演示已生成",
+  "error": null,
+  "collect_failures": [],
+  "created_at": "2026-07-31T10:00:00+08:00",
+  "updated_at": "2026-07-31T10:00:08+08:00",
+  "current_run_id": "run_demo_catl_byd_h1_2025",
+  "progress_detail": {
+    "stage": "completed",
+    "normalizing": {
+      "facts": 8,
+      "source": "synthetic_fixture"
+    },
+    "debate": {
+      "status": "completed",
+      "current_round": 2,
+      "current_role": "Judge/Synthesizer",
+      "claim_count": 4,
+      "challenge_count": 3,
+      "withdrawn_count": 1,
+      "audit_failure_count": 2
+    },
+    "report_title": "宁德时代 vs 比亚迪：证据化基本面辩论（合成演示）",
+    "mode": "demo_replay"
+  }
+}

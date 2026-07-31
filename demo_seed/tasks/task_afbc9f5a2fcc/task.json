@@ -1,0 +1,90 @@
+{
+  "task_id": "task_afbc9f5a2fcc",
+  "user_id": "default",
+  "requirement": "整理贵州茅台近期公告摘要",
+  "status": "completed",
+  "task_card": {
+    "deliverable": "summary",
+    "symbols": [
+      {
+        "code": "600519",
+        "name": "贵州茅台"
+      }
+    ],
+    "time_window": {
+      "end": "2026-07-25",
+      "start": "2026-04-26"
+    },
+    "info_types": [
+      "announcement",
+      "financial_report",
+      "news",
+      "research_report",
+      "industry_data"
+    ],
+    "focus_points": [],
+    "compare_dimensions": [],
+    "output_language_style": "professional_brief",
+    "clarifications": []
+  },
+  "progress": 100,
+  "message": "报告已生成",
+  "error": null,
+  "collect_failures": [],
+  "created_at": "2026-07-25T14:52:51",
+  "updated_at": "2026-07-25T14:53:09",
+  "progress_detail": {
+    "stage": "completed",
+    "collectors": {
+      "announcement": {
+        "state": "done",
+        "cards": 20,
+        "error": null
+      },
+      "financial": {
+        "state": "done",
+        "cards": 26,
+        "error": null
+      },
+      "industry": {
+        "state": "done",
+        "cards": 3,
+        "error": null
+      },
+      "news": {
+        "state": "done",
+        "cards": 8,
+        "error": null
+      },
+      "research": {
+        "state": "done",
+        "cards": 10,
+        "error": null
+      }
+    },
+    "message": "industry 完成",
+    "ingest": {
+      "ingested": 67,
+      "skipped": 0,
+      "stats": {
+        "nodes": 69,
+        "edges": 65,
+        "episodes": 67,
+        "by_type": {
+          "Company": 2,
+          "Disclosure": 20,
+          "FinancialMetric": 26,
+          "Industry": 3,
+          "Event": 8,
+          "Opinion": 10
+        },
+        "backend": "neo4j+local",
+        "neo4j_episodes": 67
+      },
+      "errors": []
+    },
+    "report_title": "贵州茅台信息整理摘要",
+    "sections": 5,
+    "mode": "heuristic"
+  }
+}

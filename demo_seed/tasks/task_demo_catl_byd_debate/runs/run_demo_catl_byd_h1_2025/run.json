@@ -1,0 +1,43 @@
+{
+  "run_id": "run_demo_catl_byd_h1_2025",
+  "task_id": "task_demo_catl_byd_debate",
+  "task_card": {
+    "deliverable": "compare",
+    "analysis_mode": "evidence_debate",
+    "symbols": [
+      {
+        "code": "300750",
+        "name": "宁德时代"
+      },
+      {
+        "code": "002594",
+        "name": "比亚迪"
+      }
+    ],
+    "time_window": {
+      "start": "2025-01-01",
+      "end": "2025-12-31"
+    },
+    "info_types": [
+      "financial_report",
+      "announcement"
+    ],
+    "focus_points": [
+      "盈利质量",
+      "现金流与偿债",
+      "增长驱动",
+      "经营变化"
+    ],
+    "compare_dimensions": [
+      "营业总收入",
+      "归母净利润",
+      "经营活动现金流净额"
+    ],
+    "output_language_style": "professional_brief",
+    "clarifications": [
+      "本任务为合成夹具回放，不代表真实公司披露。"
+    ]
+  },
+  "created_at": "2026-07-31T10:00:00+08:00",
+  "fixture_notice": "比赛演示合成夹具；模拟公开披露结构，非真实公司披露，不可用于公司判断。"
+}

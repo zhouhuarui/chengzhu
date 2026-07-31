@@ -1,0 +1,634 @@
+{
+  "episodes": [
+    {
+      "id": "ep_f9a6c4b462",
+      "body": "[S][bearish][R1] 公司IR: 【假设】假设公司发布业绩预告低于市场预期",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 1
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_0c4d4a5f89",
+      "body": "[S][bearish][R1] 财经媒体: 【模拟情景中】财经媒体表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 1
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_5ffc034f39",
+      "body": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 1
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_98b2157485",
+      "body": "[S][bearish][R1] 机构投资者: 【模拟情景中】机构投资者表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 1
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_7b549ddb21",
+      "body": "[S][bearish][R1] 财经媒体: 【模拟情景中】财经媒体表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 1
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_7747dc0a81",
+      "body": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 1
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_ae2f86103c",
+      "body": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 1
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_c07654060c",
+      "body": "[S][bearish][R1] 行业观察者: 【模拟情景中】行业观察者表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 1
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_ef9a9e8206",
+      "body": "[S][bearish][R2] 资深个人投资者: 【模拟情景中】资深个人投资者表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 2
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_f7649413cc",
+      "body": "[S][bearish][R2] 卖方分析师: 【模拟情景中】卖方分析师表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 2
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_1e50c196e9",
+      "body": "[S][bearish][R2] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 2
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_5462a02b45",
+      "body": "[S][bearish][R2] 行业观察者: 【模拟情景中】行业观察者表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 2
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_877ead3164",
+      "body": "[S][bearish][R2] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 2
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_d8bb7f9868",
+      "body": "[S][bearish][R2] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 2
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_b3f70c42a5",
+      "body": "[S][bearish][R3] 财经媒体: 【假设】财经媒体解读上述情景：假设公司发布业绩预告低于市场预期",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 3
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_2954e613d6",
+      "body": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 3
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_3df5d83056",
+      "body": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 3
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_78c53d023d",
+      "body": "[S][bearish][R3] 行业观察者: 【模拟情景中】行业观察者表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 3
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_4fe4ade359",
+      "body": "[S][bearish][R3] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 3
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_04b82a31e9",
+      "body": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 3
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_22c19bb9b5",
+      "body": "[S][bearish][R3] 机构投资者: 【模拟情景中】机构投资者表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 3
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_72081b6d29",
+      "body": "[S][bearish][R3] 资深个人投资者: 【模拟情景中】资深个人投资者表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 3
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_986dbfbdb1",
+      "body": "[S][bearish][R4] 财经媒体: 【模拟情景中】财经媒体表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 4
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_0e7e2d131d",
+      "body": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 4
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_62d4302f25",
+      "body": "[S][bearish][R4] 资深个人投资者: 【模拟情景中】资深个人投资者表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 4
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_1d9f5e948a",
+      "body": "[S][bearish][R4] 资深个人投资者: 【模拟情景中】资深个人投资者表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 4
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_843411e1ce",
+      "body": "[S][bearish][R4] 公司IR: 【模拟情景中】公司IR表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 4
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_ec7bc536aa",
+      "body": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 4
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_bfe6304f65",
+      "body": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 4
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_1e10ef4f41",
+      "body": "[S][bearish][R5] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 5
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_cb476ed079",
+      "body": "[S][bearish][R5] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:11",
+      "meta": {
+        "branch": "bearish",
+        "round": 5
+      },
+      "created_at": "2026-07-25T14:53:11"
+    },
+    {
+      "id": "ep_31a86be95f",
+      "body": "[S][bearish][R5] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:12",
+      "meta": {
+        "branch": "bearish",
+        "round": 5
+      },
+      "created_at": "2026-07-25T14:53:12"
+    },
+    {
+      "id": "ep_cd501d107f",
+      "body": "[S][bearish][R5] 卖方分析师: 【模拟情景中】卖方分析师表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "reference_time": "2026-07-25T14:53:12",
+      "meta": {
+        "branch": "bearish",
+        "round": 5
+      },
+      "created_at": "2026-07-25T14:53:12"
+    }
+  ],
+  "nodes": {
+    "n_4aff1c48": {
+      "id": "n_4aff1c48",
+      "name": "[S][bearish][R1] 公司IR: 【假设】假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R1] 公司IR: 【假设】假设公司发布业绩预告低于市场预期",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_aebfcf24": {
+      "id": "n_aebfcf24",
+      "name": "[S][bearish][R1] 财经媒体: 【模拟情景中】财经媒体表示观望：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R1] 财经媒体: 【模拟情景中】财经媒体表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_00beb4bc": {
+      "id": "n_00beb4bc",
+      "name": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_6071c31f": {
+      "id": "n_6071c31f",
+      "name": "[S][bearish][R1] 机构投资者: 【模拟情景中】机构投资者表示谨慎：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R1] 机构投资者: 【模拟情景中】机构投资者表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_16b213f2": {
+      "id": "n_16b213f2",
+      "name": "[S][bearish][R1] 财经媒体: 【模拟情景中】财经媒体表示偏空解读：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R1] 财经媒体: 【模拟情景中】财经媒体表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_c0c2edec": {
+      "id": "n_c0c2edec",
+      "name": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_a9252bf2": {
+      "id": "n_a9252bf2",
+      "name": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R1] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_b8d4ba56": {
+      "id": "n_b8d4ba56",
+      "name": "[S][bearish][R1] 行业观察者: 【模拟情景中】行业观察者表示偏空解读：围绕「假设公司发布业绩预告低于市场",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R1] 行业观察者: 【模拟情景中】行业观察者表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_d4bddebd": {
+      "id": "n_d4bddebd",
+      "name": "[S][bearish][R2] 资深个人投资者: 【模拟情景中】资深个人投资者表示观望：围绕「假设公司发布业绩预告低于",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R2] 资深个人投资者: 【模拟情景中】资深个人投资者表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_64c1fd34": {
+      "id": "n_64c1fd34",
+      "name": "[S][bearish][R2] 卖方分析师: 【模拟情景中】卖方分析师表示谨慎：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R2] 卖方分析师: 【模拟情景中】卖方分析师表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_98bfbac8": {
+      "id": "n_98bfbac8",
+      "name": "[S][bearish][R2] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R2] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_285b6040": {
+      "id": "n_285b6040",
+      "name": "[S][bearish][R2] 行业观察者: 【模拟情景中】行业观察者表示谨慎：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R2] 行业观察者: 【模拟情景中】行业观察者表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_7c4e885e": {
+      "id": "n_7c4e885e",
+      "name": "[S][bearish][R2] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R2] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_ed3fd389": {
+      "id": "n_ed3fd389",
+      "name": "[S][bearish][R2] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R2] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_dc9894dd": {
+      "id": "n_dc9894dd",
+      "name": "[S][bearish][R3] 财经媒体: 【假设】财经媒体解读上述情景：假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R3] 财经媒体: 【假设】财经媒体解读上述情景：假设公司发布业绩预告低于市场预期",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_ff34e865": {
+      "id": "n_ff34e865",
+      "name": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_3aeb0e61": {
+      "id": "n_3aeb0e61",
+      "name": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_40dedb8d": {
+      "id": "n_40dedb8d",
+      "name": "[S][bearish][R3] 行业观察者: 【模拟情景中】行业观察者表示偏空解读：围绕「假设公司发布业绩预告低于市场",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R3] 行业观察者: 【模拟情景中】行业观察者表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_e46aa678": {
+      "id": "n_e46aa678",
+      "name": "[S][bearish][R3] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R3] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_b8901547": {
+      "id": "n_b8901547",
+      "name": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R3] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_76773fb3": {
+      "id": "n_76773fb3",
+      "name": "[S][bearish][R3] 机构投资者: 【模拟情景中】机构投资者表示观望：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R3] 机构投资者: 【模拟情景中】机构投资者表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_6ad8da26": {
+      "id": "n_6ad8da26",
+      "name": "[S][bearish][R3] 资深个人投资者: 【模拟情景中】资深个人投资者表示关注风险：围绕「假设公司发布业绩预告",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R3] 资深个人投资者: 【模拟情景中】资深个人投资者表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_4ef8ec93": {
+      "id": "n_4ef8ec93",
+      "name": "[S][bearish][R4] 财经媒体: 【模拟情景中】财经媒体表示偏空解读：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R4] 财经媒体: 【模拟情景中】财经媒体表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_b001cee1": {
+      "id": "n_b001cee1",
+      "name": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_424401ef": {
+      "id": "n_424401ef",
+      "name": "[S][bearish][R4] 资深个人投资者: 【模拟情景中】资深个人投资者表示观望：围绕「假设公司发布业绩预告低于",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R4] 资深个人投资者: 【模拟情景中】资深个人投资者表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_a4d4ed12": {
+      "id": "n_a4d4ed12",
+      "name": "[S][bearish][R4] 资深个人投资者: 【模拟情景中】资深个人投资者表示关注风险：围绕「假设公司发布业绩预告",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R4] 资深个人投资者: 【模拟情景中】资深个人投资者表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_54b3bbe3": {
+      "id": "n_54b3bbe3",
+      "name": "[S][bearish][R4] 公司IR: 【模拟情景中】公司IR表示关注风险：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R4] 公司IR: 【模拟情景中】公司IR表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_88d6210f": {
+      "id": "n_88d6210f",
+      "name": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_b410c711": {
+      "id": "n_b410c711",
+      "name": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R4] 普通散户: 【模拟情景中】普通散户表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_3a1bcdcb": {
+      "id": "n_3a1bcdcb",
+      "name": "[S][bearish][R5] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R5] 普通散户: 【模拟情景中】普通散户表示观望：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_207aec10": {
+      "id": "n_207aec10",
+      "name": "[S][bearish][R5] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R5] 普通散户: 【模拟情景中】普通散户表示偏空解读：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:11"
+    },
+    "n_60fafa90": {
+      "id": "n_60fafa90",
+      "name": "[S][bearish][R5] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R5] 财经媒体: 【模拟情景中】财经媒体表示谨慎：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:12"
+    },
+    "n_3a596a47": {
+      "id": "n_3a596a47",
+      "name": "[S][bearish][R5] 卖方分析师: 【模拟情景中】卖方分析师表示关注风险：围绕「假设公司发布业绩预告低于市场",
+      "type": "Disclosure",
+      "summary": "[S][bearish][R5] 卖方分析师: 【模拟情景中】卖方分析师表示关注风险：围绕「假设公司发布业绩预告低于市场预期」的公开讨论仍在发酵。",
+      "card_id": null,
+      "valid": true,
+      "created_at": "2026-07-25T14:53:12"
+    }
+  },
+  "edges": []
+}

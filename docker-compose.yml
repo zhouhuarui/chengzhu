@@ -3,8 +3,8 @@ services:
   neo4j:
     image: neo4j:5.26
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - "${CHENGZHU_BIND_ADDRESS:-127.0.0.1}:7474:7474"
+      - "${CHENGZHU_BIND_ADDRESS:-127.0.0.1}:7687:7687"
     environment:
       NEO4J_AUTH: neo4j/chengzhu2026
       NEO4J_server_memory_heap_max__size: 1G
@@ -22,12 +22,17 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "5001:5001"
+      - "${CHENGZHU_BIND_ADDRESS:-127.0.0.1}:5001:5001"
     env_file: .env
     environment:
       NEO4J_URI: bolt://neo4j:7687
+      # 容器内监听所有网卡，宿主端口仍默认只绑定 127.0.0.1。
+      FLASK_HOST: 0.0.0.0
+      # 容器内始终使用固定只读路径；宿主路径从 .env 的 DATAYES_DATA_DIR 读取。
+      DATAYES_DATA_DIR: /data/datayes
     volumes:
       - ./backend/uploads:/app/backend/uploads
+      - "${DATAYES_DATA_DIR:-../Datayes/data}:/data/datayes:ro"
     depends_on:
       neo4j:
         condition: service_healthy
@@ -37,7 +42,9 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "3000:3000"
+      - "${CHENGZHU_BIND_ADDRESS:-127.0.0.1}:3000:3000"
+    environment:
+      VITE_PROXY_TARGET: http://backend:5001
     depends_on:
       - backend
 
