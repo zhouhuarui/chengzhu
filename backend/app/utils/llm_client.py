@@ -548,14 +548,24 @@ class LLMClient:
                 max_tokens,
                 logical_attempts=1,
             )
-            response, attempts, failed_usage = self._create_completion_with_retry(
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                response_format=response_format,
-                thinking=thinking,
-                reasoning_effort=reasoning_effort,
-            )
+            from ..observability import traced_span
+            with traced_span(
+                'llm.chat',
+                attributes={
+                    'provider': self.provider,
+                    'model': self.model,
+                    'run_id': self.budget_run_id or '',
+                    'thinking': bool(thinking),
+                },
+            ):
+                response, attempts, failed_usage = self._create_completion_with_retry(
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    response_format=response_format,
+                    thinking=thinking,
+                    reasoning_effort=reasoning_effort,
+                )
             elapsed_ms = (time.perf_counter() - started) * 1000
             result = self._result_from_response(
                 response,

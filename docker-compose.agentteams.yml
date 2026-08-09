@@ -1,0 +1,86 @@
+services:
+  backend:
+    environment:
+      AGENTTEAMS_ENABLED: "true"
+      AGENTTEAMS_VERSION: v1.2.0
+      AGENTTEAMS_CONTROLLER_URL: http://agentteams-controller:8090
+      # Backend remains off the Worker network. Its anonymous-denial preflight
+      # reaches Higress through the trusted controller attachment and supplies
+      # the public gateway host separately for virtual-host routing.
+      AGENTTEAMS_AI_GATEWAY_INTERNAL_URL: http://agentteams-controller:8080
+      AGENTTEAMS_AI_GATEWAY_HOST_HEADER: aigw-local.agentteams.io
+      # Always prefer the competition-up managed, read-only token file over any
+      # stale direct token inherited from the project .env.
+      AGENTTEAMS_AUTH_TOKEN: ""
+      AGENTTEAMS_AUTH_TOKEN_FILE: /run/secrets/agentteams-controller-token
+      AGENTTEAMS_MATRIX_URL: http://agentteams-controller:6167
+      AGENTTEAMS_ADMIN_USER: ${AGENTTEAMS_ADMIN_USER}
+      AGENTTEAMS_ADMIN_PASSWORD: ${AGENTTEAMS_ADMIN_PASSWORD}
+      AGENTTEAMS_ELEMENT_URL: http://127.0.0.1:${AGENTTEAMS_PORT_ELEMENT_WEB:-18088}
+      AGENTTEAMS_MCP_GATEWAY_TOKEN_FILE: /run/secrets/chengzhu-mcp-token
+      AGENTTEAMS_MCP_GATEWAY_TOKEN: ""
+      AGENTTEAMS_FS_ENDPOINT: http://agentteams-controller:9000
+      AGENTTEAMS_FS_ACCESS_KEY: ${AGENTTEAMS_MINIO_USER}
+      AGENTTEAMS_FS_SECRET_KEY: ${AGENTTEAMS_MINIO_PASSWORD}
+      AGENTTEAMS_FS_BUCKET: agentteams-storage
+      AGENTTEAMS_ARTIFACT_REQUIRED: "true"
+      AGENTTEAMS_BAILIAN_SKILL_ROOT: /app/agentteams/vendor/alibabacloud-bailian-image-creator
+      AGENTTEAMS_DEMO_VISUAL_FAILURE_ONCE: ${AGENTTEAMS_DEMO_VISUAL_FAILURE_ONCE:-false}
+      # competition-up resolves this server-side value from the shell or .env;
+      # it is not copied into Worker packages or Matrix messages.
+      VISION_LLM_API_KEY: ${AGENTTEAMS_LLM_API_KEY:-}
+    volumes:
+      - ./.agentteams/controller-token:/run/secrets/agentteams-controller-token:ro
+      - ./.agentteams/chengzhu-mcp-token:/run/secrets/chengzhu-mcp-token:ro
+    networks:
+      - default
+
+  chengzhu-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    restart: unless-stopped
+    command: ["python", "mcp_server.py"]
+    env_file: .env
+    environment:
+      NEO4J_URI: bolt://neo4j:7687
+      AGENTTEAMS_ENABLED: "true"
+      AGENTTEAMS_VERSION: v1.2.0
+      AGENTTEAMS_CONTROLLER_URL: http://agentteams-controller:8090
+      AGENTTEAMS_MATRIX_URL: http://agentteams-controller:6167
+      AGENTTEAMS_MCP_HOST: 0.0.0.0
+      AGENTTEAMS_MCP_PORT: "5002"
+      AGENTTEAMS_MCP_GATEWAY_TOKEN_FILE: /run/secrets/chengzhu-mcp-token
+      AGENTTEAMS_MCP_GATEWAY_TOKEN: ""
+      AGENTTEAMS_FS_ENDPOINT: http://agentteams-controller:9000
+      AGENTTEAMS_FS_ACCESS_KEY: ${AGENTTEAMS_MINIO_USER}
+      AGENTTEAMS_FS_SECRET_KEY: ${AGENTTEAMS_MINIO_PASSWORD}
+      AGENTTEAMS_FS_BUCKET: agentteams-storage
+      AGENTTEAMS_ARTIFACT_REQUIRED: "true"
+      AGENTTEAMS_BAILIAN_SKILL_ROOT: /app/agentteams/vendor/alibabacloud-bailian-image-creator
+      AGENTTEAMS_DEMO_VISUAL_FAILURE_ONCE: ${AGENTTEAMS_DEMO_VISUAL_FAILURE_ONCE:-false}
+      VISION_LLM_API_KEY: ${AGENTTEAMS_LLM_API_KEY:-}
+    expose:
+      - "5002"
+    volumes:
+      - ./backend/uploads:/app/backend/uploads
+      - ./.agentteams/chengzhu-mcp-token:/run/secrets/chengzhu-mcp-token:ro
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; value=json.load(urllib.request.urlopen('http://127.0.0.1:5002/health', timeout=3)); assert value['status']=='ok' and value['protocol_version']=='2024-11-05'"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      default:
+      agentteams:
+        aliases:
+          - chengzhu-mcp.agentteams.io
+
+networks:
+  agentteams:
+    name: agentteams-net
+    external: true

@@ -1,0 +1,17 @@
+{
+  "type": "worker",
+  "version": "1.0",
+  "source": {
+    "hostname": "chengzhu-agentteams-package",
+    "os": "N/A",
+    "created_at": "2026-07-30T00:00:00Z"
+  },
+  "worker": {
+    "suggested_name": "compliance-reviewer",
+    "model": "qwen3-30b-a3b-instruct-2507",
+    "runtime": "copaw",
+    "apt_packages": [],
+    "pip_packages": [],
+    "npm_packages": []
+  }
+}

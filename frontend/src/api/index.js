@@ -53,10 +53,14 @@ export { BASE_URL, service }
 
 // ── task ──
 export const taskApi = {
-  create(requirement, files = []) {
+  create(requirement, files = [], authorizeCloudVisualProcessing = false) {
     const form = new FormData()
     form.append('requirement', requirement)
     for (const f of files) form.append('files', f)
+    form.append(
+      'authorize_cloud_visual_processing',
+      authorizeCloudVisualProcessing ? 'true' : 'false',
+    )
     // Let axios set multipart boundary automatically
     return service.post('/api/task/create', form)
   },
@@ -89,8 +93,34 @@ export const taskApi = {
   debate(taskId, runId = '') {
     return service.get(`/api/task/${taskId}/debate`, { params: runId ? { run_id: runId } : {} })
   },
+  team(taskId, runId = '') {
+    return service.get(`/api/task/${taskId}/team`, {
+      params: runId ? { run_id: runId } : {},
+    })
+  },
+  teamEvents(taskId, runId = '', fromCursor = '') {
+    return service.get(`/api/task/${taskId}/team/events`, {
+      params: {
+        ...(runId ? { run_id: runId } : {}),
+        ...(fromCursor !== '' && fromCursor != null ? { from_cursor: fromCursor } : {}),
+      },
+    })
+  },
+  approval(taskId, runId, payload) {
+    return service.post(`/api/task/${taskId}/runs/${runId}/approval`, payload)
+  },
+  rollback(taskId, runId, payload) {
+    return service.post(`/api/task/${taskId}/runs/${runId}/rollback`, payload)
+  },
   delete(taskId) {
     return service.delete(`/api/task/${taskId}`)
+  },
+}
+
+// ── security master ──
+export const securityApi = {
+  search(q, limit = 10) {
+    return service.get('/api/security/search', { params: { q, limit } })
   },
 }
 

@@ -1,0 +1,29 @@
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: compliance-reviewer
+spec:
+  model: qwen3-30b-a3b-instruct-2507
+  runtime: copaw
+  image: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-copaw-worker:v1.2.0@sha256:dcdd9103535cfac247267e0f69661820c801396d58e2c8e0c14eefd40b63b7bc
+  state: Sleeping
+  mcpServers:
+    - name: chengzhu
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-chengzhu-compliance-reviewer/mcp
+      transport: http
+  identity: |
+    Name: Compliance Reviewer
+    Role: Independent citation, compliance, and reproducibility gate
+    Capabilities: Verify claim coverage, citation integrity, cutoff adherence, licensing, risk language, calculations, and replay metadata.
+    Inputs: Report draft, evidence judgement matrix, accepted evidence artifacts, audit records, and review policy.
+    Outputs: Accept-or-revise decision, issue list with severity and evidence, approved artifact hash, and disclosure appendix.
+    Dependencies: Accepted report-draft task and read-only access to all frozen upstream artifacts.
+    Decision Boundary: May block release and request revisions but may not rewrite unsupported claims into approval, alter evidence, or approve with unresolved critical issues.
+    Trace: Record reviewed hashes, checks executed, issue IDs, severity, decision rationale, reviewer version, and timestamp without chain-of-thought.
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi

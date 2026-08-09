@@ -261,14 +261,10 @@ def test_incomplete_report_transaction_is_not_latest_or_report_ready(
     assert by_run[published_run]['report_ready'] is True
     assert by_run[incomplete_run]['report_ready'] is False
 
-    # The background failure guard must not mistake a started-only bundle for
-    # a successfully generated partial report.
-    from app.api import task as task_api
-    monkeypatch.setattr(
-        task_api,
-        'run_full_pipeline',
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError('injected')),
-    )
+    # AgentTeams admission compensation must not mistake a started-only bundle
+    # for a successfully generated partial report.  There is intentionally no
+    # legacy realtime ``run_full_pipeline`` entrypoint in the task API.
+    from app.utils.run_admission import compensate_failed_run_admission
     current = ResearchTask.load(task.task_id)
     current.begin_run(
         incomplete_run,
@@ -277,7 +273,12 @@ def test_incomplete_report_transaction_is_not_latest_or_report_ready(
         97,
         analysis_mode='direct',
     )
-    task_api._bg_collect(task.task_id, incomplete_run)
+    compensate_failed_run_admission(
+        task.task_id,
+        incomplete_run,
+        RuntimeError('injected'),
+        message='AgentTeams 派发失败',
+    )
     failed = ResearchTask.load(task.task_id)
     assert failed.status is ResearchTaskStatus.FAILED
     assert failed.progress_detail['report_ready'] is False
@@ -528,174 +529,43 @@ def test_first_confirm_moves_pending_planner_spend_without_reassigning_on_ab_run
     assert dbmod.get_llm_budget_reservation('planner-pending-extreme')['run_id'] == first_run
 
 
-def test_rerun_admission_resets_previous_run_runtime_state(
+def test_legacy_rerun_route_cannot_start_a_second_realtime_orchestrator(
     isolated_runtime,
-    monkeypatch,
 ):
-    task = _task(task_id='task_rerun_state_reset', mode='direct')
+    task = _task(task_id='task_agentteams_rerun_tombstone', mode='direct')
     source_run = task.create_run(task.task_card)
-    source_evidence = Path(task.run_folder(source_run)) / 'evidence' / 'source.jsonl'
-    source_evidence.write_text(
-        json.dumps(_card('source').to_dict(), ensure_ascii=False) + '\n',
-        encoding='utf-8',
-    )
-    EvidenceStore(
-        task.task_id,
-        run_id=source_run,
-        allow_staging=True,
-    ).freeze_to_run(source_run)
-    source_report = {
-        'run_id': source_run,
-        'title': 'source report',
-        'sections': [],
-        'markdown': '# source report',
-    }
-    (Path(task.run_folder(source_run)) / 'report.json').write_text(
-        json.dumps(source_report),
-        encoding='utf-8',
-    )
-    (Path(task.folder) / 'report.json').write_text(
-        json.dumps(source_report),
-        encoding='utf-8',
-    )
-    task.error = 'old-rerun-error'
-    task.collect_failures = [{'agent': 'old'}]
-    task.progress_detail = {
-        'stage': 'failed', 'report_ready': True, 'old_marker': True,
-    }
-    task.set_status(ResearchTaskStatus.FAILED, '旧 run 失败', progress=100)
+    task.set_status(ResearchTaskStatus.COMPLETED, '首轮完成', progress=100)
+    before_folders = sorted(path.name for path in (Path(task.folder) / 'runs').iterdir())
+    before_rows = dbmod.list_task_runs(task.task_id)
 
-    from app.api import report as report_api
-    monkeypatch.setattr(report_api.threading, 'Thread', _NoopThread)
     from app import create_app
     client = create_app(Config).test_client()
-
     response = client.post(f'/api/report/{task.task_id}/rerun-analysis')
 
-    assert response.status_code == 200
-    run_id = response.get_json()['data']['run_id']
-    assert run_id != source_run
-    current = ResearchTask.load(task.task_id)
-    assert current.status is ResearchTaskStatus.ANALYZING
-    assert current.error is None
-    assert current.collect_failures == []
-    assert current.progress_detail == {
-        'stage': 'analyzing',
-        'analysis_mode': 'direct',
-        'run_id': run_id,
-        'report_ready': False,
-    }
-    assert EvidenceStore(task.task_id, run_id=run_id).is_frozen is True
-
-
-def test_rerun_admission_failure_preserves_source_and_terminalizes_new_row(
-    isolated_runtime,
-    monkeypatch,
-):
-    task = _task(task_id='task_rerun_admission_compensation', mode='direct')
-    source_run = task.create_run(task.task_card)
-    source_evidence = Path(task.run_folder(source_run)) / 'evidence' / 'source.jsonl'
-    source_evidence.write_text(
-        json.dumps(_card('source').to_dict(), ensure_ascii=False) + '\n',
-        encoding='utf-8',
-    )
-    EvidenceStore(
-        task.task_id,
-        run_id=source_run,
-        allow_staging=True,
-    ).freeze_to_run(source_run)
-    source_report = {
-        'run_id': source_run,
-        'title': 'source report',
-        'sections': [],
-        'markdown': '# source report',
-    }
-    (Path(task.run_folder(source_run)) / 'report.json').write_text(
-        json.dumps(source_report), encoding='utf-8',
-    )
-    (Path(task.folder) / 'report.json').write_text(
-        json.dumps(source_report), encoding='utf-8',
-    )
-    task.set_status(ResearchTaskStatus.COMPLETED, '源报告完成', progress=100)
-
-    from app.api import report as report_api
-    monkeypatch.setattr(report_api.threading, 'Thread', _NoopThread)
-    monkeypatch.setattr(
-        report_api.ResearchTask,
-        'begin_run',
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(
-            RuntimeError('injected begin failure')
-        ),
-    )
-    from app import create_app
-    client = create_app(Config).test_client()
-
-    response = client.post(f'/api/report/{task.task_id}/rerun-analysis')
-
-    assert response.status_code == 500
-    rows = dbmod.list_task_runs(task.task_id)
-    assert len(rows) == 1
-    failed_run = rows[0]['run_id']
-    assert failed_run != source_run
-    assert rows[0]['status'] == 'failed'
+    assert response.status_code == 409
+    assert response.get_json()['code'] == 'agentteams_rerun_requires_confirmation'
     current = ResearchTask.load(task.task_id)
     assert current.current_run_id == source_run
     assert current.status is ResearchTaskStatus.COMPLETED
-    assert EvidenceStore(task.task_id, run_id=failed_run).is_frozen is True
+    assert sorted(path.name for path in (Path(task.folder) / 'runs').iterdir()) == before_folders
+    assert dbmod.list_task_runs(task.task_id) == before_rows
 
 
-def test_rerun_background_preserves_completed_partial_for_committed_report(
-    isolated_runtime,
-    monkeypatch,
-):
-    task = _task(task_id='task_rerun_committed_partial', mode='direct')
-    source_run = task.create_run(task.task_card)
-    source_evidence = Path(task.run_folder(source_run)) / 'evidence' / 'source.jsonl'
-    source_evidence.write_text(
-        json.dumps(_card('source').to_dict(), ensure_ascii=False) + '\n',
-        encoding='utf-8',
-    )
-    EvidenceStore(
-        task.task_id,
-        run_id=source_run,
-        allow_staging=True,
-    ).freeze_to_run(source_run)
-    from app.services.report_assembler import publish_report
-    publish_report(task.task_id, {
-        'task_id': task.task_id,
-        'run_id': source_run,
-        'title': 'source report',
-        'sections': [],
-        'markdown': '# source report',
-    }, run_id=source_run)
-    task.set_status(ResearchTaskStatus.COMPLETED, '源报告完成', progress=100)
+def test_replay_rerun_route_is_read_only(isolated_runtime):
+    task = _task(task_id='task_replay_rerun_tombstone', mode='evidence_debate')
+    replay_card = {**task.task_card, 'execution_mode': 'replay'}
+    task.set_task_card(replay_card)
+    source_run = task.create_run(replay_card)
+    task.set_status(ResearchTaskStatus.COMPLETED, '回放已装载', progress=100)
 
-    from app.api import report as report_api
-
-    def publish_then_raise(task_id, run_id=None):
-        publish_report(task_id, {
-            'task_id': task_id,
-            'run_id': run_id,
-            'title': 'committed rerun report',
-            'sections': [],
-            'markdown': '# committed rerun report',
-        }, run_id=run_id)
-        raise RuntimeError('post-publish failure')
-
-    monkeypatch.setattr(report_api, 'run_analysis_pipeline', publish_then_raise)
-    monkeypatch.setattr(report_api.threading, 'Thread', _InlineThread)
     from app import create_app
     client = create_app(Config).test_client()
-
     response = client.post(f'/api/report/{task.task_id}/rerun-analysis')
 
-    assert response.status_code == 200
-    run_id = response.get_json()['data']['run_id']
-    current = ResearchTask.load(task.task_id)
-    assert current.current_run_id == run_id
-    assert current.status is ResearchTaskStatus.COMPLETED_PARTIAL
-    assert current.progress_detail['report_ready'] is True
-    assert dbmod.get_task_run(run_id)['status'] == 'completed_partial'
+    assert response.status_code == 409
+    assert response.get_json()['code'] == 'replay_read_only'
+    assert ResearchTask.load(task.task_id).current_run_id == source_run
+    assert len(list((Path(task.folder) / 'runs').iterdir())) == 1
 
 
 def test_delete_task_cleans_owned_related_rows_and_artifacts(
@@ -1013,29 +883,15 @@ def test_concurrent_confirms_create_only_one_active_run(isolated_runtime, monkey
     assert len(dbmod.list_task_runs(task.task_id)) == 1
 
 
-def test_rerun_rejects_staging_or_empty_source_snapshot(isolated_runtime, monkeypatch):
-    task = _task(task_id='task_rerun_requires_frozen', mode='direct')
-    source_run = task.create_run()
-    staging = Path(task.run_folder(source_run)) / 'evidence' / 'partial.jsonl'
-    staging.write_text(
-        json.dumps(_card('staging-only').to_dict(), ensure_ascii=False) + '\n',
-        encoding='utf-8',
-    )
-    task.set_status(ResearchTaskStatus.FAILED, '首轮失败', progress=100)
-
-    from app.api import report as report_api
-    monkeypatch.setattr(report_api.threading, 'Thread', _NoopThread)
+def test_rerun_missing_task_is_not_found(isolated_runtime):
     from app import create_app
     app = create_app(Config)
     app.config['TESTING'] = True
     client = app.test_client()
 
-    response = client.post(f'/api/report/{task.task_id}/rerun-analysis')
+    response = client.post('/api/report/not-a-task/rerun-analysis')
 
-    assert response.status_code == 409
-    assert '冻结' in response.get_json()['error']
-    assert ResearchTask.load(task.task_id).current_run_id == source_run
-    assert len(list((Path(task.folder) / 'runs').iterdir())) == 1
+    assert response.status_code == 404
 
 
 def test_scenario_is_bound_to_one_published_run_and_budget_ledger(

@@ -1,0 +1,4 @@
+interface:
+  display_name: "裁决证据结论"
+  short_description: "Judge evidence conflicts and claim support rigorously"
+  default_prompt: "Use $judge-evidence to adjudicate conflicting analysis and produce a claim-evidence decision matrix."

@@ -10,9 +10,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from app.utils.db import init_db, insert_feedback, list_playbook_rules, get_user_preference
 from app.services.reflection import reflect_on_run
 from app.services.playbook import confirm_rule, is_action_compliant, get_rules
+from app.config import Config
 
 
-def test_downvote_table_creates_style_rule():
+def test_downvote_table_creates_style_rule(monkeypatch):
+    # This is a deterministic fallback test. Never let a developer's configured
+    # model key turn it into a live, billable request.
+    monkeypatch.setattr(Config, 'LLM_API_KEY', None)
+    monkeypatch.setattr(Config, 'TEXT_LLM_API_KEY', None)
     init_db()
     run_id = 'run_test_reflect_table'
     insert_feedback(run_id, 'section_vote', section_index=0, vote='down', comment='只要表格')

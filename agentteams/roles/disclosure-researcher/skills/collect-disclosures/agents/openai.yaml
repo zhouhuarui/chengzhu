@@ -1,0 +1,4 @@
+interface:
+  display_name: "采集官方披露"
+  short_description: "Collect and stage official issuer disclosure evidence"
+  default_prompt: "Use $collect-disclosures to collect issuer disclosures and return hashed evidence candidates for backend freezing."

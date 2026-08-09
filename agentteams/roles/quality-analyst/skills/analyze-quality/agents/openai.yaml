@@ -1,0 +1,4 @@
+interface:
+  display_name: "分析公司质量"
+  short_description: "Analyze quality and moat from frozen evidence"
+  default_prompt: "Use $analyze-quality to assess business quality and moat using only accepted frozen evidence."

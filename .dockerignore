@@ -1,0 +1,33 @@
+.git
+.gitignore
+.DS_Store
+
+# Secrets and generated runtime credentials must never enter build context.
+.env
+.env.*
+!.env.example
+.agentteams
+
+# Host-only dependencies and caches are not portable into Linux images.
+node_modules
+**/node_modules
+backend/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+.pytest_cache
+
+# User data is mounted at runtime and must not be baked into image layers.
+backend/uploads
+backend/logs
+
+# Frontend build/test outputs are regenerated inside the image or CI.
+frontend/dist
+frontend/test-results
+frontend/playwright-report
+frontend/blob-report
+
+# Local/editor artifacts.
+.idea
+.vscode
+*.log

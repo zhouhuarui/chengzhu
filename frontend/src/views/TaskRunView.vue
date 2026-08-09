@@ -44,6 +44,9 @@
           <button :class="{ active: activeTab === 'agents' }" @click="activeTab = 'agents'">
             Agent 流水
           </button>
+          <button :class="{ active: activeTab === 'team' }" @click="activeTab = 'team'">
+            AgentTeams 团队
+          </button>
           <button
             v-if="debateEnabled"
             :class="{ active: activeTab === 'debate' }"
@@ -52,8 +55,16 @@
             辩论面板
           </button>
         </div>
-        <AgentLogStream v-if="activeTab === 'agents'" :lines="logLines" />
-        <div v-else class="debate-scroll">
+        <AgentLogStream v-show="activeTab === 'agents'" :lines="logLines" />
+        <AgentTeamPanel
+          v-show="activeTab === 'team'"
+          :task-id="String(taskId)"
+          :run-id="runId"
+          :status="status"
+          :progress-detail="progressDetail"
+          :log-lines="logLines"
+        />
+        <div v-if="activeTab === 'debate'" class="debate-scroll">
           <DebatePanel
             :debate="debateData"
             :loading="debateLoading"
@@ -94,7 +105,7 @@
         <h3>运行页导览</h3>
         <ol>
           <li><strong>左侧</strong> — 管线各阶段进度</li>
-          <li><strong>中间</strong> — Agent 动作流水与结构化辩论记录</li>
+          <li><strong>中间</strong> — Agent 动作流水、团队协作与结构化辩论记录</li>
           <li><strong>右侧</strong> — 证据计数与知识图谱</li>
         </ol>
         <button class="btn" @click="dismissGuide">知道了</button>
@@ -128,6 +139,7 @@ import AgentLogStream from '../components/AgentLogStream.vue'
 import GraphPanel from '../components/GraphPanel.vue'
 import DebatePanel from '../components/DebatePanel.vue'
 import EvidencePopover from '../components/EvidencePopover.vue'
+import AgentTeamPanel from '../components/AgentTeamPanel.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -555,6 +567,11 @@ onUnmounted(() => {
 }
 
 .log-col :deep(.agent-log-stream) {
+  flex: 1;
+  min-height: 0;
+}
+
+.log-col :deep(.agent-team-panel) {
   flex: 1;
   min-height: 0;
 }

@@ -1,0 +1,4 @@
+interface:
+  display_name: "采集市场背景"
+  short_description: "Collect news broker and industry context safely"
+  default_prompt: "Use $collect-market-context to collect time-bounded news, broker, and industry evidence with provenance."

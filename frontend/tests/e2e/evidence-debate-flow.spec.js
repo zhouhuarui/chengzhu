@@ -103,6 +103,7 @@ async function fulfillJson(route, payload, status = 200) {
 
 test('debate selection, two rounds, challenge evidence and run switching', async ({ page }) => {
   let confirmedMode = null
+  let confirmedSymbols = null
   let statusCalls = 0
   let releaseRoundTwo
   const roundTwoGate = new Promise((resolve) => { releaseRoundTwo = resolve })
@@ -131,7 +132,13 @@ test('debate selection, two rounds, challenge evidence and run switching', async
           task_card: {
             deliverable: 'summary',
             analysis_mode: 'direct',
-            symbols: [{ code: '300750', name: '宁德时代' }],
+            symbols: [{
+              sec_id: '300750.XSHE',
+              code: '300750',
+              name: '宁德时代',
+              exchange: 'XSHE',
+              list_status: 'L',
+            }],
             time_window: { start: '2026-01-01', end: '2026-07-31' },
             info_types: ['financial_report'],
             focus_points: ['财务表现'],
@@ -142,6 +149,7 @@ test('debate selection, two rounds, challenge evidence and run switching', async
     if (path === `/api/task/${taskId}/confirm` && request.method() === 'POST') {
       const body = request.postDataJSON()
       confirmedMode = body?.task_card?.analysis_mode
+      confirmedSymbols = body?.task_card?.symbols
       return fulfillJson(route, {
         success: true,
         data: { task_id: taskId, run_id: debateRunId, status: 'collecting' },
@@ -220,11 +228,21 @@ test('debate selection, two rounds, challenge evidence and run switching', async
 
   await page.goto(`/task/${taskId}/confirm`)
   await expect(page.getByRole('heading', { name: '确认任务卡' })).toBeVisible()
+  await expect(page.locator('.symbol-summary')).toContainText('宁德时代')
+  await expect(page.locator('.symbol-summary')).toContainText('300750')
+  await expect(page.getByRole('combobox', { name: '搜索第 1 个证券' })).toHaveCount(0)
   await page.getByText('多视角证据辩论', { exact: true }).click()
   await expect(page.getByText(/DeepSeek/)).toBeVisible()
   await page.getByRole('button', { name: '开始研究' }).click()
 
   await expect.poll(() => confirmedMode).toBe('evidence_debate')
+  expect(confirmedSymbols).toEqual([{
+    sec_id: '300750.XSHE',
+    code: '300750',
+    name: '宁德时代',
+    exchange: 'XSHE',
+    list_status: 'L',
+  }])
   await expect(page).toHaveURL(new RegExp(`/task/${taskId}\\?run_id=${debateRunId}`))
   await expect(page.getByText('R1', { exact: true })).toBeVisible()
   releaseRoundTwo()

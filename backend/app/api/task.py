@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import inspect
+import hashlib
 import json
 import os
 import re
@@ -21,11 +21,18 @@ from ..models.research_task import (
     ResearchTaskStatus,
     resolve_task_run_id,
     task_artifact_folder,
+    task_card_for_run,
 )
 from ..models.task_card import TaskCard
 from ..services.agent_logger import AgentLogger
-from ..services.pipeline import run_full_pipeline
+from ..integrations.agentteams import AgentTeamsDispatcher
+from ..team import AgentTeamStore
 from ..services.planner import PlannerService
+from ..services.symbol_resolver import (
+    SecurityValidationUnavailable,
+    canonicalize_confirmed_symbols,
+    reconcile_planned_symbols,
+)
 from ..utils import db as dbutil
 from ..utils.report_commit import report_bundle_is_committed
 from ..utils.run_admission import compensate_failed_run_admission
@@ -45,6 +52,19 @@ ACTIVE_RUN_STATUSES = {
 }
 
 _SAFE_ARTIFACT_ID_RE = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,127}')
+_VISUAL_UPLOAD_EXTENSIONS = {'.pdf', '.png', '.jpg', '.jpeg', '.webp'}
+
+
+def _truthy_form_value(value: Any) -> bool:
+    return str(value or '').strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
+def _file_sha256(path: str) -> str:
+    digest = hashlib.sha256()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 @task_bp.route('/create', methods=['POST'])
@@ -59,10 +79,33 @@ def create_task():
 
     # 保存上传文件（可选）
     files = request.files.getlist('files') if request.files else []
+    visual_consent = _truthy_form_value(
+        request.form.get('authorize_cloud_visual_processing')
+    )
+    upload_authorizations = []
     for f in files:
         if f and f.filename:
             dest = os_path_join_files(task, f.filename)
             f.save(dest)
+            suffix = os.path.splitext(dest)[1].lower()
+            upload_authorizations.append({
+                'file_name': os.path.basename(dest),
+                'sha256': _file_sha256(dest),
+                'authorized': bool(
+                    visual_consent and suffix in _VISUAL_UPLOAD_EXTENSIONS
+                ),
+                'purpose': 'alibaba-cloud-bailian-visual-understanding',
+                'recorded_at': dbutil.now_iso(),
+                'source': 'vue-upload-consent',
+            })
+    if upload_authorizations:
+        ResearchTask._atomic_json_write(
+            os.path.join(task.folder, 'files', '.visual_authorization.json'),
+            {
+                'schema_version': 1,
+                'records': upload_authorizations,
+            },
+        )
 
     from ..services.memory_service import get_prefill
     from ..services.playbook import get_rules, render_rules_for_prompt
@@ -82,12 +125,21 @@ def create_task():
         playbook_rules=rules_txt,
         run_id=task.task_id,
     )
-    # 启发式：无标的时用偏好预填
-    if card.symbols and all(not s.code for s in card.symbols) and pref.get('watch_symbols'):
+    # 先从用户本次需求中解析本地主表的完整证券名。即使 LLM 降级，
+    # “科德数控成长性如何”也应优先于历史 watch_symbols。
+    card = reconcile_planned_symbols(card, task.requirement)
+    # 只有 Planner 连名称和代码都没有识别出来时，才允许用偏好预填。
+    # name-only 结果不能被常用代码覆盖，否则会制造名称/代码错配。
+    no_identified_symbol = not card.symbols or all(
+        not s.code and not str(s.name or '').strip()
+        for s in card.symbols
+    )
+    if no_identified_symbol and pref.get('watch_symbols'):
         from ..models.task_card import SymbolRef
         card.symbols = [SymbolRef(code=c, name='') for c in pref['watch_symbols'][:2]]
         card.clarifications = [c for c in card.clarifications if '未识别' not in c]
-        card.clarifications.append('已按你的常用标的预填，请确认代码')
+        card.clarifications.append('已按你的常用标的预填，请确认标的')
+        card = reconcile_planned_symbols(card, task.requirement)
     task.set_task_card(card)
     task.set_status(ResearchTaskStatus.AWAITING_CONFIRM, '请确认任务卡', progress=5)
 
@@ -131,9 +183,19 @@ def confirm_task(task_id: str):
             card_data.update(body)
         card = TaskCard.from_dict(card_data)
         errors = card.validate()
+        if card.execution_mode != 'agentteams':
+            errors.append('replay 任务只读，实时确认必须使用 execution_mode=agentteams')
         # 确认时必须有有效代码
         if any(not s.code for s in card.symbols):
             errors.append('请先确认全部标的的股票代码')
+        if not errors:
+            try:
+                errors.extend(canonicalize_confirmed_symbols(card))
+            except SecurityValidationUnavailable as exc:
+                return jsonify({
+                    'success': False,
+                    'error': f'{exc}，为避免标的错配，本次任务未启动',
+                }), 503
         if errors:
             return jsonify({'success': False, 'error': '; '.join(errors)}), 400
 
@@ -143,6 +205,8 @@ def confirm_task(task_id: str):
         # publishes it together with the clean runtime state.
         task.task_card = card.to_dict()
         run_id: Optional[str] = None
+        team_id: Optional[str] = None
+        team_state_version = 0
         try:
             run_id = task.create_run(
                 task.task_card,
@@ -160,6 +224,22 @@ def confirm_task(task_id: str):
             dbutil.assign_pending_llm_logs(task_id, run_id)
             if card.analysis_mode == 'evidence_debate':
                 dbutil.insert_debate_run(run_id, task_id, status='pending')
+            team_id = f'team-{run_id}'
+            AgentTeamStore.create_team_run(
+                team_id,
+                run_id,
+                task_id,
+                idempotency_key=f'admit:{run_id}',
+                config={
+                    'execution_mode': 'agentteams',
+                    'analysis_mode': card.analysis_mode,
+                    'agentteams_version': Config.AGENTTEAMS_VERSION,
+                    'agentteams_team': Config.AGENTTEAMS_TEAM_NAME,
+                    'element_url': Config.AGENTTEAMS_ELEMENT_URL,
+                    'max_active_workers': Config.AGENTTEAMS_MAX_ACTIVE_WORKERS,
+                    'approval_authority': 'vue',
+                },
+            )
             task.begin_run(
                 run_id,
                 ResearchTaskStatus.COLLECTING,
@@ -167,7 +247,18 @@ def confirm_task(task_id: str):
                 5,
                 analysis_mode=card.analysis_mode,
             )
+            dispatched = AgentTeamStore.transition_team(
+                team_id,
+                'running',
+                expected_version=0,
+                idempotency_key=f'dispatched:{run_id}',
+                actor='chengzhu-backend',
+                current_stage='dispatched',
+            )
+            team_state_version = int(dispatched['team']['state_version'])
         except Exception as error:
+            if team_id:
+                _terminalize_team_dispatch(team_id, 'run_admission_failed')
             safe_error = compensate_failed_run_admission(
                 task_id,
                 run_id,
@@ -183,12 +274,19 @@ def confirm_task(task_id: str):
                 ),
             }), status_code
 
-    # 后台线程跑采集
+    # 后台线程只负责把引用型 TaskContract 投递给 AgentTeams Manager；
+    # 采集、分析、写作均由独立 Worker 通过 Chengzhu MCP 驱动。
     try:
-        t = threading.Thread(target=_bg_collect, args=(task_id, run_id), daemon=True)
+        t = threading.Thread(
+            target=_bg_dispatch_agentteams,
+            args=(task_id, run_id, team_id, team_state_version),
+            daemon=True,
+        )
         t.start()
     except Exception as error:
         with task_run_lock(task_id):
+            if team_id:
+                _terminalize_team_dispatch(team_id, 'dispatch_worker_start_failed')
             safe_error = compensate_failed_run_admission(
                 task_id,
                 run_id,
@@ -202,77 +300,83 @@ def confirm_task(task_id: str):
 
     return jsonify({
         'success': True,
-        'data': {'task_id': task_id, 'run_id': run_id, 'status': 'collecting'},
+        'data': {
+            'task_id': task_id,
+            'run_id': run_id,
+            'team_id': team_id,
+            'execution_mode': 'agentteams',
+            'status': 'collecting',
+            'team_stage': 'dispatched',
+        },
     })
 
 
-def _bg_collect(task_id: str, run_id: Optional[str] = None) -> None:
+def _terminalize_team_dispatch(team_id: str, reason: str) -> None:
+    """Best-effort terminalization; never hides the original admission error."""
+
     try:
-        # 兼容尚未升级的管线；新管线通过显式 run_id 写入隔离产物。
-        signature = inspect.signature(run_full_pipeline)
-        accepts_run = 'run_id' in signature.parameters or any(
-            parameter.kind is inspect.Parameter.VAR_KEYWORD
-            for parameter in signature.parameters.values()
+        snapshot = AgentTeamStore.get_team(team_id)
+        if snapshot['team']['status'] not in {'published', 'rejected_terminal', 'failed'}:
+            AgentTeamStore.transition_team(
+                team_id,
+                'failed',
+                expected_version=int(snapshot['team']['state_version']),
+                idempotency_key=f'terminal:{reason}',
+                actor='chengzhu-backend',
+                current_stage='dispatch-failed',
+                terminal_reason=reason,
+            )
+    except Exception:
+        pass
+
+
+def _bg_dispatch_agentteams(
+    task_id: str,
+    run_id: str,
+    team_id: str,
+    expected_version: int,
+) -> None:
+    try:
+        task = ResearchTask.load(task_id)
+        if not task or task.current_run_id != run_id:
+            return
+        result = AgentTeamsDispatcher().dispatch(
+            task_id,
+            run_id,
+            task_card=task_card_for_run(task, run_id),
+            expected_version=expected_version,
         )
-        if run_id and accepts_run:
-            run_full_pipeline(task_id, run_id=run_id)
-        else:
-            run_full_pipeline(task_id)
-    except Exception as e:
-        from ..utils.llm_audit import safe_error_summary
-        safe_error = safe_error_summary(e)
-        # The pipeline itself normally terminalizes under this same barrier.
-        # This outer guard is only for failures before that layer starts and
-        # must never revive a task which DELETE already removed.
+        AgentTeamStore.record_dispatch_metadata(
+            team_id,
+            matrix_room_id=str(result.get('matrix_room_id') or ''),
+            matrix_event_id=str(result.get('matrix_event_id') or ''),
+            element_url=str(result.get('element_url') or ''),
+            trace_id=str(result.get('trace_id') or ''),
+            span_id=str(result.get('span_id') or ''),
+            idempotency_key=run_id,
+        )
         with task_run_lock(task_id):
-            row = dbutil.get_task_run(run_id) if run_id else None
-            if row and row.get('status') in {
-                ResearchTaskStatus.COMPLETED.value,
-                ResearchTaskStatus.COMPLETED_PARTIAL.value,
-                ResearchTaskStatus.FAILED.value,
-            }:
-                return
-            task = ResearchTask.load(task_id)
-            if not task:
-                return
-            run_failure_status = ResearchTaskStatus.FAILED.value
-            if not run_id or task.current_run_id == run_id:
-                task.error = safe_error
-                artifact_folder = task_artifact_folder(task_id, run_id)
-                has_report = report_bundle_is_committed(
-                    artifact_folder,
-                    task_id=task_id,
-                    run_id=(run_id if run_id and run_id != task_id else None),
-                )
-                task.progress_detail = {
-                    **(task.progress_detail or {}),
-                    'stage': (
-                        ResearchTaskStatus.COMPLETED_PARTIAL.value
-                        if has_report else ResearchTaskStatus.FAILED.value
-                    ),
-                    'run_id': run_id,
-                    'report_ready': has_report,
+            live = ResearchTask.load(task_id)
+            if live and live.current_run_id == run_id:
+                live.message = '已派发至 AgentTeams Manager，等待 Research Lead 接单'
+                live.progress_detail = {
+                    **(live.progress_detail or {}),
+                    'execution_mode': 'agentteams',
+                    'team_id': team_id,
+                    'team_stage': 'dispatched',
+                    'element_url': result.get('element_url'),
+                    'trace_id': result.get('trace_id'),
                 }
-                # 只有真正生成报告才允许 completed_partial。
-                if has_report:
-                    task.set_status(
-                        ResearchTaskStatus.COMPLETED_PARTIAL,
-                        f'分析异常（已保留部分报告）: {safe_error}',
-                        progress=min(max(task.progress, 70), 99),
-                    )
-                else:
-                    task.set_status(
-                        ResearchTaskStatus.FAILED,
-                        f'管线异常: {safe_error}',
-                        progress=100,
-                    )
-                run_failure_status = task.status.value
-            if run_id:
-                if row:
-                    dbutil.finish_task_run(run_id, run_failure_status)
-                debate = dbutil.get_debate_run(run_id)
-                if debate and debate.get('status') not in ('completed', 'failed'):
-                    dbutil.finish_debate_run(run_id, 'failed', error=safe_error)
+                live.save()
+    except Exception as error:
+        with task_run_lock(task_id):
+            _terminalize_team_dispatch(team_id, 'agentteams_dispatch_failed')
+            compensate_failed_run_admission(
+                task_id,
+                run_id,
+                error,
+                message='AgentTeams 派发失败',
+            )
 
 
 def _debate_progress(row: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
@@ -765,7 +869,24 @@ def get_task(task_id: str):
     task = ResearchTask.load(task_id)
     if not task:
         return jsonify({'success': False, 'error': '任务不存在'}), 404
-    return jsonify({'success': True, 'data': task.to_dict()})
+    payload = task.to_dict()
+    # 旧 awaiting_confirm 任务卡可能只有 code/name。读取时仅对二者都存在且
+    # 能被本地主表严格判定为同一证券的条目补 canonical 字段；错配、缺字段
+    # 或主表不可用时保持未解析，绝不在 GET 中猜测或改写磁盘任务卡。
+    if task.status == ResearchTaskStatus.AWAITING_CONFIRM and Config.DATAYES_ENABLED:
+        legacy_card = TaskCard.from_dict(payload.get('task_card') or {})
+        can_verify = bool(legacy_card.symbols) and all(
+            symbol.code and str(symbol.name or '').strip()
+            for symbol in legacy_card.symbols
+        )
+        if can_verify:
+            try:
+                symbol_errors = canonicalize_confirmed_symbols(legacy_card)
+            except SecurityValidationUnavailable:
+                symbol_errors = ['security_master_unavailable']
+            if not symbol_errors:
+                payload['task_card'] = legacy_card.to_dict()
+    return jsonify({'success': True, 'data': payload})
 
 
 @task_bp.route('/list', methods=['GET'])

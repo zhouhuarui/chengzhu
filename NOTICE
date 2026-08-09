@@ -1,0 +1,62 @@
+Chengzhu Foresketch
+Third-party notices and licensing boundaries
+
+Project license
+---------------
+
+The Chengzhu source code and the portions derived from MiroFish are
+distributed under the GNU Affero General Public License, version 3.0.  The
+complete license text is in LICENSE.MiroFish.  This notice does not remove or
+replace any copyright, attribution, or license notice in an individual file.
+
+MiroFish provenance
+-------------------
+
+Chengzhu retains tools and orchestration concepts derived from the MiroFish
+open-source project.  Those derivative portions remain covered by the GNU
+Affero General Public License, version 3.0, as described above.
+
+AgentTeams
+----------
+
+The competition runtime integrates AgentTeams v1.2.0 from:
+
+    https://github.com/agentscope-ai/AgentTeams
+    tag: v1.2.0
+    commit: 793db242257a569d911b1aa59c1cd554af78511f
+
+AgentTeams is Copyright 2026 AgentTeams Contributors and is made available by
+its authors under the Apache License, Version 2.0.  Chengzhu's installer
+wrapper downloads the pinned upstream release after checksum verification;
+the upstream controller, images, command-line tools, names, and notices are
+not relicensed under Chengzhu's AGPL license.  See agentteams/UPSTREAM.lock for
+the reviewed source and integrity metadata, and the upstream release for its
+complete license and notices.
+
+Alibaba Cloud Bailian official Skill
+------------------------------------
+
+The optional alibabacloud-bailian-image-creator Skill and the Bailian service
+are provided by their respective upstream authors.  Chengzhu calls the pinned
+Skill through a server-side proxy and does not grant any new rights in the
+Skill, service, models, trademarks, or hosted content.  Any upstream Skill
+package or code must retain the license and attribution shipped with that
+exact version.  Chengzhu-authored proxy, role, and MCP integration code does
+not alter those upstream terms.
+
+    https://github.com/aliyun/alibabacloud-aiops-skills
+    commit: 92bd723f7cc217b252feab574c1883fa0aa46b3c
+    path: skills/aiml/sfm/alibabacloud-bailian-image-creator
+
+The four runtime-fetched files and their SHA-256 values are recorded in
+agentteams/OFFICIAL_SKILLS.lock.  They are verified before use and are not
+relicensed or committed as Chengzhu source.
+
+Other dependencies and data
+---------------------------
+
+Language libraries, container images, models, fonts, data sources, and other
+dependencies remain under their own licenses or service terms.  Public or
+user-authorized source material is not relicensed merely because Chengzhu
+stores a citation or immutable artifact reference.  Licensed private data is
+excluded from public demo_seed bundles.

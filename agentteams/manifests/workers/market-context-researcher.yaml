@@ -1,0 +1,29 @@
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: market-context-researcher
+spec:
+  model: qwen3-30b-a3b-instruct-2507
+  runtime: copaw
+  image: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-copaw-worker:v1.2.0@sha256:dcdd9103535cfac247267e0f69661820c801396d58e2c8e0c14eefd40b63b7bc
+  state: Sleeping
+  mcpServers:
+    - name: chengzhu
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-chengzhu-market-context-researcher/mcp
+      transport: http
+  identity: |
+    Name: Market Context Researcher
+    Role: News, broker-research, industry, and policy evidence collector
+    Capabilities: Collect time-bounded news, entitlement-safe broker views, comparable industry indicators, policy changes, and peer context with provenance.
+    Inputs: Accepted research plan, entity aliases, topics, peer set, source/licensing policy, lookback, and cutoff.
+    Outputs: Deduplicated context evidence cards, event timeline, broker/industry comparison, contradictions, entitlement records, and gaps for deterministic backend freezing.
+    Dependencies: Accepted research-plan task and approved connectors with explicit time and entitlement boundaries.
+    Decision Boundary: May collect and label context but may not bypass access controls, treat rumor/opinion as fact, cross the cutoff, or make investment conclusions.
+    Trace: Record role ID, canonical source, event/publish/retrieval times, entitlement, definitions, hashes, duplicate clusters, confidence, and output hash.
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi

@@ -10,9 +10,74 @@
 |------|------|------|
 | Node.js | >=18 | 本机用 pnpm |
 | Python | 3.9+（建议 3.11–3.12） | Graphiti 完整能力建议 3.11 |
-| Neo4j | 5.26+（可选） | `brew install neo4j`；未安装时自动使用本地 JSON 图谱 |
+| Docker / Compose | Docker 24+ | 竞赛版 AgentTeams v1.2.0 单机运行时需要；普通前端开发可不装 |
+| Neo4j | 5.26+（可选） | Docker 竞赛栈已内置；仅做零 Docker 本地开发时才需要 Homebrew 版本 |
 | API Key | 可选 | DeepSeek 负责文本，百炼 Qwen-VL 负责视觉；无 Key 可载入 `demo_seed` 回放 |
 | Datayes | 可选 | 已购结构化数据；未配置时自动保留原公开数据源链路 |
+
+## 竞赛运行：AgentTeams v1.2.0
+
+实时任务默认由固定版本的 AgentTeams 运行，主演示采用 `evidence_debate`：双路采集、证据冻结、质量/成长双分析、确定性裁决、写作、合规审校，最后只能在 Vue 中人工批准发布。Manager 是 OpenClaw 控制面；Team 内有且只有以下 8 个 QwenPaw Worker：
+
+| Worker | 职责与硬边界 |
+|---|---|
+| Research Lead | 建立 DAG、分派、验收与一次重试；不改证据、不批准发布 |
+| Disclosure Researcher | 处理公告、财报、上传材料及视觉页；只追加 EvidenceCard |
+| Market Context Researcher | 收集新闻、行业、研报和公开网络资料；只追加 EvidenceCard |
+| Quality Analyst | 在冻结证据上分析质量与稳定性；冻结后禁止联网 |
+| Growth Analyst | 在冻结证据上分析增长并交叉质疑；冻结后禁止联网 |
+| Evidence Judge | 调用确定性 EvidenceAuditor；不能覆盖硬审计失败 |
+| Report Writer | 只使用通过裁决的事实写报告；不能重新检索 |
+| Compliance Reviewer | 检查引用、结论边界和风险披露；可退回、不能发布 |
+
+推荐主机为 8 CPU / 16 GB，最低 4 CPU / 8 GB；同时活跃 Worker 上限为 3。复制配置后填写 AgentTeams、Matrix、MinIO、MCP 网关及模型服务凭证，再启动竞赛栈：
+
+```bash
+cp .env.example .env
+# 至少填写 AgentTeams/Matrix/MinIO/MCP 所需凭证；密钥只留在服务端。
+make competition-up
+```
+
+该入口会校验 AgentTeams 固定版本与下载校验和，启动 Chengzhu、Neo4j 和 MCP，应用 `agentteams.io/v1beta1` 资源并执行健康预检。Controller、MinIO、Higress 管理口默认不得暴露公网。具体角色包、版本锁和复现检查见 [`agentteams/`](agentteams/)；架构与竞赛映射见 [`docs/competition-agentteams.md`](docs/competition-agentteams.md)。
+
+部署机建议只保留 Docker/Colima 这一套运行时；Node、Python、Neo4j 等业务依赖均由镜像提供。宿主机仍需保留项目代码、权限为 `600` 的 `.env`、上传目录、只读 Datayes 数据目录、Docker 持久卷和恢复备份。远程演示不要开放公网端口，可从自己的电脑建立 SSH 隧道：
+
+```bash
+ssh -N \
+  -L 3000:127.0.0.1:3000 \
+  -L 18088:127.0.0.1:18088 \
+  <macmini-user>@<macmini-host>
+```
+
+随后打开 `http://127.0.0.1:3000/`；需要查看协作界面时再打开 `http://127.0.0.1:18088/`。
+
+竞赛交付文档：
+
+- [AgentTeams 运维、备份恢复与无 Key 回放](docs/agentteams-operations.md)
+- [安全威胁模型与残余风险](docs/agentteams-threat-model.md)
+- [第三方版本、许可证边界与 SBOM 要求](docs/agentteams-third-party.md)
+- [三分钟主演示脚本与录制证据](docs/agentteams-demo-script.md)
+
+```mermaid
+flowchart LR
+    U["Vue 主界面 / 唯一审批入口"] --> B["Chengzhu Backend"]
+    B --> M["AgentTeams Manager"]
+    M --> L["Research Lead"]
+    L --> D["Disclosure Researcher"]
+    L --> C["Market Context Researcher"]
+    L --> Q["Quality Analyst"]
+    L --> G["Growth Analyst"]
+    L --> J["Evidence Judge"]
+    L --> W["Report Writer"]
+    L --> R["Compliance Reviewer"]
+    D & C & Q & G & J & W & R --> MCP["Chengzhu MCP / 最小权限工具"]
+    MCP --> S["SQLite 状态 + MinIO 不可变制品"]
+    M & L & D & C & Q & G & J & W & R --> X["Matrix 脱敏协作事件"]
+    X --> U
+    U -->|"批准 / 驳回 / 回滚"| B
+```
+
+AgentTeams 负责身份、任务分派、协作消息、Skill 调用和生命周期；Chengzhu 后端仍是数据采集、证据冻结、确定性审计、CAS 状态机、权限和发布的权威系统。Matrix/Element 只镜像摘要与 `ArtifactRef`，不承载完整证据、密钥、Base64 或隐藏推理。
 
 ## 本地开发（零 Docker）
 
@@ -45,7 +110,7 @@ python3 scripts/load_demo.py --force # 载入 demo_seed/
 pnpm run dev
 ```
 
-`demo_seed` 是只读演示回放：可查看包内已有的报告、证据、图谱、运行记录与推演产物，不会调用文本或视觉模型。黄金案例内置同一冻结证据下的 `direct` 与 `evidence_debate` 两个 run，可无 Key 切换 A/B。它不会凭空生成 seed 中未包含的新任务；需要实时采集或重新辩论时仍须配置对应 API Key。`--force` 会覆盖同名 uploads 目录，载入前请备份本地任务。
+`demo_seed` 是只读演示回放：可查看包内已有的报告、证据、图谱、运行记录与推演产物，不会调用 AgentTeams、文本或视觉模型。加载器会在任务文件、run 文件及 seed 数据库 TaskCard 上明确写入 `execution_mode=replay`，因此回放任务不能被误确认为实时任务。黄金案例内置同一冻结证据下的 `direct` 与 `evidence_debate` 两个 run，可无 Key 切换 A/B。它不会凭空生成 seed 中未包含的新任务；需要实时采集或重新辩论时仍须配置对应服务。`--force` 会覆盖同名 uploads 目录，载入前请备份本地任务。
 
 ## Datayes 私有数据融合
 
@@ -63,6 +128,7 @@ DATAYES_PUBLIC_EXPORT=false
 ```
 
 - 历史区间优先通过 DuckDB 只读查询本地 Parquet；仓库未覆盖的最新区间才调用 DataAPI。
+- 任务确认页的证券联想框只读 `sec_master/**/*.parquet`，支持代码、简称和拼音首字母，并仅返回在市的沪深北 A 股。确认接口会再次按本地主表核对代码与名称；主表不可用或二者错配时不会启动任务。
 - Token 仅存在后端环境变量中，不写入日志、EvidenceCard、Agent prompt 或前端响应。
 - 没有公开 URL 的 Datayes 证据通过 `provider/api/record_key/as_of/row_fingerprint` 溯源，页面会显示授权提示。
 - 授权边界未确认前固定使用 `private_derived_only`：不批量下载、不进入公开 `demo_seed`、不把原始采购数据或 Datayes 原始文档复制到本仓库。
@@ -75,33 +141,42 @@ DATAYES_PUBLIC_EXPORT=false
 
 Compose 把宿主机 `.env` 中的 `DATAYES_DATA_DIR` 只读挂载到容器 `/data/datayes`。启动前请填写宿主机绝对路径；未使用 Datayes 时保持默认关闭即可。
 
-`private_derived_only` 是私有后端模式，不是公网多用户部署模式。Compose 默认只绑定
-`127.0.0.1`，后端 CORS 也只允许本地前端。如需远程访问，必须先在反向代理/VPN 层增加身份认证，
-再显式配置 `CHENGZHU_BIND_ADDRESS` 和 `CORS_ALLOWED_ORIGINS`；不得将证据 API 直接暴露到公网。
+证券主表由 Datayes 数据仓库侧定期全量刷新，刷新后应用会按文件签名自动加载新快照，无需重启：
 
 ```bash
-docker compose up --build
+cd /path/to/Datayes
+.venv/bin/python etl/extract_sec_master.py
+```
+
+`private_derived_only` 是私有后端模式，不是公网多用户部署模式。Compose 默认只绑定
+`127.0.0.1`，后端 CORS 也只允许本地前端。如需远程访问，必须使用 SSH 隧道，或先在反向代理/VPN
+层增加身份认证并配置 `CORS_ALLOWED_ORIGINS`；不得将证据 API 直接暴露到公网。
+
+```bash
+make competition-up
 ```
 
 上线前还需由数据采购负责人确认：原始字段展示、缓存期限、比赛录屏/公开 Demo 的派生数据展示、证据导出，以及正式 QPS、并发、日额度和 Token 有效期。
 
 ## 架构要点
 
+用户确认 TaskCard 后，后端只创建持久化团队运行并向 Manager 派发引用型 `TaskContract`。Research Lead 按 DAG 唤醒最多 3 个 Worker；双采集结果进入后端后先冻结，分析、裁决、写作和审校 Worker 再通过最小权限 MCP 工具逐阶段提交。每次领域写入都要求 `run_id + task_id + idempotency_key + expected_version`，因此 Matrix 消息不是恢复依据，Worker 重启不会重复生成 EvidenceCard 或制品。后端可见的模型调用由持久化预算账本约束；AgentTeams v1.2.0 自身的 Worker 模型费用还不能按 Chengzhu `run_id` 汇总，当前 `AGENTTEAMS_MODEL_MAX_TOKENS` 只是单次输出上限，完整的跨 Worker 2 元硬闸门边界见竞赛重构说明。
+
+团队状态固定为：
+
+```text
+confirmed → dispatched → collecting → freezing → analyzing → adjudicating
+→ writing → reviewing ↔ revision → awaiting_publish_approval
+→ published / rejected / failed / completed_partial
 ```
-需求 → Planner → 确认任务卡 → 5 采集 Agent 并行
-     → 图谱摄入 → 冻结证据快照 → 财务事实标准化
-     ├─ direct：Analyst（DeepSeek 证据门禁 + 确定性财务表达）
-     └─ evidence_debate：两轮多视角辩论 → 硬审计 → Judge → Analyst 表达
-     → Reviewer → 报告装配
-     → Chat / 反馈 → Reflection → Playbook
-可选：追踪订阅 · 情景推演（双情景沙盘）
-```
+
+`direct` 跳过双分析师辩论；竞赛默认 `evidence_debate`，启用全部 8 个 Worker。发布审批只接受 Vue 发起的 CAS 请求；Matrix 中的人工消息没有授权效力。报告、反馈/反思、追踪订阅和情景推演仍由 Chengzhu 产品层提供。
 
 ### 分析模式与模型分工
 
-- `summary`、`compare` 可在任务卡选择 `direct` 或 `evidence_debate`；旧任务默认 `direct`，`tracking` 固定走 `direct`。
-- DeepSeek `deepseek-v4-flash` 用于 Planner、普通 Analyst、报告表达、Chat、Reflection 与 Scenario；`deepseek-v4-pro` 非思考模式用于 Reviewer，思考模式用于两名辩论 Agent 和 Judge。
-- 百炼 `qwen3-vl-plus` 只处理扫描 PDF 或图表候选页，不作为 DeepSeek 文本失败时的静默备用模型。视觉失败时保留本地 PDF 文本/表格结果，并标记“视觉证据未完整解析”。
+- `summary`、`compare` 可在任务卡选择 `direct` 或 `evidence_debate`；`tracking` 固定走 `direct`，竞赛主演示固定走完整证据辩论。
+- Manager 使用 OpenClaw；8 个 Team Worker 使用轻量 QwenPaw。Lead、采集与写作使用非思考模型；两名分析师和 Judge 使用强推理模型；Reviewer 使用非思考审校配置。
+- Disclosure Researcher 仅在扫描 PDF 或低文本密度页通过服务端代理调用固定版本的官方 `alibabacloud-bailian-image-creator` Skill。DashScope Key 不进入 Worker；失败、超时或限流时回退本地解析并记录 `visual_skill=degraded`。
 - 辩论固定两轮、最多四个研究维度。确定性 `EvidenceAuditor` 检查引用、数字、期间、单位、时点和合规；Judge 无权接受硬检查失败的观点，也不会展示或持久化模型思维链。
 
 新配置见 [.env.example](.env.example)。只配置旧 `LLM_API_KEY/LLM_BASE_URL/LLM_MODEL_NAME*` 的部署仍可运行，但新部署应使用隔离的 `TEXT_LLM_*` 与 `VISION_LLM_*`。
@@ -140,6 +215,11 @@ backend/uploads/tasks/{task_id}/runs/{run_id}/
 | 前缀 | 说明 |
 |------|------|
 | `/api/task` | 创建/确认/状态/证据/图谱/日志 |
+| `/api/task/{task_id}/team` | 团队、8 角色状态、DAG、预算与降级摘要 |
+| `/api/task/{task_id}/team/events` | 有序、脱敏的任务/交接/Skill/MCP 事件流 |
+| `/api/task/{task_id}/runs/{run_id}/approval` | Vue 唯一发布批准/驳回入口（CAS） |
+| `/api/task/{task_id}/runs/{run_id}/rollback` | 只切换 latest 指针并追加审计事件 |
+| `/api/security/search` | 本地证券主表的代码/简称/拼音联想（有界、只读） |
 | `/api/report` | 报告/Markdown/Chat/审校日志 |
 | `/api/feedback` | 章节赞踩/星级 |
 | `/api/memory` | 预填/偏好/Playbook/源健康度 |
@@ -158,6 +238,7 @@ backend/uploads/tasks/{task_id}/runs/{run_id}/
 - [x] Phase 7：情景推演（双情景简化沙盘 + 采访）
 - [x] Phase 8：demo_seed 脚本 + 合规声明
 - [x] Phase 9：不可变 run、财务标准化、证据化基本面辩论、DeepSeek 文本 + Qwen-VL 视觉
+- [ ] Phase 10：AgentTeams v1.2.0 八角色运行时、最小权限 MCP、不可变制品与 Vue 审批（目标 Docker 主机的启动、模型、MinIO、Higress/MCP 与只读产品回放已实测；真实付费任务的同一 run 全闭环、正式录屏与跨 Worker 2 元硬闸门仍未验收）
 
 ```bash
 curl -s -X POST http://localhost:5001/api/task/create \
@@ -169,9 +250,11 @@ curl -s -X POST http://localhost:5001/api/task/create \
 
 本系统仅做信息整理与情景观察，**不构成投资建议**。启用 Datayes 时按已授权的私有派生数据边界运行；推演报告含模拟限定语与双情景对比。详见 `docs/product/09_合规边界与演示交付计划.md`。
 
-部分工具与编排思路继承自开源项目 MiroFish，见 `LICENSE.MiroFish`。
+本仓库的 Chengzhu 原创及 MiroFish 派生部分按 GNU AGPL v3 授权，完整条款见 [`LICENSE.MiroFish`](LICENSE.MiroFish)。AgentTeams v1.2.0、阿里云官方 Skill 及其他第三方组件仍归各自权利人所有并遵循各自上游许可证，本仓库不对它们重新授权；归属和分发边界见 [`NOTICE`](NOTICE)。
 
-## 启停 Neo4j
+## 零 Docker 开发时启停 Neo4j
+
+竞赛/远程部署不使用这一段，`make competition-up` 会启动并持久化 Docker Neo4j。以下命令只服务于明确选择 Homebrew 本地开发的场景：
 
 ```bash
 # 一键安装/启动（限制堆 1g）
@@ -183,7 +266,7 @@ neo4j status
 # Browser: http://localhost:7474  密码与 .env 中 NEO4J_PASSWORD 一致（默认 chengzhu2026）
 ```
 
-未安装 Neo4j 时系统自动使用本地 JSON 图谱，功能可完整演示；装好后会双写 Neo4j。
+未安装 Neo4j 时系统自动使用本地 JSON 图谱，功能可完整演示；本地版装好后会双写 Neo4j。不要让 Homebrew 与 Docker Neo4j 同时监听 7474/7687。
 
 ## 验收
 

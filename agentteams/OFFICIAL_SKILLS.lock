@@ -1,0 +1,9 @@
+# Alibaba Cloud official Skill used by the server-side visual proxy.
+name=alibabacloud-bailian-image-creator
+repository=https://github.com/aliyun/alibabacloud-aiops-skills
+commit=92bd723f7cc217b252feab574c1883fa0aa46b3c
+path=skills/aiml/sfm/alibabacloud-bailian-image-creator
+skill_sha256=840b9faf3205b93d65c8a4b76a342c10b3c35e622c5a47986e08d89c7be5c6d8
+image_understanding_sha256=f424a10d07d978862da576af7d20efa5e43067e72dbb72e0d241fe56ea99dcb3
+api_key_sha256=1cf3b28d63a29d7ceec7419ee2c5d546358d733500fd66f061ac5d55c3495106
+requirements_sha256=c69290e63c1bbcf71488fe9e7933f26eb0fc17c0179e97cf72213b3fa0ae0469

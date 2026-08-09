@@ -1,9 +1,11 @@
 {
   "run_id": "run_demo_catl_byd_h1_2025",
   "task_id": "task_demo_catl_byd_debate",
+  "execution_mode": "replay",
   "task_card": {
     "deliverable": "compare",
     "analysis_mode": "evidence_debate",
+    "execution_mode": "replay",
     "symbols": [
       {
         "code": "300750",

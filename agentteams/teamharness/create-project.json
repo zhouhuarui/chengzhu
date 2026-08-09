@@ -1,0 +1,15 @@
+{
+  "action": "create_project",
+  "payload": {
+    "projectId": "${PROJECT_ID}",
+    "title": "${PROJECT_TITLE}",
+    "source": "${REQUEST_SOURCE}",
+    "requester": "${REQUESTER_ID}",
+    "sourceRoomId": "${SOURCE_ROOM_ID}",
+    "replyRoute": {
+      "channel": "${REPLY_CHANNEL}",
+      "targetUser": "${REPLY_TARGET_USER}",
+      "targetSession": "${REPLY_TARGET_SESSION}"
+    }
+  }
+}

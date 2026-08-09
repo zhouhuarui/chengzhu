@@ -1,0 +1,10 @@
+# AgentTeams upstream lock used by this competition package.
+repository=https://github.com/agentscope-ai/AgentTeams.git
+tag=v1.2.0
+commit=793db242257a569d911b1aa59c1cd554af78511f
+installer_url=https://raw.githubusercontent.com/agentscope-ai/AgentTeams/v1.2.0/install/agentteams-install.sh
+installer_sha256=701f53c53dc476d8ca7f33428e231c1706d967ac2b517ec4c1c59d742864331d
+embedded_image=higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-embedded:v1.2.0@sha256:c0de550018e51b36138a5990b1e8095eacc9d44cc7cbdb36a697785ba02c9be4
+manager_openclaw_image=higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-manager:v1.2.0@sha256:a429666fcc66fa01b81da3bc9ea5af98437697ef794f811ac7d358d4286c317e
+copaw_worker_image=higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-copaw-worker:v1.2.0@sha256:dcdd9103535cfac247267e0f69661820c801396d58e2c8e0c14eefd40b63b7bc
+teamharness_plugin_version=0.1.0

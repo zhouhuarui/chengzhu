@@ -1,0 +1,80 @@
+{
+  "action": "plan_dag",
+  "payload": {
+    "projectId": "${PROJECT_ID}",
+    "tasks": [
+      {
+        "taskId": "${PROJECT_ID}-research-plan",
+        "title": "拆解研究问题与证据需求",
+        "assignedTo": "research-lead",
+        "dependsOn": []
+      },
+      {
+        "taskId": "${PROJECT_ID}-disclosure-research",
+        "title": "采集公告、财报与公司披露",
+        "assignedTo": "disclosure-researcher",
+        "dependsOn": [
+          "${PROJECT_ID}-research-plan"
+        ]
+      },
+      {
+        "taskId": "${PROJECT_ID}-market-context-research",
+        "title": "采集新闻、研报与行业背景",
+        "assignedTo": "market-context-researcher",
+        "dependsOn": [
+          "${PROJECT_ID}-research-plan"
+        ]
+      },
+      {
+        "taskId": "${PROJECT_ID}-evidence-freeze",
+        "title": "冻结并规范化本次运行证据",
+        "assignedTo": "chengzhu-backend",
+        "dependsOn": [
+          "${PROJECT_ID}-disclosure-research",
+          "${PROJECT_ID}-market-context-research"
+        ]
+      },
+      {
+        "taskId": "${PROJECT_ID}-quality-analysis",
+        "title": "质量与护城河分析",
+        "assignedTo": "quality-analyst",
+        "dependsOn": [
+          "${PROJECT_ID}-evidence-freeze"
+        ]
+      },
+      {
+        "taskId": "${PROJECT_ID}-growth-analysis",
+        "title": "增长与变化分析",
+        "assignedTo": "growth-analyst",
+        "dependsOn": [
+          "${PROJECT_ID}-evidence-freeze"
+        ]
+      },
+      {
+        "taskId": "${PROJECT_ID}-evidence-judgement",
+        "title": "证据审计与裁决",
+        "assignedTo": "evidence-judge",
+        "dependsOn": [
+          "${PROJECT_ID}-quality-analysis",
+          "${PROJECT_ID}-growth-analysis"
+        ]
+      },
+      {
+        "taskId": "${PROJECT_ID}-report-draft",
+        "title": "撰写证据约束报告",
+        "assignedTo": "report-writer",
+        "dependsOn": [
+          "${PROJECT_ID}-evidence-judgement"
+        ]
+      },
+      {
+        "taskId": "${PROJECT_ID}-compliance-review",
+        "title": "合规与引用复核",
+        "assignedTo": "compliance-reviewer",
+        "dependsOn": [
+          "${PROJECT_ID}-report-draft"
+        ]
+      }
+    ]
+  }
+}

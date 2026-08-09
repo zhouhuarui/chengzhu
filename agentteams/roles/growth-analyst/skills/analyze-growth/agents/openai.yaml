@@ -1,0 +1,4 @@
+interface:
+  display_name: "分析增长变化"
+  short_description: "Analyze growth drivers and changes reproducibly"
+  default_prompt: "Use $analyze-growth to analyze growth drivers, scenarios, and risks from accepted frozen evidence."

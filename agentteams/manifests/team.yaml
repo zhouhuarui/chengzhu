@@ -1,0 +1,25 @@
+apiVersion: agentteams.io/v1beta1
+kind: Team
+metadata:
+  name: chengzhu-research-team
+spec:
+  description: Eight-Worker Chengzhu research team aligned to the backend evidence_debate nine-node and direct seven-node DAGs, including one Team Leader and an independent compliance gate.
+  heartbeatEvery: 15m
+  peerMentions: true
+  workerMembers:
+    - name: research-lead
+      role: team_leader
+    - name: disclosure-researcher
+      role: worker
+    - name: market-context-researcher
+      role: worker
+    - name: quality-analyst
+      role: worker
+    - name: growth-analyst
+      role: worker
+    - name: evidence-judge
+      role: worker
+    - name: report-writer
+      role: worker
+    - name: compliance-reviewer
+      role: worker

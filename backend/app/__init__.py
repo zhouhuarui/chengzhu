@@ -16,6 +16,8 @@ from .utils.db import init_db
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    from .observability import configure_telemetry
+    configure_telemetry('chengzhu-backend')
 
     # 应用工厂也必须执行安全校验，避免 gunicorn/测试 WSGI 等入口绕过
     # run.py 的启动检查，在私有授权数据模式下意外开放通配 CORS。
@@ -60,6 +62,14 @@ def create_app(config_class=Config):
 
     from .api import register_blueprints
     register_blueprints(app)
+    from .api.security import security_bp
+    app.register_blueprint(security_bp, url_prefix='/api/security')
+    # Agent Team intentionally exposes only read views plus the two
+    # Vue-authoritative human actions.  Registration lives here so the
+    # legacy blueprint registry remains untouched for compatibility.
+    from .api.team import task_team_bp, team_bp
+    app.register_blueprint(team_bp, url_prefix='/api/team')
+    app.register_blueprint(task_team_bp, url_prefix='/api/task')
 
     @app.route('/health')
     @app.route('/api/health')
@@ -81,6 +91,22 @@ def create_app(config_class=Config):
             'neo4j': neo4j_ok,
             'llm_configured': bool(Config.LLM_API_KEY),
             'bocha_configured': bool(Config.BOCHA_API_KEY),
+            'execution_mode_default': 'agentteams',
+            'agentteams': {
+                'enabled': bool(Config.AGENTTEAMS_ENABLED),
+                'version': Config.AGENTTEAMS_VERSION,
+                'team': Config.AGENTTEAMS_TEAM_NAME,
+                'max_active_workers': Config.AGENTTEAMS_MAX_ACTIVE_WORKERS,
+                'mcp_service_auth_configured': bool(
+                    Config.AGENTTEAMS_MCP_GATEWAY_TOKEN
+                ),
+                'immutable_artifacts_required': bool(
+                    Config.AGENTTEAMS_ARTIFACT_REQUIRED
+                ),
+                'official_visual_skill_commit': (
+                    Config.AGENTTEAMS_BAILIAN_SKILL_COMMIT
+                ),
+            },
         }
 
     # 追踪调度器（每进程一次）

@@ -1,11 +1,13 @@
 {
   "task_id": "task_demo_catl_byd_debate",
+  "execution_mode": "replay",
   "user_id": "default",
   "requirement": "比赛演示：使用公开语境下的合成夹具，对比宁德时代与比亚迪并运行证据辩论。",
   "status": "completed",
   "task_card": {
     "deliverable": "compare",
     "analysis_mode": "evidence_debate",
+    "execution_mode": "replay",
     "symbols": [
       {
         "code": "300750",

@@ -13,6 +13,9 @@
         @keydown.meta.enter="submit"
         @keydown.ctrl.enter="submit"
       />
+      <p class="requirement-hint">
+        把标的、时间范围和关注点直接写在一句话里；下一步只核对系统识别结果，无需重复录入。
+      </p>
 
       <div class="chips">
         <span class="chips-label">试试示例：</span>
@@ -24,14 +27,21 @@
         >{{ ex.label }}</button>
       </div>
 
+      <label v-if="files.length" class="cloud-consent">
+        <input v-model="authorizeCloudVisualProcessing" type="checkbox" />
+        <span>
+          我确认这些上传材料可发送至阿里云百炼做视觉页解析。未勾选时仅使用本地解析；私有或未获授权资料请勿勾选。
+        </span>
+      </label>
+
       <div v-if="watchSymbols.length" class="prefill">
         <span class="chips-label">常用标的：</span>
         <button
           v-for="sym in watchSymbols"
-          :key="sym.code || sym.name"
+          :key="watchSymbolKey(sym)"
           class="chip amber"
           @click="appendSymbol(sym)"
-        >{{ sym.name || sym.code }}</button>
+        >{{ watchSymbolLabel(sym) }}</button>
       </div>
 
       <div
@@ -62,7 +72,7 @@
 
       <div class="actions">
         <button class="btn" :disabled="busy || !requirement.trim()" @click="submit">
-          {{ busy ? '解析中…' : '提交并确认任务卡' }}
+          {{ busy ? '解析中…' : '下一步：核对任务卡' }}
         </button>
         <span class="muted">Cmd+Enter 快捷提交</span>
       </div>
@@ -104,6 +114,7 @@ const router = useRouter()
 const requirement = ref('')
 const files = ref([])
 const fileInput = ref(null)
+const authorizeCloudVisualProcessing = ref(false)
 const busy = ref(false)
 const error = ref('')
 const tasks = ref([])
@@ -142,12 +153,22 @@ async function loadPrefill() {
 }
 
 function appendSymbol(sym) {
-  const name = sym.name || sym.code
+  const name = watchSymbolLabel(sym)
   if (!requirement.value.includes(name)) {
     requirement.value = requirement.value.trim()
       ? `${requirement.value.trim()} ${name}`
       : name
   }
+}
+
+function watchSymbolLabel(symbol) {
+  if (typeof symbol === 'string' || typeof symbol === 'number') return String(symbol)
+  return String(symbol?.name || symbol?.code || '').trim()
+}
+
+function watchSymbolKey(symbol) {
+  if (typeof symbol === 'string' || typeof symbol === 'number') return String(symbol)
+  return String(symbol?.code || symbol?.name || '')
 }
 
 function onFileSelect(e) {
@@ -162,7 +183,8 @@ function onDrop(e) {
 function addFiles(newFiles) {
   const valid = newFiles.filter((f) => {
     const ext = f.name.split('.').pop()?.toLowerCase()
-    return ['pdf', 'md', 'txt'].includes(ext) && f.size <= 50 * 1024 * 1024
+    return ['pdf', 'md', 'txt', 'png', 'jpg', 'jpeg', 'webp'].includes(ext)
+      && f.size <= 50 * 1024 * 1024
   })
   files.value.push(...valid)
 }
@@ -172,7 +194,11 @@ async function submit() {
   busy.value = true
   error.value = ''
   try {
-    const res = await taskApi.create(requirement.value.trim(), files.value)
+    const res = await taskApi.create(
+      requirement.value.trim(),
+      files.value,
+      authorizeCloudVisualProcessing.value,
+    )
     const taskId = res?.data?.task_id
     if (!taskId) throw new Error('创建失败')
     router.push({ name: 'TaskConfirm', params: { taskId } })
@@ -258,6 +284,13 @@ textarea {
   resize: vertical;
 }
 
+.requirement-hint {
+  margin: 7px 0 0;
+  color: #6a7f9c;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .chips, .prefill {
   display: flex;
   flex-wrap: wrap;
@@ -303,6 +336,20 @@ textarea {
 
 .upload-zone.has-files {
   text-align: left;
+}
+
+.cloud-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 10px;
+  color: #4a6285;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cloud-consent input {
+  margin-top: 3px;
 }
 
 .file-list {

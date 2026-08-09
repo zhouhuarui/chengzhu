@@ -23,7 +23,7 @@ from ..utils.report_commit import report_bundle_is_committed
 from ..utils.task_run_lock import task_run_lock
 from .agent_logger import AgentLogger
 from .analyst import Analyst
-from .evidence_store import EvidenceStore
+from .evidence_freezer import freeze_evidence as _freeze_evidence
 from .financial_normalizer import FinancialNormalizer, write_facts_jsonl
 from .graph_ingest import ingest_task_evidence, publish_latest_graph
 from .memory_service import remember_task_episode
@@ -50,43 +50,6 @@ def _set_stage(
     task.set_status(status, message, progress=progress)
     if run_id and dbutil.get_task_run(run_id):
         dbutil.update_task_run(run_id, status=status.value)
-
-
-def _load_evidence_index(path: str) -> Dict[str, Any]:
-    with open(path, 'r', encoding='utf-8') as handle:
-        value = json.load(handle)
-    if not isinstance(value, dict):
-        raise ValueError('冻结证据索引格式无效')
-    return value
-
-
-def _freeze_evidence(task: ResearchTask, run_id: Optional[str]) -> tuple[EvidenceStore, Dict[str, Any]]:
-    """Publish the current run staging cards once and then reopen by index."""
-    if not run_id:
-        store = EvidenceStore(task.task_id)
-        return store, {
-            'schema_version': 1,
-            'task_id': task.task_id,
-            'run_id': None,
-            'items': [
-                {
-                    'evidence_uid': card.evidence_uid,
-                    'display_id': store.display_id(card),
-                    'card': card.to_dict(),
-                }
-                for card in store.cards
-            ],
-        }
-
-    run_folder = task.run_folder(run_id)
-    index_path = os.path.join(run_folder, 'evidence_index.json')
-    if not os.path.isfile(index_path):
-        staging = EvidenceStore(task.task_id, run_id=run_id, allow_staging=True)
-        if not staging.cards:
-            raise ValueError('本次运行没有可冻结的证据，拒绝读取历史残留')
-        staging.freeze_to_run(run_id)
-    frozen = EvidenceStore(task.task_id, run_id=run_id)
-    return frozen, _load_evidence_index(index_path)
 
 
 def _dimensions(card: TaskCard) -> List[str]:

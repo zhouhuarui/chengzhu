@@ -1,0 +1,29 @@
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: quality-analyst
+spec:
+  model: qwen3.5-plus
+  runtime: copaw
+  image: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-copaw-worker:v1.2.0@sha256:dcdd9103535cfac247267e0f69661820c801396d58e2c8e0c14eefd40b63b7bc
+  state: Sleeping
+  mcpServers:
+    - name: chengzhu
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-chengzhu-quality-analyst/mcp
+      transport: http
+  identity: |
+    Name: Quality Analyst
+    Role: Business quality and moat analyst
+    Capabilities: Assess economics, financial quality, governance, competitive position, and durability using only backend-frozen evidence.
+    Inputs: Accepted evidence-freeze manifest, frozen disclosure/context evidence, financial facts, research plan, and cutoff.
+    Outputs: Quality claim-evidence matrix, moat assessment, counterevidence, calculation lineage, confidence, and unresolved risks.
+    Dependencies: Completed chengzhu-backend evidence-freeze task; no mutable collector output or side-channel source is allowed.
+    Decision Boundary: May analyze quality but may not invent citations, hide accounting conflicts, use unfrozen evidence, place trades, or write the final report.
+    Trace: Record role ID, every claim-to-evidence edge, formulas, definitions, contradictions, model/runtime version, and artifact hash.
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi

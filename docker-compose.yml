@@ -2,11 +2,12 @@
 services:
   neo4j:
     image: neo4j:5.26
+    restart: unless-stopped
     ports:
-      - "${CHENGZHU_BIND_ADDRESS:-127.0.0.1}:7474:7474"
-      - "${CHENGZHU_BIND_ADDRESS:-127.0.0.1}:7687:7687"
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
     environment:
-      NEO4J_AUTH: neo4j/chengzhu2026
+      NEO4J_AUTH: "${NEO4J_USER:?NEO4J_USER must be set}/${NEO4J_PASSWORD:?NEO4J_PASSWORD must be set}"
       NEO4J_server_memory_heap_max__size: 1G
       NEO4J_server_memory_pagecache_size: 512M
     volumes:
@@ -21,8 +22,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
+    restart: unless-stopped
     ports:
-      - "${CHENGZHU_BIND_ADDRESS:-127.0.0.1}:5001:5001"
+      - "127.0.0.1:5001:5001"
     env_file: .env
     environment:
       NEO4J_URI: bolt://neo4j:7687
@@ -36,17 +38,31 @@ services:
     depends_on:
       neo4j:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; value=json.load(urllib.request.urlopen('http://127.0.0.1:5001/health', timeout=3)); assert value['status']=='ok'"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+    restart: unless-stopped
     ports:
-      - "${CHENGZHU_BIND_ADDRESS:-127.0.0.1}:3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       VITE_PROXY_TARGET: http://backend:5001
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
 volumes:
   neo4j_data:

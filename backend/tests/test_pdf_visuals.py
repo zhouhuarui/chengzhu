@@ -136,6 +136,35 @@ def test_missing_vision_key_keeps_local_result_and_marks_incomplete(tmp_path, mo
     assert result['visual_pages'] == []
 
 
+def test_local_visual_fallback_never_calls_a_second_remote_provider(
+    tmp_path,
+    monkeypatch,
+):
+    pdf_path = tmp_path / 'local-fallback.pdf'
+    _blank_pdf(pdf_path)
+    monkeypatch.setattr(Config, 'UPLOAD_FOLDER', str(tmp_path / 'uploads'))
+    monkeypatch.setattr(Config, 'VISION_LLM_API_KEY', 'remote-key-is-configured')
+    monkeypatch.setattr(Config, 'VISION_MAX_PAGES', 2)
+    monkeypatch.setattr(
+        pdf_visuals,
+        '_new_vision_client',
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError('remote client must not be created')
+        ),
+    )
+
+    result = pdf_visuals.parse_local_visual_fallback(
+        str(pdf_path),
+        max_pages=2,
+    )
+
+    assert result['ok'] is True
+    assert result['candidate_pages'] == [1]
+    assert result['visual_status'] == 'failed'
+    assert result['visual_incomplete'] is True
+    assert result['visual_pages'] == []
+
+
 def test_standalone_image_uses_qwen_content_array_without_persisting_base64(
     tmp_path,
     monkeypatch,

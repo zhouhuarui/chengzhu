@@ -49,16 +49,82 @@
       </p>
 
       <div class="field">
-        <label>标的</label>
-        <div v-for="(sym, idx) in form.symbols" :key="idx" class="symbol-row">
-          <input v-model="sym.name" placeholder="名称" />
-          <input v-model="sym.code" placeholder="6位代码" maxlength="6" />
-          <button type="button" class="icon-btn" @click="form.symbols.splice(idx, 1)">×</button>
+        <div class="field-heading">
+          <span class="field-label">标的</span>
+          <span v-if="allSymbolsResolved" class="recognition-note">
+            已从需求中识别，无误可直接开始
+          </span>
         </div>
-        <button type="button" class="link-btn" @click="form.symbols.push({ name: '', code: '' })">
+        <div ref="symbolList" class="symbol-list" aria-live="polite">
+          <div v-for="(sym, idx) in form.symbols" :key="sym._row_id" class="symbol-row">
+            <div
+              v-if="sym._resolved && !sym._editing"
+              class="symbol-summary"
+              role="group"
+              :aria-label="`第 ${idx + 1} 个标的：${sym.name} ${sym.code}`"
+            >
+              <div class="symbol-identity">
+                <span class="resolved-badge">已识别</span>
+                <strong>{{ sym.name }}</strong>
+                <span class="symbol-code">{{ sym.code }}</span>
+                <span class="symbol-exchange">{{ exchangeLabel(sym.exchange) }}</span>
+              </div>
+              <div class="symbol-actions">
+                <button
+                  type="button"
+                  class="link-btn"
+                  :aria-label="`修改第 ${idx + 1} 个标的`"
+                  @click="editSymbol(idx)"
+                >
+                  修改
+                </button>
+                <button
+                  type="button"
+                  class="link-btn remove-link"
+                  :aria-label="`删除第 ${idx + 1} 个标的`"
+                  @click="removeSymbol(idx)"
+                >
+                  移除
+                </button>
+              </div>
+            </div>
+            <template v-else>
+              <div class="symbol-editor">
+                <SecurityCombobox
+                  :model-value="sym"
+                  :row-id="sym._row_id"
+                  :aria-label="`搜索第 ${idx + 1} 个证券`"
+                  :excluded-codes="selectedCodesExcept(idx)"
+                  @update:model-value="updateSymbol(idx, $event)"
+                />
+                <button
+                  v-if="sym._backup"
+                  type="button"
+                  class="link-btn editor-action"
+                  :aria-label="`取消修改第 ${idx + 1} 个标的`"
+                  @click="cancelSymbolEdit(idx)"
+                >
+                  取消
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn remove-symbol"
+                  :aria-label="`删除第 ${idx + 1} 个标的`"
+                  @click="removeSymbol(idx)"
+                >
+                  ×
+                </button>
+              </div>
+              <p v-if="!sym._resolved" class="field-hint">
+                未识别到确定标的，请输入代码、简称或拼音并从结果中选择。
+              </p>
+            </template>
+          </div>
+        </div>
+        <button type="button" class="link-btn" @click="addSymbol">
           + 添加标的
         </button>
-        <p v-if="codeWarning" class="warn">{{ codeWarning }}</p>
+        <p v-if="symbolWarning" class="warn" role="alert">{{ symbolWarning }}</p>
       </div>
 
       <div class="field row-2">
@@ -100,8 +166,8 @@
       <p v-if="error" class="err">{{ error }}</p>
 
       <div class="actions">
-        <button type="button" class="btn secondary" @click="goBack">返回修改需求</button>
-        <button type="submit" class="btn" :disabled="busy">
+        <button type="button" class="btn secondary" @click="goBack">返回首页</button>
+        <button type="submit" class="btn" :disabled="busy || !!symbolWarning">
           {{ busy ? '启动中…' : '开始研究' }}
         </button>
       </div>
@@ -112,9 +178,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, nextTick, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { taskApi } from '../api/index.js'
+import SecurityCombobox from '../components/SecurityCombobox.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -126,6 +193,8 @@ const error = ref('')
 const form = ref(null)
 const clarifications = ref([])
 const focusInput = ref('')
+const symbolList = ref(null)
+let nextSymbolRowId = 0
 
 const deliverables = [
   { value: 'summary', label: '摘要' },
@@ -141,12 +210,22 @@ const infoTypes = [
   { value: 'industry_data', label: '行业数据' },
 ]
 
-const codeWarning = computed(() => {
+const symbolWarning = computed(() => {
   if (!form.value) return ''
-  const bad = form.value.symbols.filter((s) => !s.code || !/^\d{6}$/.test(String(s.code)))
-  if (bad.length) return '请为全部标的填写有效的 6 位股票代码'
+  if (!form.value.symbols.length) return '请至少选择一个标的'
+  const unresolved = form.value.symbols.some((s) => !s._resolved || !s.code || !s.name)
+  if (unresolved) return '请从搜索结果中选择全部标的'
+  const invalid = form.value.symbols.some((s) => !/^\d{6}$/.test(String(s.code)))
+  if (invalid) return '请选择有效的 6 位股票代码'
+  const codes = form.value.symbols.map((s) => String(s.code))
+  if (new Set(codes).size !== codes.length) return '请勿重复添加同一标的'
   return ''
 })
+
+const allSymbolsResolved = computed(() => Boolean(
+  form.value?.symbols.length
+  && form.value.symbols.every((symbol) => symbol._resolved),
+))
 
 const supportsDebate = computed(() => ['summary', 'compare'].includes(form.value?.deliverable))
 
@@ -165,10 +244,11 @@ async function loadTask() {
     const res = await taskApi.get(taskId)
     const data = res?.data
     const card = data?.task_card || {}
+    const symbols = (card.symbols || []).map((symbol) => createSymbolRow(symbol))
     form.value = {
       deliverable: card.deliverable || 'summary',
       analysis_mode: card.analysis_mode || 'direct',
-      symbols: (card.symbols || []).map((s) => ({ name: s.name || '', code: s.code || '' })),
+      symbols: symbols.length ? symbols : [createSymbolRow()],
       time_window: { start: card.time_window?.start || '', end: card.time_window?.end || '' },
       info_types: [...(card.info_types || ['announcement', 'financial_report', 'news'])],
       focus_points: [...(card.focus_points || [])],
@@ -192,15 +272,125 @@ function addFocus() {
   focusInput.value = ''
 }
 
+function createSymbolRow(value = null, rowId = '', options = {}) {
+  const code = String(value?.code || '').trim()
+  const name = String(value?.name || '').trim()
+  const secId = String(value?.sec_id || '').trim()
+  const resolved = Boolean(value && code && name && (secId || value?._resolved === true))
+  return {
+    _row_id: rowId || `symbol-row-${++nextSymbolRowId}`,
+    _resolved: resolved,
+    _editing: options.editing ?? !resolved,
+    _backup: options.backup || null,
+    sec_id: secId,
+    code,
+    name,
+    exchange: String(value?.exchange || '').trim(),
+    list_status: String(value?.list_status || '').trim(),
+  }
+}
+
+function addSymbol() {
+  form.value.symbols.push(createSymbolRow())
+  error.value = ''
+}
+
+function removeSymbol(index) {
+  form.value.symbols.splice(index, 1)
+  error.value = ''
+}
+
+function canonicalSymbolValue(symbol) {
+  return {
+    sec_id: symbol.sec_id,
+    code: symbol.code,
+    name: symbol.name,
+    exchange: symbol.exchange,
+    list_status: symbol.list_status,
+  }
+}
+
+async function editSymbol(index) {
+  const symbol = form.value.symbols[index]
+  if (!symbol) return
+  form.value.symbols[index] = {
+    ...symbol,
+    _editing: true,
+    _backup: canonicalSymbolValue(symbol),
+  }
+  error.value = ''
+  await nextTick()
+  symbolList.value
+    ?.querySelector(`[aria-label="搜索第 ${index + 1} 个证券"]`)
+    ?.focus()
+}
+
+async function updateSymbol(index, value) {
+  const current = form.value.symbols[index]
+  const rowId = current?._row_id
+  const resolved = Boolean(value?.sec_id && value?.code && value?.name)
+  form.value.symbols[index] = createSymbolRow(value, rowId, {
+    editing: !resolved,
+    backup: resolved ? null : current?._backup,
+  })
+  error.value = ''
+  if (resolved) {
+    await nextTick()
+    symbolList.value
+      ?.querySelector(`[aria-label="修改第 ${index + 1} 个标的"]`)
+      ?.focus()
+  }
+}
+
+async function cancelSymbolEdit(index) {
+  const current = form.value.symbols[index]
+  if (!current?._backup) return
+  form.value.symbols[index] = createSymbolRow(current._backup, current._row_id, {
+    editing: false,
+  })
+  error.value = ''
+  await nextTick()
+  symbolList.value
+    ?.querySelector(`[aria-label="修改第 ${index + 1} 个标的"]`)
+    ?.focus()
+}
+
+function exchangeLabel(exchange) {
+  return {
+    XSHG: '上交所',
+    XSHE: '深交所',
+    XBEI: '北交所',
+  }[exchange] || exchange || ''
+}
+
+function selectedCodesExcept(index) {
+  return form.value.symbols
+    .filter((symbol, symbolIndex) => symbolIndex !== index && symbol._resolved && symbol.code)
+    .map((symbol) => symbol.code)
+}
+
+function taskCardPayload() {
+  return {
+    ...form.value,
+    symbols: form.value.symbols.map((symbol) => ({
+      sec_id: symbol.sec_id || undefined,
+      code: symbol.code,
+      name: symbol.name,
+      exchange: symbol.exchange || undefined,
+      list_status: symbol.list_status || undefined,
+    })),
+  }
+}
+
 async function confirm() {
-  if (codeWarning.value) {
-    error.value = codeWarning.value
+  if (symbolWarning.value) {
+    error.value = symbolWarning.value
     return
   }
   busy.value = true
   error.value = ''
   try {
-    const result = await taskApi.confirm(taskId, form.value)
+    const result = await taskApi.confirm(taskId, taskCardPayload())
     const runId = result?.data?.run_id || result?.run_id
     router.push({
       name: 'TaskRun',
@@ -255,7 +445,8 @@ function goBack() {
   margin-bottom: 20px;
 }
 
-.field label {
+.field label,
+.field-label {
   display: block;
   font-size: 13px;
   color: #4a6285;
@@ -333,17 +524,91 @@ function goBack() {
   border-left: 3px solid #9aa8bc;
 }
 
-.symbol-row {
+.field-heading {
   display: flex;
-  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recognition-note,
+.field-hint {
+  color: #6a7f9c;
+  font-size: 12px;
+}
+
+.symbol-list,
+.symbol-row {
+  width: 100%;
+}
+
+.symbol-row {
   margin-bottom: 8px;
 }
 
-.symbol-row input {
-  flex: 1;
-  border: 1px solid #c5d2e5;
+.symbol-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 42px;
   padding: 8px 10px;
-  font: inherit;
+  border: 1px solid #c5d2e5;
+  background: #fafdff;
+}
+
+.symbol-identity,
+.symbol-actions,
+.symbol-editor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.symbol-identity {
+  min-width: 0;
+}
+
+.symbol-identity strong {
+  color: #1a3a6b;
+}
+
+.resolved-badge {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  background: #e4f3e9;
+  color: #247046;
+  font-size: 11px;
+}
+
+.symbol-code,
+.symbol-exchange {
+  color: #6a7f9c;
+  font-size: 12px;
+}
+
+.symbol-editor {
+  align-items: flex-start;
+}
+
+.editor-action {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 4px;
+}
+
+.remove-link {
+  color: #7f4a4a;
+}
+
+.remove-symbol {
+  flex: 0 0 36px;
+  min-height: 40px;
+  font-size: 18px;
+}
+
+.field-hint {
+  margin: 5px 0 0;
 }
 
 .row-2 {
@@ -441,6 +706,12 @@ input[type="date"] {
   .analysis-mode-grid,
   .row-2 {
     grid-template-columns: 1fr;
+  }
+
+  .field-heading,
+  .symbol-summary {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 </style>

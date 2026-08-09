@@ -1,0 +1,4 @@
+interface:
+  display_name: "审查投研输出"
+  short_description: "Audit research citations compliance and reproducibility"
+  default_prompt: "Use $review-research-output to review a research draft and emit an auditable accept-or-revise decision."

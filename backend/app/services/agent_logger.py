@@ -4,36 +4,17 @@ from __future__ import annotations
 
 import json
 import os
-import re
 from datetime import datetime
 from typing import Any, Dict, Optional
 
 from ..models.research_task import task_artifact_folder
-
-
-_SENSITIVE_KEYS = {
-    'prompt', 'messages', 'api_key', 'authorization', 'reasoning_content',
-    'chain_of_thought', 'thought', 'raw_thought',
-}
+from ..team.redaction import redact_event_payload
 
 
 def _safe_log_value(value: Any, key: str = '') -> Any:
-    if key.lower() in _SENSITIVE_KEYS:
-        return '[REDACTED]'
-    if isinstance(value, dict):
-        return {str(k): _safe_log_value(v, str(k)) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_safe_log_value(item) for item in value]
-    if isinstance(value, str):
-        if 'data:image/' in value.lower() and 'base64,' in value.lower():
-            return '[image payload omitted]'
-        value = re.sub(r'(?i)bearer\s+[^\s,;]+', 'Bearer [REDACTED]', value)
-        return re.sub(
-            r'(?i)(api[_-]?key|token|authorization)\s*[:=]\s*[^\s,;]+',
-            r'\1=[REDACTED]',
-            value,
-        )
-    return value
+    """Use the same bounded privacy gate as SQLite/Matrix team events."""
+
+    return redact_event_payload(value, _key=str(key or ''))
 
 
 class AgentLogger:
@@ -42,10 +23,19 @@ class AgentLogger:
         task_id: str,
         agent: str = 'system',
         run_id: Optional[str] = None,
+        *,
+        team_task_id: Optional[str] = None,
+        matrix_event_id: Optional[str] = None,
+        trace_id: Optional[str] = None,
+        span_id: Optional[str] = None,
     ):
         self.task_id = task_id
         self.run_id = run_id
         self.agent = agent
+        self.team_task_id = team_task_id
+        self.matrix_event_id = matrix_event_id
+        self.trace_id = trace_id
+        self.span_id = span_id
         self.start_time = datetime.now()
         self.log_file_path = os.path.join(
             task_artifact_folder(task_id, run_id), 'agent_log.jsonl'
@@ -63,7 +53,16 @@ class AgentLogger:
         section_title: Optional[str] = None,
         section_index: Optional[int] = None,
         agent: Optional[str] = None,
+        team_task_id: Optional[str] = None,
+        matrix_event_id: Optional[str] = None,
+        trace_id: Optional[str] = None,
+        span_id: Optional[str] = None,
     ) -> None:
+        try:
+            from ..observability import current_trace
+            active_trace = current_trace()
+        except Exception:
+            active_trace = None
         entry = {
             'timestamp': datetime.now().isoformat(timespec='seconds'),
             'elapsed_seconds': round(self._elapsed(), 2),
@@ -74,6 +73,14 @@ class AgentLogger:
             'stage': stage,
             'section_title': section_title,
             'section_index': section_index,
+            'team_task_id': team_task_id or self.team_task_id,
+            'matrix_event_id': matrix_event_id or self.matrix_event_id,
+            'trace_id': trace_id or self.trace_id or (
+                active_trace.trace_id if active_trace else None
+            ),
+            'span_id': span_id or self.span_id or (
+                active_trace.span_id if active_trace else None
+            ),
             'details': _safe_log_value(details),
         }
         with open(self.log_file_path, 'a', encoding='utf-8') as f:

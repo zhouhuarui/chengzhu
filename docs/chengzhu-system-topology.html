@@ -1,0 +1,1916 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>成竹项目系统拓扑与代码结构</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="成竹项目系统拓扑与代码结构" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;成竹项目系统拓扑与代码结构&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --red: light-dark(rgb(186 38 35), rgb(250 66 62));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: var(--border-radius-lg, 12.5px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: 16px !important;
+  height: 16px !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;chengzhu-topology&quot;&gt;
+  &lt;div class=&quot;viz-controls&quot; aria-label=&quot;拓扑图视图控制&quot;&gt;
+    &lt;label class=&quot;form-label&quot; for=&quot;cz-view-select&quot;&gt;
+      视图
+      &lt;select id=&quot;cz-view-select&quot; class=&quot;form-select&quot;&gt;
+        &lt;option value=&quot;overview&quot;&gt;系统总览&lt;/option&gt;
+        &lt;option value=&quot;pipeline&quot;&gt;实时执行链&lt;/option&gt;
+        &lt;option value=&quot;data&quot;&gt;数据与权威边界&lt;/option&gt;
+        &lt;option value=&quot;code&quot;&gt;代码目录地图&lt;/option&gt;
+        &lt;option value=&quot;runtime&quot;&gt;运行部署与验收&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/label&gt;
+    &lt;label class=&quot;form-label&quot; for=&quot;cz-mode-select&quot; id=&quot;cz-mode-label&quot; hidden&gt;
+      分析模式
+      &lt;select id=&quot;cz-mode-select&quot; class=&quot;form-select&quot;&gt;
+        &lt;option value=&quot;evidence_debate&quot;&gt;evidence_debate · 9 节点&lt;/option&gt;
+        &lt;option value=&quot;direct&quot;&gt;direct · 7 节点&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/label&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;cz-legend text-small&quot; aria-label=&quot;分层图例&quot;&gt;
+    &lt;span class=&quot;cz-key&quot;&gt;&lt;span class=&quot;cz-swatch cz-series-1&quot;&gt;&lt;/span&gt;体验层&lt;/span&gt;
+    &lt;span class=&quot;cz-key&quot;&gt;&lt;span class=&quot;cz-swatch cz-series-2&quot;&gt;&lt;/span&gt;产品 API&lt;/span&gt;
+    &lt;span class=&quot;cz-key&quot;&gt;&lt;span class=&quot;cz-swatch cz-series-3&quot;&gt;&lt;/span&gt;AgentTeams 控制面&lt;/span&gt;
+    &lt;span class=&quot;cz-key&quot;&gt;&lt;span class=&quot;cz-swatch cz-series-4&quot;&gt;&lt;/span&gt;确定性执行面&lt;/span&gt;
+    &lt;span class=&quot;cz-key&quot;&gt;&lt;span class=&quot;cz-swatch cz-series-5&quot;&gt;&lt;/span&gt;数据与制品&lt;/span&gt;
+    &lt;span class=&quot;cz-key&quot;&gt;&lt;span class=&quot;cz-swatch cz-series-6&quot;&gt;&lt;/span&gt;可选 / 兼容&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div id=&quot;cz-topology-canvas&quot; class=&quot;cz-canvas&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+
+  &lt;div class=&quot;card cz-detail&quot; aria-live=&quot;polite&quot; aria-label=&quot;当前节点说明&quot;&gt;
+    &lt;div class=&quot;viz-row&quot;&gt;
+      &lt;span class=&quot;viz-badge&quot; id=&quot;cz-detail-kind&quot;&gt;主链&lt;/span&gt;
+      &lt;strong id=&quot;cz-detail-name&quot;&gt;成竹实时主链&lt;/strong&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;cz-detail-grid&quot;&gt;
+      &lt;div&gt;
+        &lt;div class=&quot;text-muted text-small&quot;&gt;代码定位&lt;/div&gt;
+        &lt;div id=&quot;cz-detail-files&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div class=&quot;text-muted text-small&quot;&gt;职责&lt;/div&gt;
+        &lt;div id=&quot;cz-detail-role&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div class=&quot;text-muted text-small&quot;&gt;输入 → 输出&lt;/div&gt;
+        &lt;div id=&quot;cz-detail-io&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div class=&quot;text-muted text-small&quot;&gt;关键边界&lt;/div&gt;
+        &lt;div id=&quot;cz-detail-boundary&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  #chengzhu-topology {
+    color: var(--foreground);
+  }
+
+  #chengzhu-topology .cz-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-block: 0.75rem 1rem;
+    color: var(--muted-foreground);
+  }
+
+  #chengzhu-topology .cz-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  #chengzhu-topology .cz-swatch {
+    inline-size: 0.7rem;
+    block-size: 0.7rem;
+    border-radius: 999px;
+  }
+
+  #chengzhu-topology .cz-series-1 { background: var(--viz-series-1); }
+  #chengzhu-topology .cz-series-2 { background: var(--viz-series-2); }
+  #chengzhu-topology .cz-series-3 { background: var(--viz-series-3); }
+  #chengzhu-topology .cz-series-4 { background: var(--viz-series-4); }
+  #chengzhu-topology .cz-series-5 { background: var(--viz-series-5); }
+  #chengzhu-topology .cz-series-6 { background: var(--viz-series-6); }
+
+  #chengzhu-topology .cz-canvas {
+    min-inline-size: 0;
+  }
+
+  #chengzhu-topology #cz-mode-label[hidden] {
+    display: none !important;
+  }
+
+  #chengzhu-topology .cz-lane,
+  #chengzhu-topology .cz-stage {
+    --cz-lane-color: var(--border);
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.26fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.8rem 0 0.8rem 0.75rem;
+    border-inline-start: 3px solid var(--cz-lane-color);
+  }
+
+  #chengzhu-topology .cz-lane + .cz-lane,
+  #chengzhu-topology .cz-stage + .cz-stage {
+    border-top: 1px solid var(--border);
+  }
+
+  #chengzhu-topology [data-kind=&quot;experience&quot;] { --cz-lane-color: var(--viz-series-1); }
+  #chengzhu-topology [data-kind=&quot;api&quot;] { --cz-lane-color: var(--viz-series-2); }
+  #chengzhu-topology [data-kind=&quot;control&quot;] { --cz-lane-color: var(--viz-series-3); }
+  #chengzhu-topology [data-kind=&quot;execution&quot;] { --cz-lane-color: var(--viz-series-4); }
+  #chengzhu-topology [data-kind=&quot;data&quot;] { --cz-lane-color: var(--viz-series-5); }
+  #chengzhu-topology [data-kind=&quot;optional&quot;] { --cz-lane-color: var(--viz-series-6); }
+
+  #chengzhu-topology .cz-lane-label,
+  #chengzhu-topology .cz-stage-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  #chengzhu-topology .cz-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-inline-size: 0;
+  }
+
+  #chengzhu-topology .cz-flow-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    min-inline-size: 0;
+  }
+
+  #chengzhu-topology .cz-arrow {
+    color: var(--muted-foreground);
+  }
+
+  #chengzhu-topology .cz-branch-label {
+    color: var(--muted-foreground);
+  }
+
+  #chengzhu-topology .cz-mode-note {
+    margin-block-end: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  #chengzhu-topology .cz-detail {
+    margin-block-start: 1rem;
+  }
+
+  #chengzhu-topology .cz-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem 1.25rem;
+    margin-block-start: 0.9rem;
+  }
+
+  #chengzhu-topology .cz-detail-grid code {
+    overflow-wrap: anywhere;
+  }
+
+  #chengzhu-topology .cz-code-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.25rem;
+  }
+
+  #chengzhu-topology .cz-code-group {
+    padding-block: 0.4rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #chengzhu-topology .cz-code-group .cz-flow {
+    margin-block-start: 0.55rem;
+  }
+
+  #chengzhu-topology .cz-runtime-profile {
+    display: grid;
+    grid-template-columns: minmax(9rem, 0.32fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #chengzhu-topology .cz-boundary-list {
+    margin-block: 1rem 0;
+    padding-inline-start: 1.25rem;
+  }
+
+  #chengzhu-topology .cz-boundary-list li + li {
+    margin-block-start: 0.45rem;
+  }
+
+  @media (max-width: 560px) {
+    #chengzhu-topology .cz-lane,
+    #chengzhu-topology .cz-stage,
+    #chengzhu-topology .cz-runtime-profile {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    #chengzhu-topology .cz-detail-grid,
+    #chengzhu-topology .cz-code-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+&lt;/style&gt;
+
+&lt;script&gt;
+  (() =&gt; {
+    const root = document.getElementById(&#x27;chengzhu-topology&#x27;);
+    const canvas = root.querySelector(&#x27;#cz-topology-canvas&#x27;);
+    const viewSelect = root.querySelector(&#x27;#cz-view-select&#x27;);
+    const modeSelect = root.querySelector(&#x27;#cz-mode-select&#x27;);
+    const modeLabel = root.querySelector(&#x27;#cz-mode-label&#x27;);
+    const detailKind = root.querySelector(&#x27;#cz-detail-kind&#x27;);
+    const detailName = root.querySelector(&#x27;#cz-detail-name&#x27;);
+    const detailFiles = root.querySelector(&#x27;#cz-detail-files&#x27;);
+    const detailRole = root.querySelector(&#x27;#cz-detail-role&#x27;);
+    const detailIo = root.querySelector(&#x27;#cz-detail-io&#x27;);
+    const detailBoundary = root.querySelector(&#x27;#cz-detail-boundary&#x27;);
+
+    const details = {
+      main: {
+        name: &#x27;成竹实时主链&#x27;, kind: &#x27;总览&#x27;,
+        files: [&#x27;README.md&#x27;, &#x27;backend/app/api/task.py&#x27;, &#x27;backend/app/services/agentteam_runtime.py&#x27;],
+        role: &#x27;Vue 管人类确认与发布；AgentTeams 管身份、分派和协作；Chengzhu 后端管事实状态与确定性副作用。&#x27;,
+        io: &#x27;人工研究需求 → 冻结证据、审计结论、候选报告 → 人工批准后的已发布报告&#x27;,
+        boundary: &#x27;实时新任务不再走旧 pipeline；Matrix 不是权威状态源，Worker 也不能直接发布。&#x27;
+      },
+      user: {
+        name: &#x27;用户 / Vue 人工权威&#x27;, kind: &#x27;体验层&#x27;,
+        files: [&#x27;frontend/src/views/Home.vue&#x27;, &#x27;frontend/src/views/TaskConfirmView.vue&#x27;, &#x27;frontend/src/components/AgentTeamPanel.vue&#x27;],
+        role: &#x27;创建需求、确认 TaskCard、选择分析模式，并在最终门禁批准、驳回或回滚。&#x27;,
+        io: &#x27;需求、文件、视觉处理同意、审批决定 → TaskCard、run、发布动作&#x27;,
+        boundary: &#x27;当前产品 API 没有独立登录/RBAC；只能按默认回环单机 Demo 边界理解。&#x27;
+      },
+      &#x27;vue-shell&#x27;: {
+        name: &#x27;Vue 3 应用外壳&#x27;, kind: &#x27;体验层&#x27;,
+        files: [&#x27;frontend/src/main.js&#x27;, &#x27;frontend/src/App.vue&#x27;, &#x27;frontend/src/components/AppLayout.vue&#x27;],
+        role: &#x27;挂载 Router 与 i18n，提供全局导航、免责声明和追踪通知。&#x27;,
+        io: &#x27;路由与服务端 API → 七个当前有效业务页面&#x27;,
+        boundary: &#x27;页面状态主要是本地 ref/computed；没有 Pinia/Vuex。&#x27;
+      },
+      &#x27;active-routes&#x27;: {
+        name: &#x27;七个当前有效路由&#x27;, kind: &#x27;体验层&#x27;,
+        files: [&#x27;frontend/src/router/index.js&#x27;],
+        role: &#x27;Home、TaskConfirm、TaskRun、Report、Tracking、Profile、Scenario。&#x27;,
+        io: &#x27;URL 中 taskId / run_id / scenarioId → 对应业务视图&#x27;,
+        boundary: &#x27;全部同步 eager import；没有鉴权守卫和 404 catch-all。&#x27;
+      },
+      &#x27;axios-polling&#x27;: {
+        name: &#x27;Axios API 与轮询层&#x27;, kind: &#x27;体验层&#x27;,
+        files: [&#x27;frontend/src/api/index.js&#x27;, &#x27;frontend/src/composables/usePolling.js&#x27;],
+        role: &#x27;统一请求、语言头、错误处理，以及状态、日志、证据、图谱、团队事件的定时拉取。&#x27;,
+        io: &#x27;页面动作 → /api；服务端快照与事件 → 页面局部状态&#x27;,
+        boundary: &#x27;全部使用 HTTP polling，没有 WebSocket 或 SSE；TaskRun 同时存在多组不同频率轮询。&#x27;
+      },
+      &#x27;flask-factory&#x27;: {
+        name: &#x27;Flask 应用工厂&#x27;, kind: &#x27;产品 API&#x27;,
+        files: [&#x27;backend/run.py&#x27;, &#x27;backend/app/__init__.py&#x27;, &#x27;backend/app/config.py&#x27;],
+        role: &#x27;加载配置、校验安全项、初始化 CORS/SQLite/遥测、注册蓝图并启动追踪调度器。&#x27;,
+        io: &#x27;环境变量与 HTTP 请求 → REST 响应、任务状态、后台调度&#x27;,
+        boundary: &#x27;当前使用 Flask 内置 threaded server；健康接口不等价于完整 AgentTeams 预检。&#x27;
+      },
+      &#x27;task-api&#x27;: {
+        name: &#x27;Task API / 运行准入&#x27;, kind: &#x27;产品 API&#x27;,
+        files: [&#x27;backend/app/api/task.py&#x27;],
+        role: &#x27;创建任务、保存上传、生成 TaskCard、确认 run、读取状态/证据/图谱/辩论。&#x27;,
+        io: &#x27;requirement + files + TaskCard → task_id + immutable run_id + team_id&#x27;,
+        boundary: &#x27;确认实时任务时 execution_mode 必须是 agentteams；并发确认由 task_run_lock 防护。&#x27;
+      },
+      &#x27;product-apis&#x27;: {
+        name: &#x27;报告、反馈、记忆、追踪、推演 API&#x27;, kind: &#x27;产品 API&#x27;,
+        files: [&#x27;backend/app/api/report.py&#x27;, &#x27;backend/app/api/feedback.py&#x27;, &#x27;backend/app/api/memory.py&#x27;, &#x27;backend/app/api/tracking.py&#x27;, &#x27;backend/app/api/scenario.py&#x27;],
+        role: &#x27;覆盖报告浏览与追问、反馈学习、偏好/Playbook、增量简报和双情景沙盘。&#x27;,
+        io: &#x27;已发布 run 与用户反馈 → 报告视图、学习规则、简报、推演报告&#x27;,
+        boundary: &#x27;这些是产品侧环路，不改变 AgentTeams 实时研究 DAG 的事实权威。&#x27;
+      },
+      &#x27;team-api&#x27;: {
+        name: &#x27;Team API / Vue 审批入口&#x27;, kind: &#x27;产品 API&#x27;,
+        files: [&#x27;backend/app/api/team.py&#x27;, &#x27;backend/app/team/publication.py&#x27;],
+        role: &#x27;暴露团队快照、脱敏事件流、发布批准/驳回与 rollback。&#x27;,
+        io: &#x27;task_id + run_id + expected_version + 人工决定 → 审批记录与 latest 指针&#x27;,
+        boundary: &#x27;审批要求 CAS；Matrix 文本无授权效力。任务级接口把来源固定为 Vue。&#x27;
+      },
+      &#x27;run-admission&#x27;: {
+        name: &#x27;不可变 run 准入&#x27;, kind: &#x27;产品 API&#x27;,
+        files: [&#x27;backend/app/api/task.py&#x27;, &#x27;backend/app/models/research_task.py&#x27;, &#x27;backend/app/team/store.py&#x27;],
+        role: &#x27;在锁内创建 run 目录、task_run、可选 debate_run、Team run 与固定 DAG。&#x27;,
+        io: &#x27;已确认 TaskCard → run.json、SQLite run/team/task rows、状态 collecting&#x27;,
+        boundary: &#x27;准入失败会补偿并终止 Team；后台分发本身仍依赖进程内 daemon thread。&#x27;
+      },
+      dispatcher: {
+        name: &#x27;AgentTeams Dispatcher&#x27;, kind: &#x27;控制面&#x27;,
+        files: [&#x27;backend/app/integrations/agentteams/dispatcher.py&#x27;, &#x27;backend/app/integrations/agentteams/client.py&#x27;],
+        role: &#x27;预检 v1.2.0 Manager/Team/Leader/八角色，并向 Manager Matrix 房间发送引用型项目合同。&#x27;,
+        io: &#x27;task_id + run_id + TaskCard + expected_version → Matrix event + trace metadata&#x27;,
+        boundary: &#x27;消息只带合同和引用；不发送密钥、完整证据、Base64 或隐藏推理。&#x27;
+      },
+      &#x27;agentteams-control&#x27;: {
+        name: &#x27;Controller + OpenClaw Manager&#x27;, kind: &#x27;控制面&#x27;,
+        files: [&#x27;agentteams/UPSTREAM.lock&#x27;, &#x27;agentteams/manifests/team.yaml&#x27;, &#x27;agentteams/scripts/competition-up.sh&#x27;],
+        role: &#x27;AgentTeams v1.2.0 控制身份、成员、生命周期，并由 Manager 接收项目请求。&#x27;,
+        io: &#x27;声明式 Worker/Team 资源 + 项目合同 → 被唤醒的 ready Worker 与协作轨迹&#x27;,
+        boundary: &#x27;Manager 不计入八个 Worker；镜像、版本、runtime 和模型均被锁定。&#x27;
+      },
+      teamharness: {
+        name: &#x27;TeamHarness DAG&#x27;, kind: &#x27;控制面&#x27;,
+        files: [&#x27;agentteams/teamharness/dag-plan.json&#x27;, &#x27;agentteams/teamharness/dag-plan-direct.json&#x27;, &#x27;agentteams/teamharness/runtime-contract.md&#x27;],
+        role: &#x27;维护 9/7 节点依赖、ready_nodes、结果验收与恢复。&#x27;,
+        io: &#x27;TaskContract + 已接受结果 → 下一批 ready nodes&#x27;,
+        boundary: &#x27;RESULT_READY 不等于验收；evidence-freeze 是后端系统节点，不是第九个 Worker。&#x27;
+      },
+      workers: {
+        name: &#x27;八个 QwenPaw Worker&#x27;, kind: &#x27;控制面&#x27;,
+        files: [&#x27;agentteams/manifests/workers/&#x27;, &#x27;agentteams/roles/&#x27;, &#x27;backend/app/team/contracts.py&#x27;],
+        role: &#x27;Lead、双采集、双分析、Judge、Writer、Reviewer；最多同时活跃 3 个。&#x27;,
+        io: &#x27;有界 TaskContract + ArtifactRef → 结构化任务结果&#x27;,
+        boundary: &#x27;每个 Worker 独立身份/角色包/模型配置；不能越过自己的 MCP allowlist。&#x27;
+      },
+      &#x27;research-lead&#x27;: {
+        name: &#x27;Research Lead&#x27;, kind: &#x27;Worker&#x27;,
+        files: [&#x27;agentteams/roles/research-lead/&#x27;, &#x27;backend/app/team/contracts.py&#x27;],
+        role: &#x27;建立研究计划、验收交接、桥接后端证据冻结，并把审校候选送到人工门。&#x27;,
+        io: &#x27;Confirmed TaskCard → DAG 计划、分派、冻结确认、发布审批请求&#x27;,
+        boundary: &#x27;可编排但不能改证据、替代 Judge/Reviewer 或直接发布。&#x27;
+      },
+      &#x27;disclosure-researcher&#x27;: {
+        name: &#x27;Disclosure Researcher&#x27;, kind: &#x27;Worker&#x27;,
+        files: [&#x27;agentteams/roles/disclosure-researcher/&#x27;, &#x27;backend/app/services/collect_orchestrator.py&#x27;],
+        role: &#x27;采集公告、财报、上传材料；必要时请求受控百炼视觉代理。&#x27;,
+        io: &#x27;计划、标的、截止日、授权文件 → disclosure EvidenceCards&#x27;,
+        boundary: &#x27;只追加证据；DashScope Key 不进入 Worker，上传时同意记录才是视觉授权依据。&#x27;
+      },
+      &#x27;market-context-researcher&#x27;: {
+        name: &#x27;Market Context Researcher&#x27;, kind: &#x27;Worker&#x27;,
+        files: [&#x27;agentteams/roles/market-context-researcher/&#x27;, &#x27;backend/app/services/collect_orchestrator.py&#x27;],
+        role: &#x27;采集新闻、研报、行业、行情与宏观背景。&#x27;,
+        io: &#x27;研究计划与标的 → market-context EvidenceCards&#x27;,
+        boundary: &#x27;不绕付费墙，不把传闻或观点当成确定性事实。&#x27;
+      },
+      &#x27;quality-analyst&#x27;: {
+        name: &#x27;Quality Analyst&#x27;, kind: &#x27;Worker&#x27;,
+        files: [&#x27;agentteams/roles/quality-analyst/&#x27;, &#x27;backend/app/services/agentteam_runtime.py&#x27;],
+        role: &#x27;在冻结证据上形成质量/稳定性 Claim，并与增长视角交叉质疑。&#x27;,
+        io: &#x27;冻结 EvidenceCard + FinancialFact → ClaimCard / Challenge&#x27;,
+        boundary: &#x27;冻结后禁止联网；只在 evidence_debate 模式执行。&#x27;
+      },
+      &#x27;growth-analyst&#x27;: {
+        name: &#x27;Growth Analyst&#x27;, kind: &#x27;Worker&#x27;,
+        files: [&#x27;agentteams/roles/growth-analyst/&#x27;, &#x27;backend/app/services/agentteam_runtime.py&#x27;],
+        role: &#x27;在冻结证据上形成增长驱动、变化和反证 Claim。&#x27;,
+        io: &#x27;冻结 EvidenceCard + FinancialFact → ClaimCard / Challenge&#x27;,
+        boundary: &#x27;冻结后禁止联网；不能隐藏假设或把情景当作事实。&#x27;
+      },
+      &#x27;evidence-judge&#x27;: {
+        name: &#x27;Evidence Judge&#x27;, kind: &#x27;Worker + 硬审计&#x27;,
+        files: [&#x27;agentteams/roles/evidence-judge/&#x27;, &#x27;backend/app/services/debate_orchestrator.py&#x27;, &#x27;backend/app/services/agentteam_runtime.py&#x27;],
+        role: &#x27;触发确定性 EvidenceAuditor，并选择允许进入写作的 hard-pass Claim。&#x27;,
+        io: &#x27;Claims + Challenges + frozen evidence/facts → audit.jsonl + verdict.json&#x27;,
+        boundary: &#x27;任何 hard_pass=false 的 Claim 都不能被接受；Judge 不能改证据或写报告。&#x27;
+      },
+      &#x27;report-writer&#x27;: {
+        name: &#x27;Report Writer&#x27;, kind: &#x27;Worker&#x27;,
+        files: [&#x27;agentteams/roles/report-writer/&#x27;, &#x27;backend/app/services/agentteam_runtime.py&#x27;],
+        role: &#x27;提交报告分组；在辩论模式中后端根据已接受 Claim 重建全部正文。&#x27;,
+        io: &#x27;accepted_claim_ids / frozen context → versioned report draft&#x27;,
+        boundary: &#x27;不能重新检索、增加新事实或把未通过裁决的自由文本带入报告。&#x27;
+      },
+      &#x27;compliance-reviewer&#x27;: {
+        name: &#x27;Compliance Reviewer&#x27;, kind: &#x27;Worker + 门禁&#x27;,
+        files: [&#x27;agentteams/roles/compliance-reviewer/&#x27;, &#x27;backend/app/services/reviewer.py&#x27;, &#x27;backend/app/services/report_assembler.py&#x27;],
+        role: &#x27;执行引用、数字、图表、声明和合规校验，决定 pass / revise。&#x27;,
+        io: &#x27;报告草稿 + 冻结证据 + Verdict → reviewed report candidate / issues&#x27;,
+        boundary: &#x27;可以退回修订但不能批准发布；审校循环有明确上限和安全降级披露。&#x27;
+      },
+      higress: {
+        name: &#x27;Higress 角色路由&#x27;, kind: &#x27;确定性执行面&#x27;,
+        files: [&#x27;agentteams/scripts/configure-higress-mcp.sh&#x27;, &#x27;agentteams/manifests/workers/&#x27;],
+        role: &#x27;每个 Worker 使用独立 Consumer 和 MCP Server 路由，网关覆写可信角色身份。&#x27;,
+        io: &#x27;Worker Consumer 凭证 → /mcp/&amp;lt;role-id&amp;gt; + 服务端 Bearer&#x27;,
+        boundary: &#x27;Worker 不持有 MCP 上游服务密钥；匿名路由应被 401/403 拒绝。&#x27;
+      },
+      mcp: {
+        name: &#x27;Chengzhu MCP 服务&#x27;, kind: &#x27;确定性执行面&#x27;,
+        files: [&#x27;backend/mcp_server.py&#x27;, &#x27;backend/app/mcp/server.py&#x27;],
+        role: &#x27;按角色列出最小工具，校验路由身份、参数、幂等键与 CAS，再调用 Runtime。&#x27;,
+        io: &#x27;JSON-RPC tools/call → 结构化结果、脱敏事件与工具日志&#x27;,
+        boundary: &#x27;运行于 5002，仅容器网络 expose；每次 mutation 必须带 task/run/version/idempotency。&#x27;
+      },
+      runtime: {
+        name: &#x27;AgentTeamRuntime&#x27;, kind: &#x27;确定性执行面&#x27;,
+        files: [&#x27;backend/app/services/agentteam_runtime.py&#x27;],
+        role: &#x27;唯一领域副作用执行面：采集、冻结、Claim/Challenge、审计、写作、审校和审批候选。&#x27;,
+        io: &#x27;角色受限 MCP 调用 → SQLite 状态、run 文件、ArtifactRef、下一阶段 handoff&#x27;,
+        boundary: &#x27;执行前检查 run deadline、后端可见预算、expected_version 与 task dependency。&#x27;
+      },
+      sources: {
+        name: &#x27;采集工具与 ProviderRouter&#x27;, kind: &#x27;外部数据&#x27;,
+        files: [&#x27;backend/app/tools/registry.py&#x27;, &#x27;backend/app/providers/router.py&#x27;, &#x27;backend/app/providers/datayes/&#x27;],
+        role: &#x27;十个受控工具接入公告、财务、新闻、研报、行业、行情、搜索与 PDF。&#x27;,
+        io: &#x27;标的、时间窗、白名单参数 → 统一 EvidenceCard&#x27;,
+        boundary: &#x27;Datayes 先本地 DuckDB/Parquet、再白名单 DataAPI、再显式公共降级；私有数据受 license_scope 约束。&#x27;
+      },
+      &#x27;visual-proxy&#x27;: {
+        name: &#x27;百炼官方视觉代理&#x27;, kind: &#x27;外部数据&#x27;,
+        files: [&#x27;backend/app/services/bailian_official_skill.py&#x27;, &#x27;agentteams/vendor/alibabacloud-bailian-image-creator/&#x27;],
+        role: &#x27;服务端执行固定 commit 的官方视觉 Skill，解析授权上传的扫描 PDF/图片。&#x27;,
+        io: &#x27;经 hash 校验的授权文件 → 视觉理解结果或本地降级记录&#x27;,
+        boundary: &#x27;失败/超时/限流时显式 degraded；Key 与原始二进制不进入 Worker/Matrix。&#x27;
+      },
+      evidence: {
+        name: &#x27;证据冻结与财务标准化&#x27;, kind: &#x27;确定性执行面&#x27;,
+        files: [&#x27;backend/app/services/evidence_freezer.py&#x27;, &#x27;backend/app/services/financial_normalizer.py&#x27;, &#x27;backend/app/services/graph_ingest.py&#x27;],
+        role: &#x27;将 staging EvidenceCards 稳定编号、冻结，生成同口径 FinancialFacts 并写项目图谱。&#x27;,
+        io: &#x27;evidence/*.jsonl → evidence_index.json + normalized_facts.jsonl + graph.json&#x27;,
+        boundary: &#x27;双采集全失败时 fail closed；只成功一路时标记 completed_partial / degraded。&#x27;
+      },
+      sqlite: {
+        name: &#x27;SQLite 状态库&#x27;, kind: &#x27;数据与制品&#x27;,
+        files: [&#x27;backend/app/utils/db.py&#x27;, &#x27;backend/uploads/chengzhu.db&#x27;],
+        role: &#x27;18 张表保存 run、预算、团队 DAG、CAS 版本、事件、审批、制品索引、反馈、订阅与推演。&#x27;,
+        io: &#x27;领域状态变更 → 原子事务行与单调 event cursor&#x27;,
+        boundary: &#x27;Backend 与 MCP 双进程共享同一 DB；当前仅 busy_timeout，未启用 WAL。&#x27;
+      },
+      artifacts: {
+        name: &#x27;本地 run 快照 + MinIO&#x27;, kind: &#x27;数据与制品&#x27;,
+        files: [&#x27;backend/app/services/artifact_store.py&#x27;, &#x27;backend/uploads/tasks/{task_id}/runs/{run_id}/&#x27;],
+        role: &#x27;本地目录保存兼容副本；竞赛环境以内容 hash + provenance hash 发布不可变对象。&#x27;,
+        io: &#x27;证据、事实、裁决、草稿、候选 → local:// 或 s3:// ArtifactRef&#x27;,
+        boundary: &#x27;AGENTTEAMS_ARTIFACT_REQUIRED=true 时 MinIO 失败会阻断；本地开发才允许显式降级。&#x27;
+      },
+      graph: {
+        name: &#x27;项目图谱：本地 JSON + Neo4j&#x27;, kind: &#x27;数据与制品&#x27;,
+        files: [&#x27;backend/app/utils/graph_client.py&#x27;, &#x27;backend/app/utils/neo4j_store.py&#x27;, &#x27;backend/uploads/graphs/&#x27;],
+        role: &#x27;保存事实 Episode、实体与关系，供图谱页、追问、追踪差异和推演使用。&#x27;,
+        io: &#x27;冻结 EvidenceCards → graph.json / local graph + 可选 Neo4j 镜像&#x27;,
+        boundary: &#x27;Neo4j 不可用时自动回退；本地 JSON 跨进程写入目前不是原子事务。&#x27;
+      },
+      publication: {
+        name: &#x27;发布协调器&#x27;, kind: &#x27;确定性执行面&#x27;,
+        files: [&#x27;backend/app/team/publication.py&#x27;, &#x27;backend/app/services/report_assembler.py&#x27;, &#x27;backend/app/utils/report_commit.py&#x27;],
+        role: &#x27;校验候选归属与 SHA，持久化人工决定，提交三件套报告并维护 latest/rollback。&#x27;,
+        io: &#x27;Vue approval + report candidate → report.json / report.md / full_report.md + commit marker&#x27;,
+        boundary: &#x27;已提交的不同报告不可覆盖；rollback 只切 latest，不删除历史 run。&#x27;
+      },
+      tracking: {
+        name: &#x27;追踪与反馈闭环&#x27;, kind: &#x27;产品环路&#x27;,
+        files: [&#x27;backend/app/services/tracking_service.py&#x27;, &#x27;backend/app/services/reflection.py&#x27;, &#x27;backend/app/services/playbook.py&#x27;],
+        role: &#x27;反馈生成候选经验规则；订阅按水位增量采集并生成简报。&#x27;,
+        io: &#x27;反馈、历史 run、订阅 cron → preferences / playbook / briefs&#x27;,
+        boundary: &#x27;反馈与追踪不回写已经冻结或已发布的历史 run。&#x27;
+      },
+      scenario: {
+        name: &#x27;情景推演侧链&#x27;, kind: &#x27;产品环路&#x27;,
+        files: [&#x27;backend/app/services/scenario/runner.py&#x27;, &#x27;backend/app/services/scenario/scenario_agent.py&#x27;],
+        role: &#x27;基于已发布且冻结的 run，运行悲观/基准双分支简化舆论沙盘。&#x27;,
+        io: &#x27;已发布 run + hypothesis → profiles、actions、scenario report&#x27;,
+        boundary: &#x27;规则+模板驱动，结论不得外推为真实预测；使用独立 scenario 图谱组。&#x27;
+      },
+      &#x27;legacy-pipeline&#x27;: {
+        name: &#x27;旧 pipeline 兼容层&#x27;, kind: &#x27;可选 / 兼容&#x27;,
+        files: [&#x27;backend/app/services/pipeline.py&#x27;, &#x27;frontend/src/views/MainView.vue&#x27;, &#x27;frontend/src/components/Step1GraphBuild.vue&#x27;],
+        role: &#x27;保留历史产物与旧 MiroFish 路径的兼容代码。&#x27;,
+        io: &#x27;旧任务 / demo replay → 只读展示或历史逻辑&#x27;,
+        boundary: &#x27;不是当前新建实时任务主链；report rerun API 已明确拒绝回落到第二套实时编排。&#x27;
+      },
+      &#x27;demo-replay&#x27;: {
+        name: &#x27;demo_seed 只读回放&#x27;, kind: &#x27;可选 / 兼容&#x27;,
+        files: [&#x27;demo_seed/&#x27;, &#x27;scripts/load_demo.py&#x27;, &#x27;backend/app/services/artifact_store.py&#x27;],
+        role: &#x27;无 Key、无 AgentTeams 时浏览已经生成的脱敏报告、证据、图谱和推演。&#x27;,
+        io: &#x27;seed bundle → execution_mode=replay 的只读任务&#x27;,
+        boundary: &#x27;不能继续、重新辩论、审批或伪装成实时运行。&#x27;
+      },
+      &#x27;docker-stack&#x27;: {
+        name: &#x27;完整竞赛栈&#x27;, kind: &#x27;部署&#x27;,
+        files: [&#x27;Makefile&#x27;, &#x27;docker-compose.yml&#x27;, &#x27;docker-compose.agentteams.yml&#x27;, &#x27;agentteams/scripts/competition-up.sh&#x27;],
+        role: &#x27;启动 Vue、Flask、Neo4j、MCP，并安装/复用 Controller、Manager、Matrix、Higress、MinIO 与八 Worker。&#x27;,
+        io: &#x27;make competition-up + .env → 锁定版本的单机 AgentTeams 栈&#x27;,
+        boundary: &#x27;默认所有对外端口绑定 127.0.0.1；目标主机完整 E2E 仍需实机证明。&#x27;
+      },
+      &#x27;local-dev&#x27;: {
+        name: &#x27;本地 pnpm dev&#x27;, kind: &#x27;部署&#x27;,
+        files: [&#x27;package.json&#x27;, &#x27;README.md&#x27;],
+        role: &#x27;仅并发启动 Vite :3000 与 Flask :5001。&#x27;,
+        io: &#x27;pnpm run dev → UI + API 开发服务&#x27;,
+        boundary: &#x27;不启动 Controller、Manager、Matrix、Higress、MinIO、MCP；适合 UI/回放，不能独立闭环新实时任务。&#x27;
+      },
+      &#x27;plain-compose&#x27;: {
+        name: &#x27;普通 docker compose&#x27;, kind: &#x27;部署&#x27;,
+        files: [&#x27;docker-compose.yml&#x27;],
+        role: &#x27;启动 Neo4j、Backend 和 Frontend。&#x27;,
+        io: &#x27;docker compose up --build → 三服务基础栈&#x27;,
+        boundary: &#x27;仍没有 AgentTeams 控制面和 MCP，无法完成新的实时 run。&#x27;
+      },
+      &#x27;runtime-proof&#x27;: {
+        name: &#x27;当前验收边界&#x27;, kind: &#x27;验收状态&#x27;,
+        files: [&#x27;README.md&#x27;, &#x27;docs/competition-agentteams.md&#x27;, &#x27;docs/agentteams-operations.md&#x27;],
+        role: &#x27;区分“代码/静态合同已实现”和“目标 Docker 主机端到端已证明”。&#x27;,
+        io: &#x27;静态验证、单元测试、预检设计 → 可审核实现边界&#x27;,
+        boundary: &#x27;完整 Docker E2E、正式录屏、跨 Worker 按 run 汇总的 2 元硬闸门仍未完成验收。&#x27;
+      }
+    };
+
+    const escapeHtml = (value) =&gt; String(value)
+      .replaceAll(&#x27;&amp;&#x27;, &#x27;&amp;amp;&#x27;)
+      .replaceAll(&#x27;&lt;&#x27;, &#x27;&amp;lt;&#x27;)
+      .replaceAll(&#x27;&gt;&#x27;, &#x27;&amp;gt;&#x27;)
+      .replaceAll(&#x27;&quot;&#x27;, &#x27;&amp;quot;&#x27;)
+      .replaceAll(&quot;&#x27;&quot;, &#x27;&amp;#039;&#x27;);
+
+    let selectedId = &#x27;main&#x27;;
+
+    const node = (id, label, block = false) =&gt; {
+      const selected = id === selectedId ? &#x27;true&#x27; : &#x27;false&#x27;;
+      return `&lt;button type=&quot;button&quot; class=&quot;btn${block ? &#x27; btn-block&#x27; : &#x27;&#x27;}&quot; data-node=&quot;${id}&quot; aria-pressed=&quot;${selected}&quot;&gt;${label}&lt;/button&gt;`;
+    };
+
+    const arrow = (label = &#x27;→&#x27;) =&gt; `&lt;span class=&quot;cz-arrow&quot; aria-hidden=&quot;true&quot;&gt;${label}&lt;/span&gt;`;
+
+    const lane = (kind, title, subtitle, content) =&gt; `
+      &lt;section class=&quot;cz-lane&quot; data-kind=&quot;${kind}&quot;&gt;
+        &lt;div class=&quot;cz-lane-label&quot;&gt;
+          &lt;strong&gt;${title}&lt;/strong&gt;
+          &lt;span class=&quot;text-muted text-small&quot;&gt;${subtitle}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;cz-flow&quot;&gt;${content}&lt;/div&gt;
+      &lt;/section&gt;`;
+
+    const stage = (kind, title, subtitle, content) =&gt; `
+      &lt;section class=&quot;cz-stage&quot; data-kind=&quot;${kind}&quot;&gt;
+        &lt;div class=&quot;cz-stage-label&quot;&gt;
+          &lt;strong&gt;${title}&lt;/strong&gt;
+          &lt;span class=&quot;text-muted text-small&quot;&gt;${subtitle}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;cz-flow-stack&quot;&gt;${content}&lt;/div&gt;
+      &lt;/section&gt;`;
+
+    const renderOverview = () =&gt; {
+      return `
+        &lt;div class=&quot;cz-overview&quot; role=&quot;group&quot; aria-label=&quot;成竹系统分层拓扑&quot;&gt;
+          ${lane(&#x27;experience&#x27;, &#x27;01 · 体验层&#x27;, &#x27;Vue 3 / Vite · :3000&#x27;,
+            node(&#x27;user&#x27;, &#x27;用户与人工审批&#x27;) + arrow() + node(&#x27;vue-shell&#x27;, &#x27;Vue 应用外壳&#x27;) + arrow() + node(&#x27;active-routes&#x27;, &#x27;7 个业务路由&#x27;) + arrow() + node(&#x27;axios-polling&#x27;, &#x27;Axios + HTTP 轮询&#x27;))}
+          ${lane(&#x27;api&#x27;, &#x27;02 · 产品 API&#x27;, &#x27;Flask · :5001&#x27;,
+            node(&#x27;flask-factory&#x27;, &#x27;Flask 工厂&#x27;) + arrow() + node(&#x27;task-api&#x27;, &#x27;Task / Run API&#x27;) + node(&#x27;team-api&#x27;, &#x27;Team / Approval API&#x27;) + node(&#x27;product-apis&#x27;, &#x27;Report · Memory · Tracking · Scenario&#x27;))}
+          ${lane(&#x27;control&#x27;, &#x27;03 · 协作控制面&#x27;, &#x27;AgentTeams v1.2.0&#x27;,
+            node(&#x27;run-admission&#x27;, &#x27;不可变 run 准入&#x27;) + arrow() + node(&#x27;dispatcher&#x27;, &#x27;Dispatcher 预检&#x27;) + arrow() + node(&#x27;agentteams-control&#x27;, &#x27;Controller + OpenClaw Manager&#x27;) + arrow() + node(&#x27;teamharness&#x27;, &#x27;TeamHarness 9/7 节点 DAG&#x27;) + arrow() + node(&#x27;workers&#x27;, &#x27;8 Workers · 最多并发 3&#x27;))}
+          ${lane(&#x27;execution&#x27;, &#x27;04 · 确定性执行面&#x27;, &#x27;Higress → MCP :5002&#x27;,
+            node(&#x27;higress&#x27;, &#x27;角色绑定路由&#x27;) + arrow() + node(&#x27;mcp&#x27;, &#x27;MCP Auth + ACL&#x27;) + arrow() + node(&#x27;runtime&#x27;, &#x27;AgentTeamRuntime&#x27;) + arrow() + node(&#x27;evidence&#x27;, &#x27;采集 · 冻结 · 审计&#x27;) + arrow() + node(&#x27;publication&#x27;, &#x27;Vue 发布协调器&#x27;))}
+          ${lane(&#x27;data&#x27;, &#x27;05 · 数据与制品&#x27;, &#x27;状态、快照、图谱&#x27;,
+            node(&#x27;sources&#x27;, &#x27;10 工具 + ProviderRouter&#x27;) + arrow() + node(&#x27;sqlite&#x27;, &#x27;SQLite · CAS 状态&#x27;) + node(&#x27;artifacts&#x27;, &#x27;run 目录 + MinIO&#x27;) + node(&#x27;graph&#x27;, &#x27;本地 JSON + Neo4j&#x27;))}
+          ${lane(&#x27;optional&#x27;, &#x27;06 · 产品侧链与兼容&#x27;, &#x27;不改变实时研究主链&#x27;,
+            node(&#x27;tracking&#x27;, &#x27;反馈 / Playbook / 追踪&#x27;) + node(&#x27;scenario&#x27;, &#x27;已发布 run → 情景推演&#x27;) + node(&#x27;demo-replay&#x27;, &#x27;demo_seed 只读回放&#x27;) + node(&#x27;legacy-pipeline&#x27;, &#x27;旧 pipeline · 非实时主链&#x27;))}
+        &lt;/div&gt;`;
+    };
+
+    const renderPipeline = () =&gt; {
+      const debate = modeSelect.value === &#x27;evidence_debate&#x27;;
+      const analystContent = debate
+        ? `&lt;div class=&quot;viz-grid&quot;&gt;${node(&#x27;quality-analyst&#x27;, &#x27;Quality Analyst · 质量视角&#x27;, true)}${node(&#x27;growth-analyst&#x27;, &#x27;Growth Analyst · 增长视角&#x27;, true)}&lt;/div&gt;&lt;span class=&quot;text-muted text-small&quot;&gt;冻结后只读；最多两轮 Claim / Challenge&lt;/span&gt;`
+        : `&lt;div class=&quot;cz-flow&quot;&gt;${node(&#x27;evidence-judge&#x27;, &#x27;直接进入 Evidence Judge&#x27;)}${arrow(&#x27;·&#x27;)}&lt;span class=&quot;text-muted&quot;&gt;SQLite 仍保留两条 analyst skipped 记录&lt;/span&gt;&lt;/div&gt;`;
+      const modeText = debate
+        ? &#x27;evidence_debate：TeamHarness 9 节点；八个角色全部参与，evidence-freeze 为后端系统节点。&#x27;
+        : &#x27;direct：TeamHarness 7 节点；省略双 Analyst 节点，Judge 直接依赖 evidence-freeze。&#x27;;
+      return `
+        &lt;div class=&quot;cz-mode-note text-small&quot;&gt;${modeText}&lt;/div&gt;
+        &lt;div role=&quot;group&quot; aria-label=&quot;成竹实时任务执行链&quot;&gt;
+          ${stage(&#x27;experience&#x27;, &#x27;0 · 人工确认&#x27;, &#x27;Vue 是任务与发布的人类入口&#x27;, `&lt;div class=&quot;cz-flow&quot;&gt;${node(&#x27;user&#x27;, &#x27;需求 + 文件 + 授权&#x27;)}${arrow()}${node(&#x27;task-api&#x27;, &#x27;POST /task/create&#x27;)}${arrow()}${node(&#x27;run-admission&#x27;, &#x27;POST /task/{id}/confirm&#x27;)}&lt;/div&gt;`)}
+          ${stage(&#x27;control&#x27;, &#x27;1 · 计划与分派&#x27;, &#x27;Research Lead 接管确认后的固定 DAG&#x27;, `&lt;div class=&quot;cz-flow&quot;&gt;${node(&#x27;dispatcher&#x27;, &#x27;Manager 项目合同&#x27;)}${arrow()}${node(&#x27;research-lead&#x27;, &#x27;Research Lead · plan / delegate / accept&#x27;)}&lt;/div&gt;`)}
+          ${stage(&#x27;control&#x27;, &#x27;2 · 双路采集&#x27;, &#x27;依赖 research-plan，可并行&#x27;, `&lt;div class=&quot;viz-grid&quot;&gt;${node(&#x27;disclosure-researcher&#x27;, &#x27;Disclosure · 公告 / 财报 / 上传&#x27;, true)}${node(&#x27;market-context-researcher&#x27;, &#x27;Market Context · 新闻 / 研报 / 行业&#x27;, true)}&lt;/div&gt;&lt;div class=&quot;cz-flow&quot;&gt;${node(&#x27;sources&#x27;, &#x27;Tools / ProviderRouter&#x27;)}${arrow()}&lt;span class=&quot;text-muted&quot;&gt;EvidenceCard staging&lt;/span&gt;&lt;/div&gt;`)}
+          ${stage(&#x27;execution&#x27;, &#x27;3 · 系统冻结&#x27;, &#x27;两路都失败则 fail closed&#x27;, `&lt;div class=&quot;cz-flow&quot;&gt;${node(&#x27;research-lead&#x27;, &#x27;Lead 调用 freeze_evidence&#x27;)}${arrow()}${node(&#x27;evidence&#x27;, &#x27;chengzhu-backend · 冻结 / 标准化 / 建图&#x27;)}${arrow()}${node(&#x27;artifacts&#x27;, &#x27;Frozen ArtifactRefs&#x27;)}&lt;/div&gt;`)}
+          ${stage(debate ? &#x27;control&#x27; : &#x27;optional&#x27;, &#x27;4 · 分析&#x27;, debate ? &#x27;两个推理型 Worker 并行&#x27; : &#x27;direct 模式省略 Worker 执行&#x27;, analystContent)}
+          ${stage(&#x27;execution&#x27;, &#x27;5 · 确定性裁决&#x27;, &#x27;模型选择不能推翻硬审计&#x27;, `&lt;div class=&quot;cz-flow&quot;&gt;${node(&#x27;evidence-judge&#x27;, &#x27;Evidence Judge&#x27;)}${arrow()}&lt;span&gt;EvidenceAuditor&lt;/span&gt;${arrow()}&lt;span&gt;hard-pass accepted Claim set&lt;/span&gt;&lt;/div&gt;`)}
+          ${stage(&#x27;execution&#x27;, &#x27;6 · 写作与审校&#x27;, &#x27;候选仍不能发布&#x27;, `&lt;div class=&quot;cz-flow&quot;&gt;${node(&#x27;report-writer&#x27;, &#x27;Report Writer&#x27;)}${arrow()}${node(&#x27;compliance-reviewer&#x27;, &#x27;Compliance Reviewer&#x27;)}${arrow(&#x27;↔&#x27;)}&lt;span class=&quot;text-muted&quot;&gt;bounded revision&lt;/span&gt;&lt;/div&gt;`)}
+          ${stage(&#x27;experience&#x27;, &#x27;7 · 人工发布门&#x27;, &#x27;CAS + hash + commit marker&#x27;, `&lt;div class=&quot;cz-flow&quot;&gt;${node(&#x27;research-lead&#x27;, &#x27;request_publish_approval&#x27;)}${arrow()}${node(&#x27;team-api&#x27;, &#x27;Vue approve / reject&#x27;)}${arrow()}${node(&#x27;publication&#x27;, &#x27;发布 / latest / rollback&#x27;)}&lt;/div&gt;`)}
+        &lt;/div&gt;`;
+    };
+
+    const renderData = () =&gt; {
+      return `
+        &lt;div class=&quot;table-responsive&quot;&gt;
+          &lt;table class=&quot;table table-sm&quot;&gt;
+            &lt;thead&gt;
+              &lt;tr&gt;
+                &lt;th&gt;逻辑对象&lt;/th&gt;
+                &lt;th&gt;事务状态权威&lt;/th&gt;
+                &lt;th&gt;run 内不可变 / 版本化文件&lt;/th&gt;
+                &lt;th&gt;竞赛制品与派生视图&lt;/th&gt;
+                &lt;th&gt;约束&lt;/th&gt;
+              &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+              &lt;tr&gt;
+                &lt;td&gt;${node(&#x27;run-admission&#x27;, &#x27;Task / Run&#x27;)}&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;task_run&lt;/code&gt;、&lt;code&gt;agent_team_run&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;task.json&lt;/code&gt;、&lt;code&gt;runs/{run}/run.json&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;前端 status / runs API&lt;/td&gt;
+                &lt;td&gt;每次确认生成新 run，不覆盖 A/B 历史&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td&gt;${node(&#x27;teamharness&#x27;, &#x27;DAG / 交接 / 事件&#x27;)}&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;team_task&lt;/code&gt;、&lt;code&gt;team_handoff&lt;/code&gt;、&lt;code&gt;team_event&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;TaskContract 与脱敏事件摘要&lt;/td&gt;
+                &lt;td&gt;Matrix / Element 仅镜像&lt;/td&gt;
+                &lt;td&gt;CAS + idempotency；Matrix 不能用于恢复事实&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td&gt;${node(&#x27;sources&#x27;, &#x27;Evidence staging&#x27;)}&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;evidence_card&lt;/code&gt; 去重索引&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;evidence/*.jsonl&lt;/code&gt;、上传文件与授权 manifest&lt;/td&gt;
+                &lt;td&gt;MinIO &lt;code&gt;evidence-staging&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;EvidenceCard 统一溯源；私有许可不导出原文&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td&gt;${node(&#x27;evidence&#x27;, &#x27;Frozen context&#x27;)}&lt;/td&gt;
+                &lt;td&gt;Team freeze task 的 completed output&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;evidence_index.json&lt;/code&gt;、&lt;code&gt;normalized_facts.jsonl&lt;/code&gt;、&lt;code&gt;graph.json&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;MinIO &lt;code&gt;frozen-context&lt;/code&gt;；本地/Neo4j 图谱&lt;/td&gt;
+                &lt;td&gt;冻结后 Analyst 不再联网；空证据禁止继续&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td&gt;${node(&#x27;evidence-judge&#x27;, &#x27;Claims / Audit / Verdict&#x27;)}&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;debate_run&lt;/code&gt; + Team task 状态&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;debate/claims.jsonl&lt;/code&gt;、&lt;code&gt;challenges.jsonl&lt;/code&gt;、&lt;code&gt;audit.jsonl&lt;/code&gt;、&lt;code&gt;verdict.json&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;MinIO &lt;code&gt;audited-verdict&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;只有 hard-pass Claim 可进入 Writer&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td&gt;${node(&#x27;publication&#x27;, &#x27;Report / Approval&#x27;)}&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;artifact_manifest&lt;/code&gt;、&lt;code&gt;human_approval&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;versioned draft / review / candidate；发布三件套 + commit marker&lt;/td&gt;
+                &lt;td&gt;MinIO 内容寻址对象；latest 图谱与报告镜像&lt;/td&gt;
+                &lt;td&gt;先持久化 Vue 决定，再发布；rollback 不删旧 run&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td&gt;${node(&#x27;tracking&#x27;, &#x27;反馈 / 记忆 / 追踪&#x27;)}&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;feedback&lt;/code&gt;、&lt;code&gt;playbook_rule&lt;/code&gt;、&lt;code&gt;user_preference&lt;/code&gt;、&lt;code&gt;tracking_sub&lt;/code&gt;、&lt;code&gt;brief&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;briefs/&lt;/code&gt; 与独立 tracking evidence batch&lt;/td&gt;
+                &lt;td&gt;Profile / Tracking 页面&lt;/td&gt;
+                &lt;td&gt;只影响后续预填与增量观察，不改历史报告&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td&gt;${node(&#x27;scenario&#x27;, &#x27;Scenario&#x27;)}&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;scenario_run&lt;/code&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;code&gt;scenarios/{id}/profiles.json&lt;/code&gt;、&lt;code&gt;actions.jsonl&lt;/code&gt;、report&lt;/td&gt;
+                &lt;td&gt;独立 scenario graph group&lt;/td&gt;
+                &lt;td&gt;只能基于已发布、非空冻结快照&lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/div&gt;`;
+    };
+
+    const codeGroup = (title, subtitle, items) =&gt; `
+      &lt;section class=&quot;cz-code-group&quot;&gt;
+        &lt;strong&gt;${title}&lt;/strong&gt;
+        &lt;div class=&quot;text-muted text-small&quot;&gt;${subtitle}&lt;/div&gt;
+        &lt;div class=&quot;cz-flow&quot;&gt;${items.map(([id, label]) =&gt; node(id, label)).join(&#x27;&#x27;)}&lt;/div&gt;
+      &lt;/section&gt;`;
+
+    const renderCode = () =&gt; {
+      return `&lt;div class=&quot;cz-code-grid&quot; role=&quot;group&quot; aria-label=&quot;代码目录地图&quot;&gt;
+        ${codeGroup(&#x27;frontend/src · 当前产品前端&#x27;, &#x27;main.js → App.vue → router → views / components&#x27;, [
+          [&#x27;vue-shell&#x27;, &#x27;应用入口与外壳&#x27;], [&#x27;active-routes&#x27;, &#x27;7 个路由页面&#x27;], [&#x27;axios-polling&#x27;, &#x27;API + polling&#x27;], [&#x27;team-api&#x27;, &#x27;AgentTeamPanel&#x27;]
+        ])}
+        ${codeGroup(&#x27;backend/app/api · HTTP 边界&#x27;, &#x27;Flask 蓝图；Task 与 Team 是实时主入口&#x27;, [
+          [&#x27;flask-factory&#x27;, &#x27;应用工厂&#x27;], [&#x27;task-api&#x27;, &#x27;task.py&#x27;], [&#x27;team-api&#x27;, &#x27;team.py&#x27;], [&#x27;product-apis&#x27;, &#x27;report / memory / tracking / scenario&#x27;]
+        ])}
+        ${codeGroup(&#x27;integrations + team + mcp&#x27;, &#x27;AgentTeams 接入、DAG 状态机和角色权限&#x27;, [
+          [&#x27;dispatcher&#x27;, &#x27;integrations/agentteams&#x27;], [&#x27;teamharness&#x27;, &#x27;team/contracts + store&#x27;], [&#x27;mcp&#x27;, &#x27;mcp/server.py&#x27;], [&#x27;runtime&#x27;, &#x27;agentteam_runtime.py&#x27;]
+        ])}
+        ${codeGroup(&#x27;services + tools + providers&#x27;, &#x27;确定性领域服务与外部数据适配&#x27;, [
+          [&#x27;sources&#x27;, &#x27;tools / providers&#x27;], [&#x27;evidence&#x27;, &#x27;freeze / normalize / ingest&#x27;], [&#x27;evidence-judge&#x27;, &#x27;debate auditor&#x27;], [&#x27;publication&#x27;, &#x27;review / assemble / publish&#x27;]
+        ])}
+        ${codeGroup(&#x27;utils + uploads · 状态与制品&#x27;, &#x27;SQLite、run 文件、图谱、日志与锁&#x27;, [
+          [&#x27;sqlite&#x27;, &#x27;utils/db.py&#x27;], [&#x27;artifacts&#x27;, &#x27;artifact_store.py&#x27;], [&#x27;graph&#x27;, &#x27;graph_client.py&#x27;], [&#x27;tracking&#x27;, &#x27;memory / tracking state&#x27;]
+        ])}
+        ${codeGroup(&#x27;agentteams · 竞赛运行合同&#x27;, &#x27;8 Worker manifests、角色包、DAG、安装和验证脚本&#x27;, [
+          [&#x27;agentteams-control&#x27;, &#x27;manifests + version locks&#x27;], [&#x27;workers&#x27;, &#x27;roles + skills&#x27;], [&#x27;higress&#x27;, &#x27;Higress MCP routes&#x27;], [&#x27;docker-stack&#x27;, &#x27;competition scripts&#x27;]
+        ])}
+        ${codeGroup(&#x27;产品侧链&#x27;, &#x27;基于发布结果继续追踪、学习或模拟&#x27;, [
+          [&#x27;tracking&#x27;, &#x27;Feedback → Reflection → Playbook&#x27;], [&#x27;scenario&#x27;, &#x27;Published run → Scenario&#x27;], [&#x27;demo-replay&#x27;, &#x27;demo_seed replay&#x27;]
+        ])}
+        ${codeGroup(&#x27;兼容但不在当前实时入口&#x27;, &#x27;会干扰源码阅读，应与主链分开理解&#x27;, [
+          [&#x27;legacy-pipeline&#x27;, &#x27;backend/services/pipeline.py&#x27;], [&#x27;legacy-pipeline&#x27;, &#x27;旧 MiroFish views / Step1–5&#x27;], [&#x27;demo-replay&#x27;, &#x27;只读 replay adapter&#x27;]
+        ])}
+      &lt;/div&gt;`;
+    };
+
+    const renderRuntime = () =&gt; {
+      return `
+        &lt;div role=&quot;group&quot; aria-label=&quot;启动方式与运行边界&quot;&gt;
+          &lt;section class=&quot;cz-runtime-profile&quot;&gt;
+            &lt;div&gt;${node(&#x27;local-dev&#x27;, &#x27;pnpm run dev&#x27;)}&lt;/div&gt;
+            &lt;div&gt;&lt;strong&gt;仅 Vue :3000 + Flask :5001&lt;/strong&gt;&lt;div class=&quot;text-muted&quot;&gt;适合页面开发、API 调试和 demo replay；新实时任务会因缺少 Controller / MCP 而无法闭环。&lt;/div&gt;&lt;/div&gt;
+          &lt;/section&gt;
+          &lt;section class=&quot;cz-runtime-profile&quot;&gt;
+            &lt;div&gt;${node(&#x27;plain-compose&#x27;, &#x27;docker compose&#x27;)}&lt;/div&gt;
+            &lt;div&gt;&lt;strong&gt;Vue + Flask + Neo4j&lt;/strong&gt;&lt;div class=&quot;text-muted&quot;&gt;仍没有 AgentTeams Controller、Manager、Matrix、Higress、MinIO 和 Chengzhu MCP。&lt;/div&gt;&lt;/div&gt;
+          &lt;/section&gt;
+          &lt;section class=&quot;cz-runtime-profile&quot;&gt;
+            &lt;div&gt;${node(&#x27;docker-stack&#x27;, &#x27;make competition-up&#x27;)}&lt;/div&gt;
+            &lt;div&gt;&lt;strong&gt;完整目标单机栈&lt;/strong&gt;&lt;div class=&quot;text-muted&quot;&gt;叠加两个 Compose 文件，安装或复用控制面，应用 8 Worker，配置角色 MCP 路由并运行竞赛预检。&lt;/div&gt;&lt;/div&gt;
+          &lt;/section&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;table-responsive&quot;&gt;
+          &lt;table class=&quot;table table-sm&quot;&gt;
+            &lt;thead&gt;&lt;tr&gt;&lt;th&gt;运行节点&lt;/th&gt;&lt;th&gt;端口 / 通道&lt;/th&gt;&lt;th&gt;拓扑职责&lt;/th&gt;&lt;th&gt;暴露策略&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+            &lt;tbody&gt;
+              &lt;tr&gt;&lt;td&gt;${node(&#x27;vue-shell&#x27;, &#x27;Vue / Vite&#x27;)}&lt;/td&gt;&lt;td&gt;&lt;code&gt;3000&lt;/code&gt;&lt;/td&gt;&lt;td&gt;产品 UI 与唯一人工发布入口&lt;/td&gt;&lt;td&gt;默认 127.0.0.1&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr&gt;&lt;td&gt;${node(&#x27;flask-factory&#x27;, &#x27;Flask Backend&#x27;)}&lt;/td&gt;&lt;td&gt;&lt;code&gt;5001&lt;/code&gt;&lt;/td&gt;&lt;td&gt;REST、SQLite、产品侧链、审批协调&lt;/td&gt;&lt;td&gt;默认 127.0.0.1&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr&gt;&lt;td&gt;${node(&#x27;mcp&#x27;, &#x27;Chengzhu MCP&#x27;)}&lt;/td&gt;&lt;td&gt;&lt;code&gt;5002&lt;/code&gt;&lt;/td&gt;&lt;td&gt;八角色唯一领域写入面&lt;/td&gt;&lt;td&gt;仅容器 expose&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr&gt;&lt;td&gt;${node(&#x27;agentteams-control&#x27;, &#x27;Controller / Manager&#x27;)}&lt;/td&gt;&lt;td&gt;&lt;code&gt;8090&lt;/code&gt; / Matrix &lt;code&gt;6167&lt;/code&gt;&lt;/td&gt;&lt;td&gt;身份、生命周期、Manager 分派&lt;/td&gt;&lt;td&gt;内部 / 本机&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr&gt;&lt;td&gt;${node(&#x27;higress&#x27;, &#x27;Higress&#x27;)}&lt;/td&gt;&lt;td&gt;角色 Consumer 路由&lt;/td&gt;&lt;td&gt;鉴权并绑定 MCP role path&lt;/td&gt;&lt;td&gt;管理口不得公网暴露&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr&gt;&lt;td&gt;${node(&#x27;artifacts&#x27;, &#x27;MinIO&#x27;)}&lt;/td&gt;&lt;td&gt;&lt;code&gt;9000&lt;/code&gt;&lt;/td&gt;&lt;td&gt;实时不可变内容寻址制品&lt;/td&gt;&lt;td&gt;内部 / 本机&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr&gt;&lt;td&gt;${node(&#x27;graph&#x27;, &#x27;Neo4j&#x27;)}&lt;/td&gt;&lt;td&gt;&lt;code&gt;7474 / 7687&lt;/code&gt;&lt;/td&gt;&lt;td&gt;可选图谱镜像与扩展查询&lt;/td&gt;&lt;td&gt;默认 127.0.0.1&lt;/td&gt;&lt;/tr&gt;
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/div&gt;
+        &lt;ul class=&quot;cz-boundary-list&quot;&gt;
+          &lt;li&gt;${node(&#x27;runtime-proof&#x27;, &#x27;已实现：代码、静态合同、角色包、离线测试与预检脚本&#x27;)}&lt;/li&gt;
+          &lt;li&gt;待证明：目标 Docker 主机完整 E2E、正式录屏、故障恢复与多存储一致性恢复。&lt;/li&gt;
+          &lt;li&gt;未闭环：AgentTeams 全部 Worker 按 Chengzhu &lt;code&gt;run_id&lt;/code&gt; 聚合的 2 元硬预算门。&lt;/li&gt;
+          &lt;li&gt;工程约束：Backend/MCP 共享非 WAL SQLite；daemon thread 无持久任务队列；容器仍使用开发服务器。&lt;/li&gt;
+        &lt;/ul&gt;`;
+    };
+
+    const renderDetail = () =&gt; {
+      const value = details[selectedId] || details.main;
+      detailKind.textContent = value.kind;
+      detailName.textContent = value.name;
+      detailFiles.innerHTML = value.files.map((item) =&gt; `&lt;code&gt;${escapeHtml(item)}&lt;/code&gt;`).join(&#x27;&lt;br&gt;&#x27;);
+      detailRole.textContent = value.role;
+      detailIo.textContent = value.io;
+      detailBoundary.textContent = value.boundary;
+    };
+
+    const bindNodes = () =&gt; {
+      canvas.querySelectorAll(&#x27;[data-node]&#x27;).forEach((button) =&gt; {
+        button.addEventListener(&#x27;click&#x27;, () =&gt; {
+          selectedId = button.dataset.node;
+          canvas.querySelectorAll(&#x27;[data-node]&#x27;).forEach((item) =&gt; {
+            item.setAttribute(&#x27;aria-pressed&#x27;, item.dataset.node === selectedId ? &#x27;true&#x27; : &#x27;false&#x27;);
+          });
+          renderDetail();
+        });
+      });
+    };
+
+    const defaultNode = {
+      overview: &#x27;main&#x27;,
+      pipeline: &#x27;run-admission&#x27;,
+      data: &#x27;sqlite&#x27;,
+      code: &#x27;vue-shell&#x27;,
+      runtime: &#x27;docker-stack&#x27;
+    };
+
+    const render = (resetSelection = false) =&gt; {
+      const view = viewSelect.value;
+      modeLabel.hidden = view !== &#x27;pipeline&#x27;;
+      if (resetSelection) selectedId = defaultNode[view] || &#x27;main&#x27;;
+      if (view === &#x27;pipeline&#x27;) canvas.innerHTML = renderPipeline();
+      else if (view === &#x27;data&#x27;) canvas.innerHTML = renderData();
+      else if (view === &#x27;code&#x27;) canvas.innerHTML = renderCode();
+      else if (view === &#x27;runtime&#x27;) canvas.innerHTML = renderRuntime();
+      else canvas.innerHTML = renderOverview();
+      bindNodes();
+      renderDetail();
+    };
+
+    viewSelect.addEventListener(&#x27;change&#x27;, () =&gt; render(true));
+    modeSelect.addEventListener(&#x27;change&#x27;, () =&gt; render(false));
+    render(true);
+  })();
+&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>

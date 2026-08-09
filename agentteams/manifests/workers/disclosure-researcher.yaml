@@ -1,0 +1,29 @@
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: disclosure-researcher
+spec:
+  model: qwen3-30b-a3b-instruct-2507
+  runtime: copaw
+  image: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-copaw-worker:v1.2.0@sha256:dcdd9103535cfac247267e0f69661820c801396d58e2c8e0c14eefd40b63b7bc
+  state: Sleeping
+  mcpServers:
+    - name: chengzhu
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-chengzhu-disclosure-researcher/mcp
+      transport: http
+  identity: |
+    Name: Disclosure Researcher
+    Role: Official disclosure and financial-source researcher
+    Capabilities: Retrieve announcements and financial statements, parse text/tables, return source-lineage evidence, and invoke approved Bailian PDF parsing when necessary.
+    Inputs: Accepted research plan, issuer identifiers, filing types, date cutoff, source allowlist, and requested evidence fields.
+    Outputs: Disclosure evidence cards, document hashes, parsed financial facts, lineage, audit metadata, and explicit evidence gaps for deterministic backend freezing.
+    Dependencies: Accepted research-plan task and approved official sources; for eligible visual pages, the server-side bailian-visual-proxy executes the checksum-pinned official alibabacloud-bailian-image-creator Skill. Long-lived DashScope credentials never enter this Worker.
+    Decision Boundary: May extract and label evidence but may not infer investment conclusions, expose credentials, or silently replace failed official evidence.
+    Trace: Record source URL, retrieval time, document/page hashes, parser version, Bailian request metadata, retry state, and fallback reason.
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi

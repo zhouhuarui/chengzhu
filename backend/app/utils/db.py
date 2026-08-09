@@ -150,6 +150,141 @@ CREATE TABLE IF NOT EXISTS scenario_run (
   cost REAL DEFAULT 0,
   started_at TEXT, finished_at TEXT
 );
+
+-- Agent Team runtime.  Mutable rows carry ``state_version`` so every state
+-- transition can use compare-and-swap instead of last-writer-wins updates.
+CREATE TABLE IF NOT EXISTS agent_team_run (
+  team_id TEXT PRIMARY KEY,
+  run_id TEXT NOT NULL UNIQUE,
+  task_id TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  state_version INTEGER NOT NULL DEFAULT 0 CHECK (state_version >= 0),
+  attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),
+  budget_cny REAL NOT NULL DEFAULT 0 CHECK (budget_cny >= 0),
+  current_stage TEXT,
+  matrix_room_id TEXT,
+  matrix_event_id TEXT,
+  element_url TEXT,
+  trace_id TEXT,
+  span_id TEXT,
+  degraded INTEGER NOT NULL DEFAULT 0 CHECK (degraded IN (0, 1)),
+  degradation_json TEXT NOT NULL DEFAULT '[]',
+  rejection_count INTEGER NOT NULL DEFAULT 0 CHECK (rejection_count >= 0),
+  latest_artifact_id TEXT,
+  terminal_reason TEXT,
+  config_json TEXT NOT NULL DEFAULT '{}',
+  idempotency_key TEXT NOT NULL UNIQUE,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  finished_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_agent_team_task_created
+  ON agent_team_run(task_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS team_task (
+  team_task_id TEXT PRIMARY KEY,
+  team_id TEXT NOT NULL,
+  task_key TEXT NOT NULL,
+  title TEXT NOT NULL,
+  assigned_agent TEXT NOT NULL,
+  role_id TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  state_version INTEGER NOT NULL DEFAULT 0 CHECK (state_version >= 0),
+  attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),
+  budget_cny REAL NOT NULL DEFAULT 0 CHECK (budget_cny >= 0),
+  ordinal INTEGER NOT NULL DEFAULT 0,
+  depends_on_json TEXT NOT NULL DEFAULT '[]',
+  input_json TEXT NOT NULL DEFAULT '{}',
+  output_json TEXT,
+  error_code TEXT,
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  started_at TEXT,
+  finished_at TEXT,
+  UNIQUE(team_id, task_key),
+  UNIQUE(team_id, idempotency_key)
+);
+CREATE INDEX IF NOT EXISTS idx_team_task_team_ordinal
+  ON team_task(team_id, ordinal, team_task_id);
+
+CREATE TABLE IF NOT EXISTS team_handoff (
+  handoff_id TEXT PRIMARY KEY,
+  team_id TEXT NOT NULL,
+  source_task_id TEXT,
+  target_task_id TEXT NOT NULL,
+  from_agent TEXT NOT NULL,
+  to_agent TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  state_version INTEGER NOT NULL DEFAULT 0 CHECK (state_version >= 0),
+  payload_json TEXT NOT NULL DEFAULT '{}',
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  accepted_at TEXT,
+  UNIQUE(team_id, idempotency_key)
+);
+CREATE INDEX IF NOT EXISTS idx_team_handoff_team_created
+  ON team_handoff(team_id, created_at, handoff_id);
+
+-- ``cursor`` is the stable, monotonically increasing event-stream cursor.
+CREATE TABLE IF NOT EXISTS team_event (
+  cursor INTEGER PRIMARY KEY AUTOINCREMENT,
+  event_id TEXT NOT NULL UNIQUE,
+  team_id TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  actor TEXT NOT NULL,
+  team_task_id TEXT,
+  payload_json TEXT NOT NULL DEFAULT '{}',
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE(team_id, idempotency_key)
+);
+CREATE INDEX IF NOT EXISTS idx_team_event_team_cursor
+  ON team_event(team_id, cursor);
+
+CREATE TABLE IF NOT EXISTS human_approval (
+  approval_id TEXT PRIMARY KEY,
+  team_id TEXT NOT NULL,
+  artifact_id TEXT NOT NULL,
+  decision TEXT NOT NULL CHECK (decision IN ('approved', 'rejected')),
+  authority TEXT NOT NULL CHECK (authority = 'vue'),
+  actor TEXT NOT NULL,
+  reason TEXT,
+  team_state_version INTEGER NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE(team_id, idempotency_key)
+);
+CREATE INDEX IF NOT EXISTS idx_human_approval_team_created
+  ON human_approval(team_id, created_at, approval_id);
+
+CREATE TABLE IF NOT EXISTS artifact_manifest (
+  artifact_id TEXT PRIMARY KEY,
+  team_id TEXT NOT NULL,
+  run_id TEXT NOT NULL,
+  artifact_type TEXT NOT NULL,
+  artifact_version INTEGER NOT NULL CHECK (artifact_version > 0),
+  uri TEXT NOT NULL,
+  sha256 TEXT,
+  producer TEXT NOT NULL DEFAULT 'chengzhu-backend',
+  schema_version INTEGER NOT NULL DEFAULT 1 CHECK (schema_version > 0),
+  status TEXT NOT NULL DEFAULT 'draft',
+  requires_approval INTEGER NOT NULL DEFAULT 1,
+  approval_id TEXT,
+  is_latest INTEGER NOT NULL DEFAULT 0 CHECK (is_latest IN (0, 1)),
+  state_version INTEGER NOT NULL DEFAULT 0 CHECK (state_version >= 0),
+  metadata_json TEXT NOT NULL DEFAULT '{}',
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  published_at TEXT,
+  UNIQUE(team_id, artifact_type, artifact_version),
+  UNIQUE(team_id, idempotency_key)
+);
+CREATE INDEX IF NOT EXISTS idx_artifact_manifest_team_version
+  ON artifact_manifest(team_id, artifact_type, artifact_version DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_artifact_manifest_one_latest
+  ON artifact_manifest(team_id) WHERE is_latest = 1;
 """
 
 
@@ -199,6 +334,36 @@ def db_cursor():
 def init_db() -> None:
     with db_cursor() as cur:
         cur.executescript(SCHEMA_SQL)
+        # Existing demo/user databases predate AgentTeams task budgets and
+        # explicit artifact provenance. Additive migrations keep them usable
+        # without replacing any row or local replay bundle.
+        migrations = {
+            'team_task': {
+                'attempt_count': 'INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0)',
+                'budget_cny': 'REAL NOT NULL DEFAULT 0 CHECK (budget_cny >= 0)',
+            },
+            'agent_team_run': {
+                'matrix_room_id': 'TEXT',
+                'matrix_event_id': 'TEXT',
+                'element_url': 'TEXT',
+                'trace_id': 'TEXT',
+                'span_id': 'TEXT',
+                'degraded': 'INTEGER NOT NULL DEFAULT 0 CHECK (degraded IN (0, 1))',
+                'degradation_json': "TEXT NOT NULL DEFAULT '[]'",
+            },
+            'artifact_manifest': {
+                'producer': "TEXT NOT NULL DEFAULT 'chengzhu-backend'",
+                'schema_version': 'INTEGER NOT NULL DEFAULT 1 CHECK (schema_version > 0)',
+            },
+        }
+        for table, columns in migrations.items():
+            cur.execute(f'PRAGMA table_info({table})')
+            existing = {str(row['name']) for row in cur.fetchall()}
+            for name, declaration in columns.items():
+                if name not in existing:
+                    cur.execute(
+                        f'ALTER TABLE {table} ADD COLUMN {name} {declaration}'
+                    )
 
 
 def now_iso() -> str:
@@ -349,6 +514,21 @@ def delete_task_runs(
                     )""",
                 (task_id, task_id),
             )
+        # Team rows are run-owned metadata and must not survive explicit task
+        # deletion.  Delete children before the team run without depending on
+        # SQLite foreign-key PRAGMAs, which legacy installations may not use.
+        for table in (
+            'team_event', 'team_handoff', 'human_approval',
+            'artifact_manifest', 'team_task',
+        ):
+            cur.execute(
+                f"""DELETE FROM {table}
+                    WHERE team_id IN (
+                      SELECT team_id FROM agent_team_run WHERE task_id = ?
+                    )""",
+                (task_id,),
+            )
+        cur.execute('DELETE FROM agent_team_run WHERE task_id = ?', (task_id,))
         cur.execute(
             'DELETE FROM brief WHERE sub_id IN '
             '(SELECT sub_id FROM tracking_sub WHERE task_id = ?)',
@@ -1160,3 +1340,95 @@ def list_unreflected_runs(limit: int = 20) -> List[Dict[str, Any]]:
 def mark_reflected(run_id: str) -> None:
     with db_cursor() as cur:
         cur.execute('UPDATE task_run SET reflected = 1 WHERE run_id = ?', (run_id,))
+
+
+# ---------- agent team read models ----------
+
+def get_agent_team_run(team_id: str) -> Optional[Dict[str, Any]]:
+    with db_cursor() as cur:
+        cur.execute('SELECT * FROM agent_team_run WHERE team_id = ?', (team_id,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+
+
+def get_agent_team_run_by_run_id(run_id: str) -> Optional[Dict[str, Any]]:
+    with db_cursor() as cur:
+        cur.execute('SELECT * FROM agent_team_run WHERE run_id = ?', (run_id,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+
+
+def list_team_tasks(team_id: str) -> List[Dict[str, Any]]:
+    with db_cursor() as cur:
+        cur.execute(
+            'SELECT * FROM team_task WHERE team_id = ? '
+            'ORDER BY ordinal, team_task_id',
+            (team_id,),
+        )
+        return [dict(row) for row in cur.fetchall()]
+
+
+def get_team_task(team_id: str, team_task_id: str) -> Optional[Dict[str, Any]]:
+    with db_cursor() as cur:
+        cur.execute(
+            'SELECT * FROM team_task WHERE team_id = ? AND team_task_id = ?',
+            (team_id, team_task_id),
+        )
+        row = cur.fetchone()
+        return dict(row) if row else None
+
+
+def list_team_handoffs(team_id: str) -> List[Dict[str, Any]]:
+    with db_cursor() as cur:
+        cur.execute(
+            'SELECT * FROM team_handoff WHERE team_id = ? '
+            'ORDER BY created_at, handoff_id',
+            (team_id,),
+        )
+        return [dict(row) for row in cur.fetchall()]
+
+
+def list_team_events(
+    team_id: str,
+    *,
+    after_cursor: int = 0,
+    limit: int = 100,
+) -> List[Dict[str, Any]]:
+    bounded_limit = max(1, min(int(limit), 200))
+    with db_cursor() as cur:
+        cur.execute(
+            'SELECT * FROM team_event WHERE team_id = ? AND cursor > ? '
+            'ORDER BY cursor LIMIT ?',
+            (team_id, max(0, int(after_cursor)), bounded_limit),
+        )
+        return [dict(row) for row in cur.fetchall()]
+
+
+def get_artifact_manifest(team_id: str, artifact_id: str) -> Optional[Dict[str, Any]]:
+    with db_cursor() as cur:
+        cur.execute(
+            'SELECT * FROM artifact_manifest WHERE team_id = ? AND artifact_id = ?',
+            (team_id, artifact_id),
+        )
+        row = cur.fetchone()
+        return dict(row) if row else None
+
+
+def list_artifact_manifests(team_id: str) -> List[Dict[str, Any]]:
+    with db_cursor() as cur:
+        cur.execute(
+            'SELECT * FROM artifact_manifest WHERE team_id = ? '
+            'ORDER BY artifact_type, artifact_version, artifact_id',
+            (team_id,),
+        )
+        return [dict(row) for row in cur.fetchall()]
+
+
+def list_human_approvals(team_id: str) -> List[Dict[str, Any]]:
+    with db_cursor() as cur:
+        cur.execute(
+            'SELECT * FROM human_approval WHERE team_id = ? '
+            'ORDER BY created_at, approval_id',
+            (team_id,),
+        )
+        return [dict(row) for row in cur.fetchall()]

@@ -1,0 +1,4 @@
+interface:
+  display_name: "撰写证据报告"
+  short_description: "Write a traceable report from adjudicated evidence"
+  default_prompt: "Use $write-evidence-report to draft a traceable research report from the accepted evidence judgement."

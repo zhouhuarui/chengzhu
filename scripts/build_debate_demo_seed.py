@@ -9,6 +9,7 @@ be interpreted as an actual filing or a statement about either company.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -36,6 +37,11 @@ from app.services.debate_orchestrator import (
     replay_debate,
 )
 from app.services.financial_normalizer import FinancialNormalizer, write_facts_jsonl
+from app.team.contracts import (
+    DEFAULT_TEAM_DAG,
+    build_task_contract,
+    team_task_budget_allocations,
+)
 from app.utils.db import SCHEMA_SQL
 from app.utils.report_commit import (
     REPORT_COMMIT,
@@ -626,6 +632,7 @@ def _task_card(analysis_mode: str = 'evidence_debate') -> Dict[str, Any]:
     return {
         'deliverable': 'compare',
         'analysis_mode': analysis_mode,
+        'execution_mode': 'replay',
         'symbols': [
             {'code': '300750', 'name': '宁德时代'},
             {'code': '002594', 'name': '比亚迪'},
@@ -642,6 +649,7 @@ def _task_card(analysis_mode: str = 'evidence_debate') -> Dict[str, Any]:
 def _task_json(claims, challenges, scores) -> Dict[str, Any]:
     return {
         'task_id': TASK_ID,
+        'execution_mode': 'replay',
         'user_id': 'default',
         'requirement': '比赛演示：使用公开语境下的合成夹具，对比宁德时代与比亚迪并运行证据辩论。',
         'status': 'completed',
@@ -698,6 +706,306 @@ def _agent_log() -> List[Dict[str, Any]]:
     ]
 
 
+def _seed_agent_team_replay(
+    connection: sqlite3.Connection,
+    seed_dir: Path,
+    *,
+    run_id: str,
+    analysis_mode: str,
+    created_at: str,
+    finished_at: str,
+) -> None:
+    """Persist a bounded, explicitly synthetic Team timeline for keyless UI."""
+
+    team_id = f'team-{run_id}'
+    trace_id = hashlib.sha256(
+        f'{TASK_ID}:{run_id}:replay'.encode('utf-8')
+    ).hexdigest()[:32]
+    span_id = hashlib.sha256(
+        f'{run_id}:span'.encode('utf-8')
+    ).hexdigest()[:16]
+    allocations = team_task_budget_allocations(2.0, analysis_mode)
+    artifact_id = f'artifact-{run_id}-report'
+    approval_id = f'approval-{run_id}-replay'
+    degradation = (
+        ['visual_skill_degraded'] if analysis_mode == 'evidence_debate' else []
+    )
+    connection.execute(
+        """INSERT INTO agent_team_run
+           (team_id, run_id, task_id, status, state_version, attempt_count,
+            budget_cny, current_stage, trace_id, span_id, degraded,
+            degradation_json, rejection_count, latest_artifact_id,
+            config_json, idempotency_key, created_at, updated_at, finished_at)
+           VALUES (?, ?, ?, 'published', 20, 0, 2.0, 'published', ?, ?, ?, ?,
+                   0, ?, ?, ?, ?, ?, ?)""",
+        (
+            team_id,
+            run_id,
+            TASK_ID,
+            trace_id,
+            span_id,
+            1 if degradation else 0,
+            json.dumps(degradation, ensure_ascii=False),
+            artifact_id,
+            json.dumps({
+                'execution_mode': 'replay',
+                'analysis_mode': analysis_mode,
+                'synthetic_fixture': True,
+                'approval_authority': 'vue',
+                'max_active_workers': 3,
+            }, ensure_ascii=False, sort_keys=True),
+            f'demo-create:{run_id}',
+            created_at,
+            finished_at,
+            finished_at,
+        ),
+    )
+
+    task_ids = {
+        template.task_key: f'{team_id}:{template.task_key}'
+        for template in DEFAULT_TEAM_DAG
+    }
+    skipped = (
+        {'quality-analysis', 'growth-analysis'}
+        if analysis_mode == 'direct' else set()
+    )
+    for ordinal, template in enumerate(DEFAULT_TEAM_DAG):
+        team_task_id = task_ids[template.task_key]
+        dependencies = [task_ids[item] for item in template.depends_on]
+        status = 'skipped' if template.task_key in skipped else 'completed'
+        contract = build_task_contract(
+            goal=template.title,
+            inputs=(
+                [
+                    {'type': 'team_task', 'team_task_id': dependency}
+                    for dependency in dependencies
+                ]
+                or [{
+                    'type': 'confirmed_task_card',
+                    'artifact_ref': f'run://{run_id}/run.json',
+                }]
+            ),
+            expected_outputs=[{
+                'task_key': template.task_key,
+                'result': 'durable_result_with_artifact_refs',
+            }],
+            acceptance_criteria=[
+                'synthetic replay only',
+                'all factual claims resolve to frozen fixture EvidenceCards',
+                'publication is represented as an immutable historical event',
+            ],
+            deadline={'timeout_seconds': 480},
+            budget={
+                'currency': 'CNY',
+                'limit_cny': allocations[template.task_key],
+            },
+            artifact_refs=[],
+            trace_id=trace_id,
+        )
+        output = {
+            'execution_mode': 'replay',
+            'synthetic_fixture': True,
+            'task_key': template.task_key,
+            **({
+                'visual_skill': 'degraded',
+                'fallback': 'local-only-parser',
+            } if template.task_key == 'disclosure-research' and degradation else {}),
+            **({
+                'accepted_claim_ids': ['claim_same_period_h1'],
+                'rejected_claim_ids': ['claim_mixed_h1_q1'],
+            } if template.task_key == 'evidence-judgement' else {}),
+            **({
+                'decision': 'pass',
+                'candidate_sha256': hashlib.sha256(
+                    (seed_dir / 'tasks' / TASK_ID / 'runs' / run_id / 'report.json').read_bytes()
+                ).hexdigest(),
+            } if template.task_key == 'compliance-review' else {}),
+        }
+        connection.execute(
+            """INSERT INTO team_task
+               (team_task_id, team_id, task_key, title, assigned_agent, role_id,
+                status, state_version, attempt_count, budget_cny, ordinal,
+                depends_on_json, input_json, output_json, error_code,
+                idempotency_key, created_at, updated_at, started_at, finished_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, 2, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)""",
+            (
+                team_task_id,
+                team_id,
+                template.task_key,
+                template.title,
+                template.assigned_agent,
+                template.role_id,
+                status,
+                0 if status == 'skipped' else 1,
+                allocations[template.task_key],
+                ordinal,
+                json.dumps(dependencies, ensure_ascii=False, sort_keys=True),
+                json.dumps(contract, ensure_ascii=False, sort_keys=True),
+                json.dumps(output, ensure_ascii=False, sort_keys=True),
+                f'demo-task:{run_id}:{template.task_key}',
+                created_at,
+                finished_at,
+                created_at,
+                finished_at,
+            ),
+        )
+
+    handoff_ordinal = 0
+    for template in DEFAULT_TEAM_DAG:
+        if template.task_key in skipped:
+            continue
+        for source_key in template.depends_on:
+            if source_key in skipped:
+                continue
+            handoff_ordinal += 1
+            source = next(item for item in DEFAULT_TEAM_DAG if item.task_key == source_key)
+            contract = build_task_contract(
+                goal=template.title,
+                inputs=[{
+                    'type': 'completed_team_task',
+                    'team_task_id': task_ids[source_key],
+                    'task_key': source_key,
+                }],
+                expected_outputs=[{
+                    'task_key': template.task_key,
+                    'result': 'durable_result_with_artifact_refs',
+                }],
+                acceptance_criteria=['synthetic replay handoff accepted'],
+                deadline={'timeout_seconds': 480},
+                budget={
+                    'currency': 'CNY',
+                    'limit_cny': allocations[template.task_key],
+                },
+                artifact_refs=[],
+                trace_id=trace_id,
+            )
+            connection.execute(
+                """INSERT INTO team_handoff
+                   (handoff_id, team_id, source_task_id, target_task_id,
+                    from_agent, to_agent, status, state_version, payload_json,
+                    idempotency_key, created_at, updated_at, accepted_at)
+                   VALUES (?, ?, ?, ?, ?, ?, 'completed', 2, ?, ?, ?, ?, ?)""",
+                (
+                    f'handoff-{run_id}-{handoff_ordinal}',
+                    team_id,
+                    task_ids[source_key],
+                    task_ids[template.task_key],
+                    source.assigned_agent,
+                    template.assigned_agent,
+                    json.dumps({'task_contract': contract}, ensure_ascii=False, sort_keys=True),
+                    f'demo-handoff:{run_id}:{source_key}:{template.task_key}',
+                    created_at,
+                    finished_at,
+                    finished_at,
+                ),
+            )
+
+    report_path = seed_dir / 'tasks' / TASK_ID / 'runs' / run_id / 'report.json'
+    report_sha = hashlib.sha256(report_path.read_bytes()).hexdigest()
+    connection.execute(
+        """INSERT INTO human_approval
+           (approval_id, team_id, artifact_id, decision, authority, actor,
+            reason, team_state_version, idempotency_key, created_at)
+           VALUES (?, ?, ?, 'approved', 'vue', 'demo-fixture', ?, 19, ?, ?)""",
+        (
+            approval_id,
+            team_id,
+            artifact_id,
+            '合成夹具历史回放；非实时人工决策',
+            f'demo-approval:{run_id}',
+            finished_at,
+        ),
+    )
+    connection.execute(
+        """INSERT INTO artifact_manifest
+           (artifact_id, team_id, run_id, artifact_type, artifact_version,
+            uri, sha256, producer, schema_version, status, requires_approval,
+            approval_id, is_latest, state_version, metadata_json,
+            idempotency_key, created_at, published_at)
+           VALUES (?, ?, ?, 'report', 1, ?, ?, 'report-writer', 1,
+                   'published', 1, ?, 1, 1, ?, ?, ?, ?)""",
+        (
+            artifact_id,
+            team_id,
+            run_id,
+            f'local://{TASK_ID}/{run_id}/report.json',
+            report_sha,
+            approval_id,
+            json.dumps({
+                'task_id': TASK_ID,
+                'run_id': run_id,
+                'execution_mode': 'replay',
+                'synthetic_fixture': True,
+            }, ensure_ascii=False, sort_keys=True),
+            f'demo-artifact:{run_id}',
+            finished_at,
+            finished_at,
+        ),
+    )
+
+    events = [
+        ('team_created', 'chengzhu-backend', None, {
+            'execution_mode': 'replay',
+            'synthetic_fixture': True,
+            'agent_roles': [template.role_id for template in DEFAULT_TEAM_DAG if template.role_id != 'system-freeze'],
+        }),
+        *[
+            ('team_task_status_changed', template.assigned_agent, task_ids[template.task_key], {
+                'to_status': 'skipped' if template.task_key in skipped else 'completed',
+                'task_key': template.task_key,
+                'synthetic_fixture': True,
+            })
+            for template in DEFAULT_TEAM_DAG
+        ],
+    ]
+    if degradation:
+        events.extend([
+            ('demo_visual_failure_injected', 'chengzhu-backend', task_ids['disclosure-research'], {
+                'scope': 'bailian-visual-proxy',
+                'mode': 'synthetic-replay',
+            }),
+            ('official_skill_invoked', 'disclosure-researcher', task_ids['disclosure-research'], {
+                'skill': 'alibabacloud-bailian-image-creator',
+                'visual_skill': 'degraded',
+                'fallback': 'local-only-parser',
+                'synthetic_fixture': True,
+            }),
+            ('claim_audit_rejected', 'evidence-judge', task_ids['evidence-judgement'], {
+                'claim_id': 'claim_mixed_h1_q1',
+                'comparability_pass': False,
+                'synthetic_fixture': True,
+            }),
+        ])
+    events.append((
+        'human_approval_replayed',
+        'demo-fixture',
+        task_ids['compliance-review'],
+        {
+            'decision': 'approved',
+            'authority': 'vue',
+            'synthetic_fixture': True,
+            'not_a_live_decision': True,
+        },
+    ))
+    for ordinal, (event_type, actor, team_task_id, payload) in enumerate(events):
+        connection.execute(
+            """INSERT INTO team_event
+               (event_id, team_id, event_type, actor, team_task_id,
+                payload_json, idempotency_key, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                f'event-{run_id}-{ordinal}',
+                team_id,
+                event_type,
+                actor,
+                team_task_id,
+                json.dumps(payload, ensure_ascii=False, sort_keys=True),
+                f'demo-event:{run_id}:{ordinal}',
+                finished_at,
+            ),
+        )
+
+
 def _update_database(seed_dir: Path, verdict: Dict[str, Any], claims, challenges, scores) -> None:
     target = seed_dir / 'chengzhu.db'
     fd, temp_name = tempfile.mkstemp(prefix='.chengzhu-demo-', suffix='.db', dir=str(seed_dir))
@@ -709,6 +1017,21 @@ def _update_database(seed_dir: Path, verdict: Dict[str, Any], claims, challenges
         connection = sqlite3.connect(str(temp))
         try:
             connection.executescript(SCHEMA_SQL)
+            existing_teams = connection.execute(
+                'SELECT team_id FROM agent_team_run WHERE task_id = ?',
+                (TASK_ID,),
+            ).fetchall()
+            for (team_id,) in existing_teams:
+                for table in (
+                    'team_event', 'team_handoff', 'human_approval',
+                    'artifact_manifest', 'team_task',
+                ):
+                    connection.execute(
+                        f'DELETE FROM {table} WHERE team_id = ?', (team_id,)
+                    )
+            connection.execute(
+                'DELETE FROM agent_team_run WHERE task_id = ?', (TASK_ID,)
+            )
             for table in ('llm_call_log', 'tool_call_log', 'feedback'):
                 connection.execute(
                     f'''DELETE FROM {table}
@@ -757,6 +1080,22 @@ def _update_database(seed_dir: Path, verdict: Dict[str, Any], claims, challenges
                     json.dumps(verdict, ensure_ascii=False), CREATED_AT, FINISHED_AT,
                 ),
             )
+            _seed_agent_team_replay(
+                connection,
+                seed_dir,
+                run_id=DIRECT_RUN_ID,
+                analysis_mode='direct',
+                created_at=DIRECT_CREATED_AT,
+                finished_at=DIRECT_FINISHED_AT,
+            )
+            _seed_agent_team_replay(
+                connection,
+                seed_dir,
+                run_id=RUN_ID,
+                analysis_mode='evidence_debate',
+                created_at=CREATED_AT,
+                finished_at=FINISHED_AT,
+            )
             connection.commit()
         finally:
             connection.close()
@@ -783,6 +1122,7 @@ def build_demo(seed_dir: Path) -> Path:
     _json(run_dir / 'run.json', {
         'run_id': RUN_ID,
         'task_id': TASK_ID,
+        'execution_mode': 'replay',
         'task_card': _task_card(),
         'created_at': CREATED_AT,
         'fixture_notice': FIXTURE_NOTICE,
@@ -824,6 +1164,7 @@ def build_demo(seed_dir: Path) -> Path:
     _json(direct_run_dir / 'run.json', {
         'run_id': DIRECT_RUN_ID,
         'task_id': TASK_ID,
+        'execution_mode': 'replay',
         'task_card': _task_card('direct'),
         'created_at': DIRECT_CREATED_AT,
         'fixture_notice': FIXTURE_NOTICE,
@@ -1024,6 +1365,9 @@ def validate_demo(seed_dir: Path, *, api_check: bool = True) -> Dict[str, Any]:
                 'evidence': f'/api/task/{TASK_ID}/evidence?run_id={RUN_ID}',
                 'direct_report': f'/api/report/{TASK_ID}?run_id={DIRECT_RUN_ID}',
                 'direct_evidence': f'/api/task/{TASK_ID}/evidence?run_id={DIRECT_RUN_ID}',
+                'team': f'/api/task/{TASK_ID}/team?run_id={RUN_ID}',
+                'team_events': f'/api/task/{TASK_ID}/team/events?run_id={RUN_ID}',
+                'direct_team': f'/api/task/{TASK_ID}/team?run_id={DIRECT_RUN_ID}',
             }
             for name, path in paths.items():
                 response = client.get(path)
@@ -1040,6 +1384,35 @@ def validate_demo(seed_dir: Path, *, api_check: bool = True) -> Dict[str, Any]:
             }
             if modes.get(RUN_ID) != 'evidence_debate' or modes.get(DIRECT_RUN_ID) != 'direct':
                 raise AssertionError('runs API 未暴露 direct/debate A/B')
+            team_data = client.get(paths['team']).get_json()['data']
+            if (
+                team_data.get('source') != 'replay'
+                or len(team_data.get('agent_roles') or []) != 8
+                or len(team_data.get('tasks') or []) != 9
+            ):
+                raise AssertionError('回放 Team 未暴露只读八角色/九节点状态')
+            event_types = {
+                item.get('event_type')
+                for item in client.get(paths['team_events']).get_json()['data']['events']
+            }
+            if not {
+                'official_skill_invoked',
+                'claim_audit_rejected',
+                'human_approval_replayed',
+            }.issubset(event_types):
+                raise AssertionError('回放 Team 缺少降级、审计拒绝或审批历史事件')
+            direct_team = client.get(paths['direct_team']).get_json()['data']
+            if direct_team.get('source') != 'replay':
+                raise AssertionError('direct Team 未标记为只读回放')
+            blocked = client.post(
+                f'/api/task/{TASK_ID}/runs/{RUN_ID}/approval',
+                json={'decision': 'approve', 'expected_version': 20},
+            )
+            if (
+                blocked.status_code != 409
+                or (blocked.get_json(silent=True) or {}).get('code') != 'replay_read_only'
+            ):
+                raise AssertionError('回放 Team 错误开放了人工批准入口')
 
     # Reuse the existing packaging guard; it scans text plus the entire SQLite
     # file and reports paths only, never fixture contents.

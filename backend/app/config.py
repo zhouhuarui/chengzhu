@@ -36,6 +36,30 @@ def _provider_for(base_url: str, model: str, default: str) -> str:
     return default
 
 
+def _secret_from_env_or_file(value_name: str, file_name: str) -> str:
+    value = os.environ.get(value_name, '').strip()
+    if value:
+        return value
+    path = os.environ.get(file_name, '').strip()
+    if not path:
+        return ''
+    try:
+        flags = os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0)
+        descriptor = os.open(path, flags)
+        try:
+            raw = os.read(descriptor, 4097)
+        finally:
+            os.close(descriptor)
+    except OSError:
+        return ''
+    if len(raw) > 4096:
+        return ''
+    try:
+        return raw.decode('utf-8').strip()
+    except UnicodeDecodeError:
+        return ''
+
+
 _legacy_llm_base_url = _first_env('LLM_BASE_URL')
 _legacy_is_dashscope = bool(
     _legacy_llm_base_url
@@ -92,6 +116,7 @@ class Config:
     # 视觉 LLM（百炼 Qwen-VL）。凭证与文本模型分离；旧 Key 仅作兼容回退。
     VISION_LLM_API_KEY = _first_env(
         'VISION_LLM_API_KEY',
+        'DASHSCOPE_API_KEY',
         *(['LLM_API_KEY'] if _legacy_is_dashscope else []),
     )
     VISION_LLM_BASE_URL = _vision_base_url
@@ -177,6 +202,94 @@ class Config:
     REVIEWER_MAX_ROUNDS = int(os.environ.get('REVIEWER_MAX_ROUNDS', '2'))
     TRACKING_CRON_ENABLED = os.environ.get('TRACKING_CRON_ENABLED', 'true').lower() == 'true'
 
+    # AgentTeams v1.2.0 control plane.  Live runs always use this path; replay
+    # is reserved for explicitly marked demo artifacts.
+    AGENTTEAMS_ENABLED = os.environ.get('AGENTTEAMS_ENABLED', 'true').lower() == 'true'
+    AGENTTEAMS_VERSION = os.environ.get('AGENTTEAMS_VERSION', 'v1.2.0')
+    AGENTTEAMS_CONTROLLER_URL = os.environ.get(
+        'AGENTTEAMS_CONTROLLER_URL', 'http://127.0.0.1:8090'
+    ).rstrip('/')
+    AGENTTEAMS_AUTH_TOKEN = os.environ.get('AGENTTEAMS_AUTH_TOKEN', '')
+    AGENTTEAMS_AUTH_TOKEN_FILE = os.environ.get('AGENTTEAMS_AUTH_TOKEN_FILE', '')
+    AGENTTEAMS_MANAGER_NAME = os.environ.get('AGENTTEAMS_MANAGER_NAME', 'default')
+    AGENTTEAMS_TEAM_NAME = os.environ.get(
+        'AGENTTEAMS_TEAM_NAME', 'chengzhu-research-team'
+    )
+    AGENTTEAMS_MATRIX_URL = os.environ.get(
+        'AGENTTEAMS_MATRIX_URL', 'http://127.0.0.1:6167'
+    ).rstrip('/')
+    AGENTTEAMS_MATRIX_ACCESS_TOKEN = os.environ.get('AGENTTEAMS_MATRIX_ACCESS_TOKEN', '')
+    AGENTTEAMS_ADMIN_USER = os.environ.get('AGENTTEAMS_ADMIN_USER', 'admin')
+    AGENTTEAMS_ADMIN_PASSWORD = os.environ.get('AGENTTEAMS_ADMIN_PASSWORD', '')
+    AGENTTEAMS_ELEMENT_URL = os.environ.get(
+        'AGENTTEAMS_ELEMENT_URL', 'http://127.0.0.1:18088'
+    ).rstrip('/')
+    AGENTTEAMS_HTTP_TIMEOUT_SECONDS = min(
+        30.0, max(1.0, float(os.environ.get('AGENTTEAMS_HTTP_TIMEOUT_SECONDS', '10')))
+    )
+    AGENTTEAMS_MAX_ACTIVE_WORKERS = min(
+        3, max(1, int(os.environ.get('AGENTTEAMS_MAX_ACTIVE_WORKERS', '3')))
+    )
+
+    # Higress authenticates the caller and overwrites X-AgentTeams-Worker.
+    # The backend stores only one gateway secret; role permissions are still
+    # enforced from the trusted Worker identity header.
+    AGENTTEAMS_MCP_GATEWAY_TOKEN_FILE = os.environ.get(
+        'AGENTTEAMS_MCP_GATEWAY_TOKEN_FILE', ''
+    )
+    AGENTTEAMS_MCP_GATEWAY_TOKEN = _secret_from_env_or_file(
+        'AGENTTEAMS_MCP_GATEWAY_TOKEN',
+        'AGENTTEAMS_MCP_GATEWAY_TOKEN_FILE',
+    )
+    AGENTTEAMS_MCP_PUBLIC_URL = os.environ.get(
+        'AGENTTEAMS_MCP_PUBLIC_URL', 'http://chengzhu-mcp.agentteams.io:5002/mcp'
+    )
+    AGENTTEAMS_MCP_HOST = os.environ.get('AGENTTEAMS_MCP_HOST', '0.0.0.0')
+    AGENTTEAMS_MCP_PORT = int(os.environ.get('AGENTTEAMS_MCP_PORT', '5002'))
+
+    # Alibaba Cloud's official image-understanding Skill is fetched from one
+    # immutable upstream commit during ``competition-up`` and executed only by
+    # the server-side visual proxy.  Workers never receive the DashScope key.
+    AGENTTEAMS_BAILIAN_SKILL_NAME = 'alibabacloud-bailian-image-creator'
+    AGENTTEAMS_BAILIAN_SKILL_COMMIT = (
+        '92bd723f7cc217b252feab574c1883fa0aa46b3c'
+    )
+    AGENTTEAMS_BAILIAN_SKILL_MODEL = 'qwen3.5-plus'
+    AGENTTEAMS_BAILIAN_SKILL_ROOT = os.environ.get(
+        'AGENTTEAMS_BAILIAN_SKILL_ROOT',
+        os.path.abspath(os.path.join(
+            os.path.dirname(__file__),
+            '../../agentteams/vendor/alibabacloud-bailian-image-creator',
+        )),
+    )
+    AGENTTEAMS_BAILIAN_SKILL_TIMEOUT_SECONDS = min(
+        75.0,
+        max(
+            5.0,
+            float(os.environ.get(
+                'AGENTTEAMS_BAILIAN_SKILL_TIMEOUT_SECONDS', '65'
+            )),
+        ),
+    )
+    # Server-only competition demo control. When enabled, the first visual
+    # invocation of each Team run fails before the upstream Skill call; the
+    # durable event makes subsequent invocations proceed normally.
+    AGENTTEAMS_DEMO_VISUAL_FAILURE_ONCE = os.environ.get(
+        'AGENTTEAMS_DEMO_VISUAL_FAILURE_ONCE', 'false'
+    ).lower() == 'true'
+
+    # AgentTeams embedded MinIO.  Local run folders remain compatibility
+    # mirrors; competition mode sets ARTIFACT_REQUIRED=true.
+    AGENTTEAMS_FS_ENDPOINT = os.environ.get(
+        'AGENTTEAMS_FS_ENDPOINT', 'http://127.0.0.1:9000'
+    )
+    AGENTTEAMS_FS_ACCESS_KEY = os.environ.get('AGENTTEAMS_FS_ACCESS_KEY', '')
+    AGENTTEAMS_FS_SECRET_KEY = os.environ.get('AGENTTEAMS_FS_SECRET_KEY', '')
+    AGENTTEAMS_FS_BUCKET = os.environ.get('AGENTTEAMS_FS_BUCKET', 'agentteams-storage')
+    AGENTTEAMS_ARTIFACT_REQUIRED = os.environ.get(
+        'AGENTTEAMS_ARTIFACT_REQUIRED', 'false'
+    ).lower() == 'true'
+
     # 仿真推演
     SCENARIO_ENABLED = os.environ.get('SCENARIO_ENABLED', 'true').lower() == 'true'
     SCENARIO_AGENT_SCALE = int(os.environ.get('SCENARIO_AGENT_SCALE', '30'))
@@ -199,6 +312,14 @@ class Config:
             errors.append('PIPELINE_TIMEOUT_SECONDS 必须在 1 到 480 之间')
         if cls.LLM_COST_BUDGET_CNY <= 0 or cls.LLM_COST_BUDGET_CNY > 2:
             errors.append('LLM_COST_BUDGET_CNY 必须大于 0 且不超过 2')
+        if cls.AGENTTEAMS_VERSION != 'v1.2.0':
+            errors.append('竞赛版本固定使用 AGENTTEAMS_VERSION=v1.2.0')
+        if cls.AGENTTEAMS_MAX_ACTIVE_WORKERS > 3:
+            errors.append('AGENTTEAMS_MAX_ACTIVE_WORKERS 不得超过 3')
+        if cls.AGENTTEAMS_ARTIFACT_REQUIRED and not (
+            cls.AGENTTEAMS_FS_ACCESS_KEY and cls.AGENTTEAMS_FS_SECRET_KEY
+        ):
+            errors.append('强制 MinIO 制品时必须配置 AGENTTEAMS_FS_ACCESS_KEY/SECRET_KEY')
         if not cls.BOCHA_API_KEY:
             warnings.append('BOCHA_API_KEY 未配置（Phase 1 web_search 需要）')
         if cls.DATAYES_PROVIDER_MODE not in {'warehouse_then_api', 'warehouse_only', 'api_only'}:

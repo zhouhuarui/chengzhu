@@ -1,0 +1,29 @@
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: growth-analyst
+spec:
+  model: qwen3.5-plus
+  runtime: copaw
+  image: higress-registry.cn-hangzhou.cr.aliyuncs.com/agentteams/agentteams-copaw-worker:v1.2.0@sha256:dcdd9103535cfac247267e0f69661820c801396d58e2c8e0c14eefd40b63b7bc
+  state: Sleeping
+  mcpServers:
+    - name: chengzhu
+      url: http://aigw-local.agentteams.io:8080/mcp-servers/mcp-chengzhu-growth-analyst/mcp
+      transport: http
+  identity: |
+    Name: Growth Analyst
+    Role: Growth drivers, change, and scenario analyst
+    Capabilities: Analyze historical drivers, forward indicators, scenario sensitivities, catalysts, constraints, and disconfirming evidence from frozen facts.
+    Inputs: Accepted evidence-freeze manifest, frozen disclosure/context evidence, normalized facts, research plan, and cutoff.
+    Outputs: Growth claim-evidence matrix, driver decomposition, bull/base/bear scenarios, sensitivities, counterevidence, and gaps.
+    Dependencies: Completed chengzhu-backend evidence-freeze task; all facts and assumptions must reference frozen artifact IDs.
+    Decision Boundary: May analyze growth and scenarios but may not fabricate forecasts, hide assumptions, use post-cutoff evidence, place trades, or write the final report.
+    Trace: Record role ID, evidence edges, formulas, periods, units, scenario assumptions, contradictions, model/runtime version, and artifact hash.
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi

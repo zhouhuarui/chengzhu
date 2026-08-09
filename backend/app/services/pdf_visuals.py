@@ -20,6 +20,17 @@ _LOW_TEXT_CHARS = 80
 _LARGE_IMAGE_AREA_RATIO = 0.35
 
 
+class _LocalOnlyVisionClient:
+    """Fail closed when the official remote visual Skill is unavailable."""
+
+    provider = 'local-only'
+    model = 'no-remote-vision'
+
+    @staticmethod
+    def chat_json_result(*_args, **_kwargs):
+        raise RuntimeError('remote_visual_disabled_during_local_fallback')
+
+
 def _file_sha256(path: str) -> str:
     digest = hashlib.sha256()
     with open(path, 'rb') as source:
@@ -652,6 +663,37 @@ def parse_pdf_visuals(
             # Cache failure must not discard successfully extracted evidence.
             pass
     return result
+
+
+def parse_local_visual_fallback(
+    path: str,
+    *,
+    max_pages: int = 8,
+    run_id: Optional[str] = None,
+    deadline_epoch: Optional[float] = None,
+) -> Dict[str, Any]:
+    """Run deterministic local extraction without a second remote provider.
+
+    PDFs retain locally extracted text/table/page metadata. Standalone images
+    retain safe dimensions/hash metadata and an explicit incomplete marker;
+    neither path can silently spend tokens or send bytes to another endpoint.
+    """
+
+    client = _LocalOnlyVisionClient()
+    if os.path.splitext(path)[1].lower() == '.pdf':
+        return parse_pdf_visuals(
+            path,
+            max_pages=max_pages,
+            vision_client=client,
+            run_id=run_id,
+            deadline_epoch=deadline_epoch,
+        )
+    return parse_image_visual(
+        path,
+        vision_client=client,
+        run_id=run_id,
+        deadline_epoch=deadline_epoch,
+    )
 
 
 def extract_chart_blocks(markdown: str) -> List[Dict[str, Any]]:

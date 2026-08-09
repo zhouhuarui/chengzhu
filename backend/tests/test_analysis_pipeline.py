@@ -46,6 +46,7 @@ def isolated_runtime(tmp_path, monkeypatch):
     monkeypatch.setattr(Config, 'UPLOAD_FOLDER', str(tmp_path))
     monkeypatch.setattr(Config, 'DB_PATH', str(tmp_path / 'chengzhu.db'))
     monkeypatch.setattr(Config, 'LLM_API_KEY', None)
+    monkeypatch.setattr(Config, 'TEXT_LLM_API_KEY', None)
     monkeypatch.setattr(graphmod.GraphClient, '_try_init_neo4j', lambda self: None)
     graphmod._instances.clear()
     dbmod.init_db()

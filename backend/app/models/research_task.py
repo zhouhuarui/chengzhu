@@ -211,6 +211,7 @@ class ResearchTask:
         self.task_card = card.to_dict() if isinstance(card, TaskCard) else card
         if isinstance(self.task_card, dict):
             self.task_card.setdefault('analysis_mode', 'direct')
+            self.task_card.setdefault('execution_mode', 'agentteams')
         self.save()
 
     def to_dict(self) -> Dict[str, Any]:
@@ -247,6 +248,7 @@ class ResearchTask:
         t.task_card = data.get('task_card')
         if isinstance(t.task_card, dict):
             t.task_card.setdefault('analysis_mode', 'direct')
+            t.task_card.setdefault('execution_mode', 'agentteams')
         t.progress = data.get('progress', 0)
         t.message = data.get('message', '')
         t.error = data.get('error')

@@ -79,8 +79,11 @@ def test_registry_wrapper_logs():
     assert row['ok'] == 1
 
 
-def test_web_search_no_key_graceful():
+def test_web_search_no_key_graceful(monkeypatch):
     from app.tools.web_search import reset_web_search_budget, web_search
+    # Keep this no-key contract deterministic even when the local .env has a
+    # real Bocha credential configured.
+    monkeypatch.setattr(Config, 'BOCHA_API_KEY', None)
     reset_web_search_budget()
     # 无 key 时不抛异常
     cards = web_search('贵州茅台 2026 一季报')

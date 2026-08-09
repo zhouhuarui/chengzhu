@@ -1,0 +1,4 @@
+interface:
+  display_name: "规划投研任务"
+  short_description: "Plan confirmed research into an auditable DAG"
+  default_prompt: "Use $plan-research to turn a confirmed TaskCard into the approved AgentTeams research DAG."

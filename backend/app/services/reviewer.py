@@ -220,6 +220,9 @@ class Reviewer:
         for marker in ('deterministic_financial', 'audited_debate', 'system'):
             if section.get(marker):
                 output[marker] = True
+        for field in ('claim_ids', 'evidence_uids'):
+            if isinstance(section.get(field), list):
+                output[field] = list(section[field])
         return output
 
     def _batch_llm_review(self, sections: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -360,6 +363,8 @@ class Reviewer:
             'debate_status': draft.get('debate_status'),
             'debate_fallback_reason': draft.get('debate_fallback_reason'),
             'debate_verdict': draft.get('debate_verdict'),
+            'claim_gate_enforced': bool(draft.get('claim_gate_enforced')),
+            'accepted_claim_ids': list(draft.get('accepted_claim_ids') or []),
         }
         path = os.path.join(self.artifact_folder, 'reviewed_report.json')
         with open(path, 'w', encoding='utf-8') as f:

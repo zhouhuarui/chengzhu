@@ -338,6 +338,44 @@ def _run_one_collector(
     }
 
 
+def collect_uploaded_files(
+    task: ResearchTask,
+    run_id: Optional[str],
+    card: Dict[str, Any],
+    logger: AgentLogger,
+    deadline_epoch: Optional[float] = None,
+) -> Optional[Dict[str, Any]]:
+    """Public deterministic upload-ingestion port for either runtime."""
+
+    return _collect_uploaded_files(
+        task,
+        run_id,
+        card,
+        logger,
+        deadline_epoch=deadline_epoch,
+    )
+
+
+def run_collector(
+    task: ResearchTask,
+    agent: str,
+    card: Dict[str, Any],
+    logger: AgentLogger,
+    run_id: Optional[str] = None,
+    deadline_epoch: Optional[float] = None,
+) -> Dict[str, Any]:
+    """Public one-collector domain port; it performs no role orchestration."""
+
+    return _run_one_collector(
+        task,
+        agent,
+        card,
+        logger,
+        run_id,
+        deadline_epoch,
+    )
+
+
 def run_collection(
     task_id: str,
     run_id: Optional[str] = None,

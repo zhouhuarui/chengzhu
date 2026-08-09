@@ -107,6 +107,12 @@ def _ensure_debate_sections(
 ) -> List[Dict[str, Any]]:
     if reviewed.get('analysis_mode') != 'evidence_debate':
         return sections
+    if reviewed.get('claim_gate_enforced'):
+        # AgentTeams report prose has already been rebuilt exclusively from
+        # accepted, hard-pass ClaimCards. The full verdict may describe
+        # rejected or unresolved material and must not be expanded into the
+        # formal candidate behind the Writer gate.
+        return sections
     if reviewed.get('debate_status') == 'fallback_direct':
         reason = reviewed.get('debate_fallback_reason') or '模型调用失败或未形成有效裁决'
         return [{
